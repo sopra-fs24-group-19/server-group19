@@ -18,6 +18,9 @@ public class User implements Serializable {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String password;
+
     @Column(nullable = false, unique = true)
     private String username;
 
@@ -39,7 +42,14 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user")
     private List<Rating> ratings;
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "creator")
+    private List<Task> createdTasks;
+
+    @OneToMany(mappedBy = "helper")
+    private List<Task> assignedTasks;
+
+    @ManyToMany
+    @JoinTable(name="applications", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name="taskId"))
     private List<Task> applications;
 
     public Long getId() {
@@ -85,6 +95,10 @@ public class User implements Serializable {
     public String getAddress() { return address; }
 
     public void setAddress(String address) { this.address = address; }
+
+    public String getPassword() { return password; }
+
+    public void setPassword(String password) { this.password = password; }
 
     public String getPhoneNumber() { return phoneNumber; }
 

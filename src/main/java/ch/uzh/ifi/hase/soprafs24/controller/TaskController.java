@@ -1,12 +1,9 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 import java.util.Collections;
-import ch.uzh.ifi.hase.soprafs24.entity.Task;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.TaskPutDTO;
+import ch.uzh.ifi.hase.soprafs24.entity.*;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.TaskService;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.TaskPostDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.TaskGetDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
@@ -87,9 +84,5 @@ public class TaskController {
         // TODO: implement
         return Collections.emptyList();
     }
-
-
-
-
 
 }

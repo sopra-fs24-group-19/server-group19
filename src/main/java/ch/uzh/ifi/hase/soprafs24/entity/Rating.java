@@ -14,6 +14,12 @@ public class Rating implements Serializable {
     @GeneratedValue
     private Long id;
 
+    @Column(nullable = false)
+    private int rating;
+
+    @Column(nullable = false)
+    private String review;
+
     @ManyToOne
     @JoinColumn(name="user_id")
     private User user;
@@ -21,5 +27,13 @@ public class Rating implements Serializable {
     public User getUser() { return user; }
 
     public void setUser(User user) { this.user = user; }
+
+    public int getRating() { return rating; }
+
+    public void setRating(int rating) { this.rating = rating; }
+
+    public String getReview() { return review; }
+
+    public void setReview(String review) { this.review = review; }
 
 }

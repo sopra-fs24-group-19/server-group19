@@ -1,40 +1,47 @@
 package ch.uzh.ifi.hase.soprafs24.rest.mapper;
-
-import ch.uzh.ifi.hase.soprafs24.entity.User;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPutDTO;
+import ch.uzh.ifi.hase.soprafs24.entity.*;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.*;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
-/**
- * DTOMapper
- * This class is responsible for generating classes that will automatically
- * transform/map the internal representation
- * of an entity (e.g., the User) to the external/API representation (e.g.,
- * UserGetDTO for getting, UserPostDTO for creating)
- * and vice versa.
- * Additional mappers can be defined for new entities.
- * Always created one mapper for getting information (GET) and one mapper for
- * creating information (POST).
- */
 @Mapper
 public interface DTOMapper {
-  // TODO: add mappings for all DTOS
+  // TODO: add mappings for all DTOS needed
   DTOMapper INSTANCE = Mappers.getMapper(DTOMapper.class);
 
-  @Mapping(source = "name", target = "name")
-  @Mapping(source = "username", target = "username")
-  @Mapping(source = "password", target = "password")
-  User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
-  @Mapping(source = "password", target = "password")
-  @Mapping(source = "username", target = "username")
-  User convertUserPutDTOtoEntity(UserPutDTO userPutDTO);
 
-  @Mapping(source = "id", target = "id")
-  @Mapping(source = "name", target = "name")
-  @Mapping(source = "username", target = "username")
-  UserGetDTO convertEntityToUserGetDTO(User user);
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "username", target = "username")
+    @Mapping(source = "password", target = "password")
+    User convertUserPostDTOtoEntity(UserPostDTO userPostDTO);
+    @Mapping(source = "password", target = "password")
+    @Mapping(source = "username", target = "username")
+    User convertUserPutDTOtoEntity(UserPutDTO userPutDTO);
+
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "radius", target = "radius")
+    @Mapping(source = "username", target = "username")
+    @Mapping(source = "phoneNumber", target = "phoneNumber")
+    @Mapping(source = "address", target = "address")
+    @Mapping(source = "coinBalance", target = "coinBalance")
+    UserGetDTO convertEntityToUserGetDTO(User user);
+
+    @Mapping(source = "compensation", target = "price")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "date", target = "date")
+    @Mapping(source = "address", target = "address")
+    Task convertTaskPostDTOToEntity(TaskPostDTO taskPostDTO);
+
+    @Mapping(source = "price", target = "compensation")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "address", target = "address")
+    @Mapping(source = "date", target = "date")
+    @Mapping(source = "status", target = "status")
+    TaskGetDTO convertEntityToTaskGetDTO(Task task);
+
+    @Mapping(source = "stars", target = "rating")
+    @Mapping(source = "comment", target = "review")
+    Rating convertRatingPostDTOToEntity(RatingPostDTO ratingPostDTO);
 
 
 }

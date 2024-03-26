@@ -6,7 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository("ratingRepository")
 public interface RatingRepository extends JpaRepository<Rating, Long> {
-  Rating findByName(String name);
 
-  Rating findByUsername(String username);
 }
