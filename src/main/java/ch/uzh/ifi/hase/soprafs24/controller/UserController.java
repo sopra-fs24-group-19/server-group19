@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 public class UserController {
 
@@ -21,31 +23,36 @@ public class UserController {
   UserController(UserService userService) {
     this.userService = userService;
   }
-
+    //QUESTION: Check surname field
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public UserGetDTO createUser(@RequestBody UserPostDTO userPostDTO) {
+    public UserGetDTO createUser(@RequestBody UserPostDTO userPostDTO, HttpServletResponse response) {
         User userInput = DTOMapper.INSTANCE.convertUserPostDTOtoEntity(userPostDTO);
         User createdUser = userService.createUser(userInput);
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
-    }
+        response.addHeader("Authorization", createdUser.getToken());
+        UserGetDTO userSentToClient = DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
+        return userSentToClient;
+    } 
 
     @PutMapping("/users")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public UserGetDTO loginUser(@RequestBody UserPutDTO userPutDTO) {
-        // TODO: implement
-        User user = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
-        return DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+    public UserGetDTO loginUser(@RequestBody UserPutDTO userPutDTO, HttpServletResponse response) {
+        User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
+        User userRetrieved = userService.login(userInput);
+        response.addHeader("Authorization", userRetrieved.getToken());
+        UserGetDTO userSentToClient = DTOMapper.INSTANCE.convertEntityToUserGetDTO(userRetrieved);
+        return userSentToClient;
     }
 
     @PutMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    public void logoutUser(@RequestBody long id) {
-        // TODO: implement
+    public void logoutUser(@RequestHeader("Authorization") String token) {
+      this.userService.logOut(token);
     }
+  
 
     @PutMapping("/users/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -65,7 +72,7 @@ public class UserController {
     @PostMapping("/ratings/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public void creatRating(@RequestBody RatingPostDTO ratingPostDTO) {
+    public void createRating(@RequestBody RatingPostDTO ratingPostDTO) {
         // TODO: implement
     }
 

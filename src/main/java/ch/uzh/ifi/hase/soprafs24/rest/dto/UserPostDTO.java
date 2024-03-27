@@ -4,6 +4,8 @@ public class UserPostDTO {
 
     private String name;
 
+    private String surname;
+
     private String username;
 
     private String password;
@@ -14,6 +16,14 @@ public class UserPostDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public void setSurname(String surname) {
+        this.surname = surname;
     }
 
     public String getUsername() {

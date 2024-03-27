@@ -1,6 +1,9 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 
 import javax.persistence.*;
+
+import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -38,6 +41,9 @@ public class User implements Serializable {
 
     @Column(nullable = true)
     private float radius;
+
+    @Column(nullable = false)
+    private UserStatus status;
 
     @OneToMany(mappedBy = "user")
     private List<Rating> ratings;
@@ -107,6 +113,10 @@ public class User implements Serializable {
     public float getRadius() { return radius; }
 
     public void setRadius(float radius) { this.radius = radius; }
+
+    public void setStatus(UserStatus status) { this.status = status;}
+
+    public UserStatus getStatus() {return this.status;}
 
     public List<Task> getApplications() { return applications; }
 
