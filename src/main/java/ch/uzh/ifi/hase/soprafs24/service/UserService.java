@@ -11,9 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import java.util.NoSuchElementException;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -55,4 +57,19 @@ public class UserService {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format(baseErrorMessage, "name", "is"));
     }
   }
+
+    public User getUserById(long id) {
+        Optional<User> user = this.userRepository.findById(id);
+        if(!user.isPresent()){
+            throw new NoSuchElementException("User not found with id: " + id);
+
+        } else {
+            return user.get();
+        }
+
+    }
+    public void subtractCoins(User creator, int price){
+      creator.setCoinBalance(creator.getCoinBalance() - price);
+      userRepository.save(creator);
+    }
 }

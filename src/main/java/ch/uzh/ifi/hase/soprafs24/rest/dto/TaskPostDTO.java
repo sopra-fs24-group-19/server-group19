@@ -5,15 +5,27 @@ public class TaskPostDTO {
     // TODO: find a solution for passing date from frontend
     private String description;
 
+    private String title;
+
     private int compensation;
 
     private Date date;
 
     private String address;
 
+    private long creatorId;
+
+    public long getCreatorId() { return creatorId; }
+
+    public void setCreatorId(long creatorId) { this.creatorId = creatorId; }
+
     public String getDescription() { return description; }
 
     public void setDescription(String description) { this.description = description; }
+
+    public String getTitle() { return title; }
+
+    public void setTitle(String title) { this.title = title; }
 
     public int getCompensation() { return compensation; }
 

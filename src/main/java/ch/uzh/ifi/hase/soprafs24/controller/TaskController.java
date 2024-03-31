@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@RestController
 public class TaskController {
 
     private final TaskService taskService;
@@ -18,11 +18,13 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @PostMapping("/tasks/{userId}")
+    @PostMapping("/tasks")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public void createTask(@RequestBody TaskPostDTO taskPostDTO) {
-        //TODO: implement
+        Task taskInput = DTOMapper.INSTANCE.convertTaskPostDTOToEntity(taskPostDTO);
+        long creatorId = taskPostDTO.getCreatorId();
+        taskService.createTask(taskInput,creatorId);
     }
 
     @GetMapping("/tasks")

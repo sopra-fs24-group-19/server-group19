@@ -17,6 +17,9 @@ public class Task implements Serializable {
     private Long id;
 
     @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
     private String description;
 
     @Column(nullable = false)
@@ -25,11 +28,11 @@ public class Task implements Serializable {
     @Column(nullable = false)
     private String address;
 
-
     @Column(nullable = false)
     private Date date;
 
-    @Enumerated // This tells JPA to store the enum values as strings
+    @Enumerated
+    @Column(nullable=false)
     private TaskStatus status;
 
     @ManyToOne
@@ -54,6 +57,10 @@ public class Task implements Serializable {
     public String getDescription() { return description; }
 
     public void setDescription(String description) { this.description = description; }
+
+    public String getTitle() { return title; }
+
+    public void setTitle(String title) { this.title = title; }
 
     public int getPrice() { return price; }
 
