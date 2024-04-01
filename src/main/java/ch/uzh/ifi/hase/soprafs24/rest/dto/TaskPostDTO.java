@@ -15,6 +15,8 @@ public class TaskPostDTO {
 
     private long creatorId;
 
+    private int duration;
+
     public long getCreatorId() { return creatorId; }
 
     public void setCreatorId(long creatorId) { this.creatorId = creatorId; }
@@ -38,5 +40,10 @@ public class TaskPostDTO {
     public String getAddress() { return address; }
 
     public void setAddress(String address) { this.address = address; }
+
+    public int getDuration() { return duration; }
+
+    public void setDuration(int duration) { this.duration = duration; }
+
 
 }

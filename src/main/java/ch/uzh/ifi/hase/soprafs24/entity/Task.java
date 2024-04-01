@@ -31,6 +31,9 @@ public class Task implements Serializable {
     @Column(nullable = false)
     private Date date;
 
+    @Column(nullable = false)
+    private int duration;
+
     @Enumerated
     @Column(nullable=false)
     private TaskStatus status;
@@ -89,5 +92,9 @@ public class Task implements Serializable {
     public List<User> getCandidates() { return candidates; }
 
     public void setCandidates(List<User> candidates) { this.candidates = candidates; }
+
+    public int getDuration() { return duration; }
+
+    public void setDuration(int duration) { this.duration = duration; }
 
 }

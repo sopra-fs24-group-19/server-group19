@@ -31,6 +31,7 @@ public interface DTOMapper {
     @Mapping(source = "date", target = "date")
     @Mapping(source = "address", target = "address")
     @Mapping(source = "title", target = "title")
+    @Mapping(source = "duration", target = "duration")
     Task convertTaskPostDTOToEntity(TaskPostDTO taskPostDTO);
 
     @Mapping(source = "price", target = "compensation")
