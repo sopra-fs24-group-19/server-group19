@@ -28,7 +28,7 @@ public class TaskService {
         this.userService = userService;
     }
 
-    public void createTask(Task newTask, long userId) {
+    public Task createTask(Task newTask, long userId) {
         User creator = userService.getUserById(userId);
         boolean valid = checkIfCreatorHasEnoughTokens(creator, newTask);
         if (!valid) {
@@ -40,6 +40,7 @@ public class TaskService {
         taskRepository.flush();
         userService.subtractCoins(creator, newTask.getPrice());
         log.debug("Created task: {}", newTask);
+        return newTask;
     }
 
     private boolean checkIfCreatorHasEnoughTokens(User creator, Task task){

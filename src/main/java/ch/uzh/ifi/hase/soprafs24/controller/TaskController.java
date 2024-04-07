@@ -24,7 +24,7 @@ public class TaskController {
     public void createTask(@RequestBody TaskPostDTO taskPostDTO) {
         Task taskInput = DTOMapper.INSTANCE.convertTaskPostDTOToEntity(taskPostDTO);
         long creatorId = taskPostDTO.getCreatorId();
-        taskService.createTask(taskInput,creatorId);
+        Task createdTask = taskService.createTask(taskInput,creatorId);
     }
 
     @GetMapping("/tasks")
