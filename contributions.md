@@ -9,7 +9,7 @@
 
 * ⁠Name: Dana Rapp
 * Date: 31/03/2024
-*⁠ ⁠Github issues worked on: BE US1, BE US3
+* ⁠Github issues worked on: BE US1, BE US3
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57052445
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57052445
 *  ⁠further activities: added integration tests and unit tests for all completed tasks
