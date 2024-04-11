@@ -97,4 +97,11 @@ public class TaskController {
         return Collections.emptyList();
     }
 
+    @DeleteMapping("/tasks/{taskId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public void deleteTask(@PathVariable long taskId, @RequestHeader("AuthorizationToken") String token){
+        taskService.deleteTaskWithId(taskId, token);
+    }
+
 }

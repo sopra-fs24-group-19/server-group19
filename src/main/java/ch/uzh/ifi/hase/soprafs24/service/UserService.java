@@ -66,8 +66,16 @@ public class UserService {
         } else {
             return user.get();
         }
-
     }
+
+    public long getUserIdByToken(String token){
+        User user = this.userRepository.findByToken(token);
+        if (user == null){
+            throw new NoSuchElementException("User not found with token: " + token);
+        }
+        return user.getId();
+    }
+
     public void subtractCoins(User creator, int price){
       creator.setCoinBalance(creator.getCoinBalance() - price);
       userRepository.save(creator);

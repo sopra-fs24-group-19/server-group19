@@ -14,6 +14,7 @@ import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -51,7 +52,23 @@ public class TaskService {
         return newTask;
     }
 
+    public void deleteTaskWithId(long taskId, String token) {
+        Task taskToBeDeleted = taskRepository.findById(taskId);
+        if (taskToBeDeleted == null){
+            throw new NoSuchElementException("Task not found with id: " + taskId);
+        }
+        if (!checkPermissionToDeleteTask(token, taskToBeDeleted.getCreator().getId())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "only the creator of this task is allowed to delete it");
+        }
+        taskRepository.delete(taskToBeDeleted);
+    }
+
     private boolean checkIfCreatorHasEnoughTokens(User creator, Task task){
         return creator.getCoinBalance() >= task.getPrice();
+    }
+
+    private boolean checkPermissionToDeleteTask(String token, long creatorId){
+        long currentUserId = userService.getUserIdByToken(token);
+        return currentUserId == creatorId;
     }
 }
