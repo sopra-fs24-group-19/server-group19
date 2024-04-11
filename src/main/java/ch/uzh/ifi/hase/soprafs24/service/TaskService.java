@@ -41,6 +41,10 @@ public class TaskService {
         return userService.getCandidatesByTaskId(taskId);
     }
 
+    public List<Task> getTasksByApplicant(long userId) {
+        return this.taskRepository.findTasksByApplicantId(userId);
+    }
+
     public Task createTask(Task newTask, long userId) {
         User creator = userService.getUserById(userId);
         boolean valid = checkIfCreatorHasEnoughTokens(creator, newTask);

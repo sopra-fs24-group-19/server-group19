@@ -94,12 +94,17 @@ public class TaskController {
         return taskGetDTOs;
     }
 
-    @GetMapping("/tasks/applied/{userId}")
+    @GetMapping("/tasks/appliedfor/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<TaskGetDTO> getMyAppliedTasks(@RequestBody long userId) {
-        // TODO: implement
-        return Collections.emptyList();
+    public List<TaskGetDTO> getMyAppliedTasks(@PathVariable long userId) {
+        List<Task> tasks = taskService.getTasksByApplicant(userId);
+        List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
+
+        for (Task task : tasks) {
+            taskGetDTOs.add(DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task));
+        }
+        return taskGetDTOs;
     }
 
     @DeleteMapping("/tasks/{taskId}")
