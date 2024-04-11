@@ -61,8 +61,7 @@ public class UserService {
     public User getUserById(long id) {
         Optional<User> user = this.userRepository.findById(id);
         if(!user.isPresent()){
-            throw new NoSuchElementException("User not found with id: " + id);
-
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no user exists with id" + id);
         } else {
             return user.get();
         }
