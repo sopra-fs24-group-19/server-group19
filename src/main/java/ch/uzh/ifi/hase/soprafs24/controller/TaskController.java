@@ -50,7 +50,7 @@ public class TaskController {
     @GetMapping("/candidates/{taskId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<UserGetDTO> getCandidates(@RequestParam("taskId") long id) {
+    public List<UserGetDTO> getCandidates(@PathVariable("taskId") long id) {
         //TODO: implement
         return Collections.emptyList();
     }
@@ -79,9 +79,14 @@ public class TaskController {
     @GetMapping("/tasks/created/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<TaskGetDTO> getMyCreatedTasks(@RequestBody long userId) {
-        // TODO: implement
-        return Collections.emptyList();
+    public List<TaskGetDTO> getMyCreatedTasks(@PathVariable long userId) {
+        List<Task> tasks = taskService.getTasksByCreator(userId);
+        List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
+
+        for (Task task : tasks) {
+            taskGetDTOs.add(DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task));
+        }
+        return taskGetDTOs;
     }
 
     @GetMapping("/tasks/applied/{userId}")
