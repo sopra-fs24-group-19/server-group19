@@ -24,15 +24,20 @@ public class TaskController {
     public void createTask(@RequestBody TaskPostDTO taskPostDTO) {
         Task taskInput = DTOMapper.INSTANCE.convertTaskPostDTOToEntity(taskPostDTO);
         long creatorId = taskPostDTO.getCreatorId();
-        taskService.createTask(taskInput,creatorId);
+        Task createdTask = taskService.createTask(taskInput,creatorId);
     }
 
     @GetMapping("/tasks")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<TaskGetDTO> getAllTasks() {
-        // TODO: implement
-        return Collections.emptyList();
+        List<Task> tasks = taskService.getTasks();
+        List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
+
+        for (Task task : tasks) {
+            taskGetDTOs.add(DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task));
+        }
+        return taskGetDTOs;
     }
 
     @PutMapping("/apply")
@@ -45,9 +50,14 @@ public class TaskController {
     @GetMapping("/candidates/{taskId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<UserGetDTO> getCandidates(@RequestParam("taskId") long id) {
-        //TODO: implement
-        return Collections.emptyList();
+    public List<UserGetDTO> getCandidates(@PathVariable("taskId") long taskId) {
+        List<User> candidates = taskService.getCandidatesForTaskWithId(taskId);
+        List<UserGetDTO> candidateGetDTOs = new ArrayList<>();
+
+        for (User user : candidates) {
+            candidateGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(user));
+        }
+        return candidateGetDTOs;
     }
 
     @PutMapping("/tasks/{taskId}")
@@ -74,17 +84,34 @@ public class TaskController {
     @GetMapping("/tasks/created/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<TaskGetDTO> getMyCreatedTasks(@RequestBody long userId) {
-        // TODO: implement
-        return Collections.emptyList();
+    public List<TaskGetDTO> getMyCreatedTasks(@PathVariable long userId) {
+        List<Task> tasks = taskService.getTasksByCreator(userId);
+        List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
+
+        for (Task task : tasks) {
+            taskGetDTOs.add(DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task));
+        }
+        return taskGetDTOs;
     }
 
-    @GetMapping("/tasks/applied/{userId}")
+    @GetMapping("/tasks/appliedfor/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<TaskGetDTO> getMyAppliedTasks(@RequestBody long userId) {
-        // TODO: implement
-        return Collections.emptyList();
+    public List<TaskGetDTO> getMyAppliedTasks(@PathVariable long userId) {
+        List<Task> tasks = taskService.getTasksByApplicant(userId);
+        List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
+
+        for (Task task : tasks) {
+            taskGetDTOs.add(DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task));
+        }
+        return taskGetDTOs;
+    }
+
+    @DeleteMapping("/tasks/{taskId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public void deleteTask(@PathVariable long taskId, @RequestHeader("AuthorizationToken") String token){
+        taskService.deleteTaskWithId(taskId, token);
     }
 
 }

@@ -13,6 +13,8 @@ import ch.uzh.ifi.hase.soprafs24.entity.Task;
 import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -27,8 +29,23 @@ public class TaskService {
         this.taskRepository = taskRepository;
         this.userService = userService;
     }
+    public List<Task> getTasks() {
+        return this.taskRepository.findAll();
+    }
 
-    public void createTask(Task newTask, long userId) {
+    public List<Task> getTasksByCreator(long userId) {
+        return this.taskRepository.findByCreatorId(userId);
+    }
+
+    public List<User> getCandidatesForTaskWithId(long taskId){
+        return userService.getCandidatesByTaskId(taskId);
+    }
+
+    public List<Task> getTasksByApplicant(long userId) {
+        return this.taskRepository.findTasksByApplicantId(userId);
+    }
+
+    public Task createTask(Task newTask, long userId) {
         User creator = userService.getUserById(userId);
         boolean valid = checkIfCreatorHasEnoughTokens(creator, newTask);
         if (!valid) {
@@ -40,9 +57,26 @@ public class TaskService {
         taskRepository.flush();
         userService.subtractCoins(creator, newTask.getPrice());
         log.debug("Created task: {}", newTask);
+        return newTask;
+    }
+
+    public void deleteTaskWithId(long taskId, String token) {
+        Task taskToBeDeleted = taskRepository.findById(taskId);
+        if (taskToBeDeleted == null){
+            throw new NoSuchElementException("Task not found with id: " + taskId);
+        }
+        if (!checkPermissionToDeleteTask(token, taskToBeDeleted.getCreator().getId())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "only the creator of this task is allowed to delete it");
+        }
+        taskRepository.delete(taskToBeDeleted);
     }
 
     private boolean checkIfCreatorHasEnoughTokens(User creator, Task task){
         return creator.getCoinBalance() >= task.getPrice();
+    }
+
+    private boolean checkPermissionToDeleteTask(String token, long creatorId){
+        long currentUserId = userService.getUserIdByToken(token);
+        return currentUserId == creatorId;
     }
 }

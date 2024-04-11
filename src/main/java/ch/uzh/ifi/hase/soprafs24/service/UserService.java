@@ -98,13 +98,24 @@ public class UserService {
     public User getUserById(long id) {
         Optional<User> user = this.userRepository.findById(id);
         if(!user.isPresent()){
-            throw new NoSuchElementException("User not found with id: " + id);
-
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no user exists with id" + id);
         } else {
             return user.get();
         }
-
     }
+
+    public long getUserIdByToken(String token){
+        User user = this.userRepository.findByToken(token);
+        if (user == null){
+            throw new NoSuchElementException("User not found with token: " + token);
+        }
+        return user.getId();
+    }
+
+    public List<User> getCandidatesByTaskId (long taskId) {
+        return userRepository.findUsersByTaskId(taskId);
+    }
+
     public void subtractCoins(User creator, int price){
       creator.setCoinBalance(creator.getCoinBalance() - price);
       userRepository.save(creator);
