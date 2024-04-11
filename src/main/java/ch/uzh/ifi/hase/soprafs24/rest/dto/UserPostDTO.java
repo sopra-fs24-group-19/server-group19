@@ -8,6 +8,10 @@ public class UserPostDTO {
 
     private String password;
 
+    private String address;
+
+    private String phoneNumber;
+
     public String getName() {
         return name;
     }
@@ -27,6 +31,14 @@ public class UserPostDTO {
     public String getPassword() { return password; }
 
     public void setPassword(String password) { this.password = password; }
+
+    public void setAddress(String address) {this.address = address;}
+
+    public String getAddress() {return address;}
+
+    public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
+
+    public String getPhoneNumber() {return phoneNumber;}
 
 
 

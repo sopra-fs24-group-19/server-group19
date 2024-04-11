@@ -26,6 +26,13 @@ public interface DTOMapper {
     @Mapping(source = "coinBalance", target = "coinBalance")
     UserGetDTO convertEntityToUserGetDTO(User user);
 
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "radius", target = "radius")
+    @Mapping(source = "username", target = "username")
+    @Mapping(source = "phoneNumber", target = "phoneNumber")
+    @Mapping(source = "address", target = "address")
+    User convertUserEditDTOToEntity(UserEditDTO userEditDTO);
+
     @Mapping(source = "compensation", target = "price")
     @Mapping(source = "description", target = "description")
     @Mapping(source = "date", target = "date")

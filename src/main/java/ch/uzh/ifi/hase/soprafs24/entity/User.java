@@ -1,6 +1,9 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 
 import javax.persistence.*;
+
+import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -51,6 +54,9 @@ public class User implements Serializable {
     @ManyToMany
     @JoinTable(name="applications", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name="taskId"))
     private List<Task> applications;
+
+    @Column(nullable = false)
+    private UserStatus status;
 
     public Long getId() {
         return id;
@@ -111,8 +117,10 @@ public class User implements Serializable {
     public List<Task> getApplications() { return applications; }
 
     public void setApplications(List<Task> applications) { this.applications = applications; }
-
-
+    
+    public UserStatus getStatus() {return status;}
+    
+    public void setStatus(UserStatus status) {this.status = status;}
 
 
 }
