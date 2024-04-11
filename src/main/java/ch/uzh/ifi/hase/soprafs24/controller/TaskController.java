@@ -31,8 +31,13 @@ public class TaskController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<TaskGetDTO> getAllTasks() {
-        // TODO: implement
-        return Collections.emptyList();
+        List<Task> tasks = taskService.getTasks();
+        List<TaskGetDTO> taskGetDTOs = new ArrayList<>();
+
+        for (Task task : tasks) {
+            taskGetDTOs.add(DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task));
+        }
+        return taskGetDTOs;
     }
 
     @PutMapping("/apply")

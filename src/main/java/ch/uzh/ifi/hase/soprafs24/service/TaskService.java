@@ -13,6 +13,7 @@ import ch.uzh.ifi.hase.soprafs24.entity.Task;
 import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+import java.util.List;
 
 @Service
 @Transactional
@@ -26,6 +27,9 @@ public class TaskService {
     public TaskService(@Qualifier("taskRepository") TaskRepository taskRepository, UserService userService) {
         this.taskRepository = taskRepository;
         this.userService = userService;
+    }
+    public List<Task> getTasks() {
+        return this.taskRepository.findAll();
     }
 
     public Task createTask(Task newTask, long userId) {
