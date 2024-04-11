@@ -76,6 +76,10 @@ public class UserService {
         return user.getId();
     }
 
+    public List<User> getCandidatesByTaskId (long taskId) {
+        return userRepository.findUsersByTaskId(taskId);
+    }
+
     public void subtractCoins(User creator, int price){
       creator.setCoinBalance(creator.getCoinBalance() - price);
       userRepository.save(creator);

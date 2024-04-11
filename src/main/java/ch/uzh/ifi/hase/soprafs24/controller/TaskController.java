@@ -50,9 +50,14 @@ public class TaskController {
     @GetMapping("/candidates/{taskId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public List<UserGetDTO> getCandidates(@PathVariable("taskId") long id) {
-        //TODO: implement
-        return Collections.emptyList();
+    public List<UserGetDTO> getCandidates(@PathVariable("taskId") long taskId) {
+        List<User> candidates = taskService.getCandidatesForTaskWithId(taskId);
+        List<UserGetDTO> candidateGetDTOs = new ArrayList<>();
+
+        for (User user : candidates) {
+            candidateGetDTOs.add(DTOMapper.INSTANCE.convertEntityToUserGetDTO(user));
+        }
+        return candidateGetDTOs;
     }
 
     @PutMapping("/tasks/{taskId}")
