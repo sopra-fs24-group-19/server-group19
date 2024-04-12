@@ -13,6 +13,11 @@ public class TaskGetDTO {
 
     private String address;
 
+    private int duration;
+
+    private String title;
+    private long creatorId;
+
     public String getDescription() { return description; }
 
     public void setDescription(String description) { this.description = description; }
@@ -32,5 +37,17 @@ public class TaskGetDTO {
     public Date getDate() { return date; }
 
     public void setDate(Date date) { this.date = date; }
+
+    public int getDuration() { return duration; }
+
+    public void setDuration(int duration) { this.duration = duration; }
+
+    public String getTitle() { return title; }
+
+    public void setTitle(String title) { this.title = title; }
+
+    public long getCreatorId() { return creatorId; }
+
+    public void setCreatorId(long creatorId) { this.creatorId = creatorId; }
 
 }

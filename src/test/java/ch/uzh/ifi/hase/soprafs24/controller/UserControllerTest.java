@@ -1,4 +1,5 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
+import static org.hamcrest.Matchers.equalTo;
 
 import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
@@ -44,26 +45,38 @@ public class UserControllerTest {
   private UserService userService;
 
   @Test
-  public void givenUsers_whenGetUsers_thenReturnJsonArray() throws Exception {
-    // given
+  public void givenUser_whenGetUserById_thenReturnUser() throws Exception {
+
     User user = new User();
     user.setName("Firstname Lastname");
     user.setUsername("firstname@lastname");
+    user.setRadius(20L);
+    user.setCoinBalance(50);
+    user.setAddress("address");
+    user.setPhoneNumber("000");
+    user.setId(1L);
+    user.setPassword("password");
 
-    List<User> allUsers = Collections.singletonList(user);
+    Mockito.when(userService.getUserById(Mockito.anyLong())).thenReturn(user);
 
-    // this mocks the UserService -> we define above what the userService should
-    // return when getUsers() is called
-    given(userService.getUsers()).willReturn(allUsers);
+    MockHttpServletRequestBuilder getRequest = get("/users/1").contentType(MediaType.APPLICATION_JSON);
 
-    // when
-    MockHttpServletRequestBuilder getRequest = get("/users").contentType(MediaType.APPLICATION_JSON);
-
-    // then
     mockMvc.perform(getRequest).andExpect(status().isOk())
-        .andExpect(jsonPath("$", hasSize(1)))
-        .andExpect(jsonPath("$[0].name", is(user.getName())))
-        .andExpect(jsonPath("$[0].username", is(user.getUsername())));
+        .andExpect(jsonPath("$.name", is(user.getName())))
+        .andExpect(jsonPath("$.coinBalance", is(user.getCoinBalance())))
+        .andExpect(jsonPath("$.address", is(user.getAddress())))
+        .andExpect(jsonPath("$.phoneNumber", is(user.getPhoneNumber())))
+        .andExpect(jsonPath("$.radius", is(20.0)));
+}
+
+    @Test
+    public void invalidId_whenGetUserBy_thenThrowNotFound() throws Exception {
+
+        Mockito.when(userService.getUserById(Mockito.anyLong())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        MockHttpServletRequestBuilder getRequest = get("/users/1").contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(getRequest).andExpect(status().isNotFound());
   }
 
   @Test

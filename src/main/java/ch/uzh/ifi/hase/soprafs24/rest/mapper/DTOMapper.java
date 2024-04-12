@@ -46,6 +46,9 @@ public interface DTOMapper {
     @Mapping(source = "address", target = "address")
     @Mapping(source = "date", target = "date")
     @Mapping(source = "status", target = "status")
+    @Mapping(source = "duration", target = "duration")
+    @Mapping(source = "title", target = "title")
+    @Mapping(source = "creator.id", target = "creatorId")
     TaskGetDTO convertEntityToTaskGetDTO(Task task);
 
     @Mapping(source = "stars", target = "rating")
