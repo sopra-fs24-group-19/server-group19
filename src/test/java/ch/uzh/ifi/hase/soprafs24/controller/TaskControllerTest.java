@@ -206,6 +206,33 @@ public class TaskControllerTest {
                 .andExpect(jsonPath("$[0].compensation", is(testTask.getPrice())));
     }
 
+    @Test
+    public void deleteTask_success() throws Exception {
+        long taskId = 1L;
+        Task mockTask = new Task();
+        mockTask.setId(taskId);
+        mockTask.setCreator(new User());
+        doNothing().when(taskRepository).delete(mockTask);
+
+        mockMvc.perform(delete("/tasks/{taskId}", taskId)
+                        .header("AuthorizationToken", "validToken"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void deleteTask_fail() throws Exception {
+        long taskId = 1L;
+        Task mockTask = new Task();
+        mockTask.setId(taskId);
+        mockTask.setCreator(new User());
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED))
+                .when(taskService).deleteTaskWithId(Mockito.anyLong(), Mockito.anyString());
+
+        mockMvc.perform(delete("/tasks/{taskId}", taskId)
+                        .header("AuthorizationToken", "inValidToken"))
+                .andExpect(status().isUnauthorized());
+    }
+
 
 
     private String asJsonString(final Object object) {
