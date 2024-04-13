@@ -3,6 +3,8 @@ package ch.uzh.ifi.hase.soprafs24.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 
@@ -47,7 +49,7 @@ public class Task implements Serializable {
     private User helper;
 
     @ManyToMany(mappedBy = "applications")
-    private List<User> candidates;
+    private List<User> candidates = new ArrayList<>();;
 
     public Long getId() {
         return id;

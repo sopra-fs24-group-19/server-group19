@@ -13,18 +13,16 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   User findByUsername(String username);
 
-
   User findUserById(Long id);
 
   User findUserByToken(String token);
 
-  
   User findByToken(String token);
+
   @Query("SELECT u FROM User u JOIN u.applications t WHERE t.id = :taskId")
   List<User> findUsersByTaskId(Long taskId);
  
-    //@Query("SELECT u FROM User u JOIN u.applications t WHERE t.id = :taskId")
-    //List<User> findUsersByTaskId(Long taskId);
+
 
 
 

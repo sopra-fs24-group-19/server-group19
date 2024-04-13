@@ -11,6 +11,8 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.NoSuchElementException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class UserServiceTest {
@@ -36,6 +38,8 @@ public class UserServiceTest {
     // when -> any object is being save in the userRepository -> return the dummy
     // testUser
     Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser);
+    Mockito.when(userRepository.findByToken("validToken")).thenReturn(testUser);
+    Mockito.when(userRepository.findByToken("invalidToken")).thenReturn(null);
   }
 
   @Test
@@ -53,19 +57,6 @@ public class UserServiceTest {
     assertNotNull(createdUser.getToken());
   }
 
-  @Test
-  public void createUser_duplicateName_throwsException() {
-    // given -> a first user has already been created
-    userService.createUser(testUser);
-
-    // when -> setup additional mocks for UserRepository
-    Mockito.when(userRepository.findByName(Mockito.any())).thenReturn(testUser);
-    Mockito.when(userRepository.findByUsername(Mockito.any())).thenReturn(null);
-
-    // then -> attempt to create second user with same user -> check that an error
-    // is thrown
-    assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser));
-  }
 
   @Test
   public void createUser_duplicateInputs_throwsException() {
@@ -80,5 +71,28 @@ public class UserServiceTest {
     // is thrown
     assertThrows(ResponseStatusException.class, () -> userService.createUser(testUser));
   }
+
+    @Test
+    public void getUserIdByToken_success() {
+
+        String token = "validToken";
+
+        long userId = userService.getUserIdByToken(token);
+
+        assertEquals(testUser.getId(), userId);
+        Mockito.verify(userRepository, Mockito.times(1)).findByToken(token);
+    }
+
+    @Test
+    public void getUserIdByToken_invalidToken_throwsException() {
+
+        String invalidToken = "invalidToken";
+
+        assertThrows(NoSuchElementException.class, () -> userService.getUserIdByToken(invalidToken),
+                "User not found with token: " + invalidToken);
+        Mockito.verify(userRepository, Mockito.times(1)).findByToken(invalidToken);
+    }
+
+
 
 }

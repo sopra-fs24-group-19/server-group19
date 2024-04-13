@@ -37,7 +37,7 @@ public class UserService {
 
   public User createUser(User newUser) {
     newUser.setToken(UUID.randomUUID().toString());
-    newUser.setStatus(UserStatus.ONLINE);
+    //newUser.setStatus(UserStatus.ONLINE);
     checkIfUserExists(newUser);
     newUser = this.userRepository.save(newUser);
     this.userRepository.flush();
@@ -57,7 +57,7 @@ public class UserService {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("The password was not correct."));
     }
     userRetrieved.setToken(UUID.randomUUID().toString());
-    userRetrieved.setStatus(UserStatus.ONLINE);
+    //userRetrieved.setStatus(UserStatus.ONLINE);
     this.userRepository.saveAndFlush(userRetrieved);
     return userRetrieved;
   }
@@ -68,7 +68,7 @@ public class UserService {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Can't find the user."));
     }
     userRetrieved.setToken(null);
-    userRetrieved.setStatus(UserStatus.OFFLINE);
+    //userRetrieved.setStatus(UserStatus.OFFLINE);
     this.userRepository.saveAndFlush(userRetrieved);
   }
 
