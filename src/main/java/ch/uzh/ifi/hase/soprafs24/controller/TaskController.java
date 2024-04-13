@@ -43,8 +43,8 @@ public class TaskController {
     @PutMapping("/apply")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void apply(@RequestBody TaskPutDTO taskPutDTO) {
-        //TODO: implement
+    public void apply(@RequestBody TaskPutDTO taskPutDTO, @RequestHeader("Authorization") String token) {
+        taskService.apply(taskPutDTO, token);
     }
 
     @GetMapping("/candidates/{taskId}")
