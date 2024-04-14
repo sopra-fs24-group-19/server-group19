@@ -23,8 +23,7 @@ public interface DTOMapper {
     @Mapping(source = "phoneNumber", target = "phoneNumber")
     @Mapping(source = "address", target = "address")
     @Mapping(source = "coinBalance", target = "coinBalance")
-    @Mapping(source = "ratings", target = "ratings")
-    UserGetDTO convertEntityToUserGetDTO(User user);
+    UserGetDTO convertEntityToUserGetDTO(User userGetDto);
 
     @Mapping(source = "name", target = "name")
     @Mapping(source = "radius", target = "radius")
@@ -32,6 +31,16 @@ public interface DTOMapper {
     @Mapping(source = "phoneNumber", target = "phoneNumber")
     @Mapping(source = "address", target = "address")
     User convertUserEditDTOToEntity(UserEditDTO userEditDTO);
+
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "radius", target = "radius")
+    @Mapping(source = "username", target = "username")
+    @Mapping(source = "phoneNumber", target = "phoneNumber")
+    @Mapping(source = "address", target = "address")
+    @Mapping(source = "coinBalance", target = "coinBalance")
+    @Mapping(source = "totalComments", target = "totalComments")
+    @Mapping(source = "averageStars", target = "averageStars")
+    UserGetFullDTO convertEntityToUserGetFullDTO(User userGetFull);
 
     @Mapping(source = "compensation", target = "price")
     @Mapping(source = "description", target = "description")
