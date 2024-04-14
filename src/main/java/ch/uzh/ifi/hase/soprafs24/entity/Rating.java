@@ -3,6 +3,8 @@ package ch.uzh.ifi.hase.soprafs24.entity;
 import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 
 @Entity
@@ -20,6 +22,9 @@ public class Rating implements Serializable {
 
     @Column(nullable = false)
     private String review;
+
+    @Column(nullable = false)
+    private LocalDateTime creationDate;
 
     @ManyToOne
     @JoinColumn(name="reviewer_id")
@@ -45,5 +50,9 @@ public class Rating implements Serializable {
     public String getReview() { return review; }
 
     public void setReview(String review) { this.review = review; }
+
+    public LocalDateTime getCreationDate() { return creationDate; }
+
+    public void setCreationDate(LocalDateTime creationDate) { this.creationDate = creationDate; }
 
 }

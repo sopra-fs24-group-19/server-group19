@@ -1,10 +1,14 @@
 package ch.uzh.ifi.hase.soprafs24.rest.dto;
+
+import java.util.Date;
+
 public class RatingGetDTO {
 
     private int stars;
     private String comment;
     private ReviewUserDTO reviewer;
     private ReviewUserDTO reviewed;
+    private Date creationDate;
 
     public void setStars(int stars) { this.stars = stars; }
 
@@ -21,4 +25,8 @@ public class RatingGetDTO {
     public ReviewUserDTO getReviewed() { return reviewed; }
 
     public void setReviewed(ReviewUserDTO reviewed) { this.reviewed = reviewed; }
+
+    public Date getCreationDate() { return creationDate; }
+
+    public void setCreationDate(Date creationDate) { this.creationDate = creationDate; }
 }

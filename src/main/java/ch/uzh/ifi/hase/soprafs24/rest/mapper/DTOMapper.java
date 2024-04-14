@@ -57,5 +57,11 @@ public interface DTOMapper {
     @Mapping(source = "comment", target = "review")
     Rating convertRatingPostDTOToEntity(RatingPostDTO ratingPostDTO);
 
-
+    @Mapping(source = "rating", target = "stars")
+    @Mapping(source = "review", target = "comment")
+    @Mapping(source = "reviewer", target = "reviewer")
+    @Mapping(source = "reviewed", target = "reviewed")
+    @Mapping(source = "creationDate", target = "creationDate")
+    RatingGetDTO convertEntityToRatingGetDTO(Rating rating);
+    
 }

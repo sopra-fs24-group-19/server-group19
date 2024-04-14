@@ -11,16 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException.Forbidden;
-import org.springframework.web.server.ResponseStatusException;
-import java.util.NoSuchElementException;
+
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -37,13 +32,13 @@ public class RatingService {
         this.userRepository = userRepository;
   }
 
-
     public void createReview(RatingPostDTO rating, String token){
         Rating newReview = new Rating();
         newReview.setRating(rating.getStars());
         newReview.setReview(rating.getComment());
         newReview.setReviewed(this.userRepository.findUserById(rating.getReviewedId()));
         newReview.setReviewer(this.userRepository.findUserById(rating.getReviewerId()));
+        newReview.setCreationDate(LocalDateTime.now());
         ratingRepository.saveAndFlush(newReview);
   }
 
