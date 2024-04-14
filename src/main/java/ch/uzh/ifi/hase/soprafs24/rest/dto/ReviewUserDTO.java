@@ -1,21 +1,14 @@
 package ch.uzh.ifi.hase.soprafs24.rest.dto;
-import java.util.List;
 
-public class UserGetDTO {
+
+public class ReviewUserDTO {
 
     private Long id;
     private String name;
     private String username;
-    private int coinBalance;
     private String address;
     private String phoneNumber;
     private float radius;
-
-    private List<RatingGetDTO> ratings;
-
-    public int getCoinBalance() { return coinBalance; }
-
-    public void setCoinBalance(int coinBalance) { this.coinBalance = coinBalance; }
 
     public String getAddress() { return address; }
 
@@ -28,10 +21,6 @@ public class UserGetDTO {
     public float getRadius() { return radius; }
 
     public void setRadius(float radius) { this.radius = radius; }
-
-    public List<RatingGetDTO> getRatings() { return ratings; }
-
-    public void setRatings(List<RatingGetDTO> ratings) { this.ratings = ratings; }
 
     public Long getId() {
     return id;

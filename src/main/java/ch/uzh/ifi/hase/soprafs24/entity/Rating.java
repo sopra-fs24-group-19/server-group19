@@ -1,6 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 
 import javax.persistence.*;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 
 
@@ -21,12 +22,21 @@ public class Rating implements Serializable {
     private String review;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
-    private User user;
+    @JoinColumn(name="reviewer_id")
+    private User reviewer;
 
-    public User getUser() { return user; }
+    @ManyToOne
+    @JoinColumn(name="reviewed_id")
+    @JsonBackReference
+    private User reviewed;
 
-    public void setUser(User user) { this.user = user; }
+    public User getReviewer() { return reviewer; }
+
+    public void setReviewer(User reviewer) { this.reviewer = reviewer; }
+
+    public User getReviewed() { return reviewed; }
+
+    public void setReviewed(User reviewed) { this.reviewed = reviewed; }
 
     public int getRating() { return rating; }
 
