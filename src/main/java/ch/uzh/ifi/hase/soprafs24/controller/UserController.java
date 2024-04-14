@@ -69,13 +69,6 @@ public class UserController {
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
   }
 
-    @PostMapping("/ratings/{userId}")
-    @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
-    public void creatRating(@RequestBody RatingPostDTO ratingPostDTO) {
-        // TODO: implement
-    }
-
 
 
 }

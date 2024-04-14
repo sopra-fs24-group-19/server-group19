@@ -13,10 +13,11 @@ public class RatingController {
         this.ratingService = ratingService;
     }
 
-    @PostMapping("/ratings")
+    @PostMapping("/ratings/{reviewedId}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public void createRating(@RequestBody RatingPostDTO ratingPostDTO, @RequestHeader("Authorization") String token) {
-        ratingService.createReview(ratingPostDTO, token);
+    public void createRating(@PathVariable("reviewedId") long reviewedId, @RequestBody RatingPostDTO ratingPostDTO,
+            @RequestHeader("Authorization") String token) {
+        ratingService.createReview(reviewedId, ratingPostDTO, token);
     }
 }
