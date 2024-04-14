@@ -5,9 +5,7 @@
 * https://github.com/orgs/sopra-fs24-group-19/projects/1?pane=issue&itemId=57052158
 * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57054747
 * Implemented the BE US1, BE US2 as for the requirements.
-
-
-
+---
 * Name: Dana Rapp
 * GitHub issues worked on: BE US1, BE US3
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57052445
@@ -32,3 +30,13 @@
     * Implemented get endpoint for getting candidates who have applied to a specific task
     * Implemented the endpoint getting all tasks the current user has posted
     * Implemented the endpoint for deleting a task the user has posted, including verification whether the user is authorized to delete the task
+---
+* Name: Francesco Manzionna
+* Date: 14/04/2024
+* GitHub issues worked on: #29, #32, #36
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57052401
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57052373
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57052268
+* Additional details:
+I've implemented Create, Get, and Delete functions to manage user reviews. Initially, user objects included all reviews internally to minimize backend requests. However, due to a preference for dedicated services, I've set up a GET service at URI: /users/{userId}. I haven't yet implemented checks to prevent fraudulent reviews.
+Additionally, I've structured the Applications table to facilitate an inner join between tasks and users, ensuring all user applications are consolidated in one dedicated table.
