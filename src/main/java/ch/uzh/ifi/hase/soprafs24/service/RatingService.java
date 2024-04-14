@@ -7,15 +7,19 @@ import ch.uzh.ifi.hase.soprafs24.entity.Task;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.RatingPostDTO;
-
+import ch.uzh.ifi.hase.soprafs24.rest.dto.RatingPutDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.TaskGetDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -43,6 +47,24 @@ public class RatingService {
         newReview.setCreationDate(LocalDateTime.now());
         ratingRepository.saveAndFlush(newReview);
     }
+
+    public void deleteReview(long reviewId, String token) {
+        long idUserRetrieved = this.userRepository.findUserByToken(token).getId();
+        long idReviewer = this.ratingRepository.findRatingById(reviewId).getReviewer().getId();
+        if (idUserRetrieved!=idReviewer){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the author of a review can delete it");
+        }
+        this.ratingRepository.deleteRatingById(reviewId);
+    }
+
+    public List<Rating> getRatingsOfAnUser(Long userId, String token){
+        if(token.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You don't have a valid token");
+        }
+        List<Rating> reviewList = this.ratingRepository.findRatingsByReviewedId(userId);
+        return reviewList;
+    } 
+
 
     public int findReviews(User reviewer, User reviewed) {
         int reviewsCount = 0;

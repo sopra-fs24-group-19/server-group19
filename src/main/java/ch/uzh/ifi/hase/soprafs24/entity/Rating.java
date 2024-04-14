@@ -35,6 +35,14 @@ public class Rating implements Serializable {
     @JsonBackReference
     private User reviewed;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public User getReviewer() { return reviewer; }
 
     public void setReviewer(User reviewer) { this.reviewer = reviewer; }

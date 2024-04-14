@@ -4,11 +4,16 @@ import java.util.Date;
 
 public class RatingGetDTO {
 
+    private long id;
     private int stars;
     private String comment;
     private ReviewUserDTO reviewer;
     private ReviewUserDTO reviewed;
     private Date creationDate;
+
+    public void setId(long id) { this.id = id; }
+
+    public long getId() { return id; }
 
     public void setStars(int stars) { this.stars = stars; }
 

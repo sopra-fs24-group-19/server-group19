@@ -9,7 +9,6 @@ public interface DTOMapper {
   // TODO: add mappings for all DTOS needed
   DTOMapper INSTANCE = Mappers.getMapper(DTOMapper.class);
 
-
     @Mapping(source = "name", target = "name")
     @Mapping(source = "username", target = "username")
     @Mapping(source = "password", target = "password")
@@ -57,11 +56,14 @@ public interface DTOMapper {
     @Mapping(source = "comment", target = "review")
     Rating convertRatingPostDTOToEntity(RatingPostDTO ratingPostDTO);
 
+    @Mapping(source = "stars", target = "rating")
+    @Mapping(source = "comment", target = "review")
+    Rating convertRatingPutDTOToEntity(RatingPutDTO ratingPutDTO);
+    
     @Mapping(source = "rating", target = "stars")
     @Mapping(source = "review", target = "comment")
     @Mapping(source = "reviewer", target = "reviewer")
     @Mapping(source = "reviewed", target = "reviewed")
     @Mapping(source = "creationDate", target = "creationDate")
     RatingGetDTO convertEntityToRatingGetDTO(Rating rating);
-    
 }
