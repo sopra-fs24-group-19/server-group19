@@ -1,14 +1,24 @@
 package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
-public class UserGetDTO {
+public class UserGetFullDTO {
 
-    private Long id;
+  private Long id;
     private String name;
     private String username;
     private int coinBalance;
     private String address;
     private String phoneNumber;
     private float radius;
+    private int totalComments;
+    private float averageStars;
+
+    public int getTotalComments() { return totalComments; }
+
+    public void setTotalComments(int totalComments) { this.totalComments = totalComments; }
+
+    public float getAverageStars() { return averageStars; }
+
+    public void setAverageStars(float averageStars) { this.averageStars = averageStars; }
 
     public int getCoinBalance() { return coinBalance; }
 
@@ -48,5 +58,5 @@ public class UserGetDTO {
 
     public void setUsername(String username) {
     this.username = username;
-  }
+    }
 }
