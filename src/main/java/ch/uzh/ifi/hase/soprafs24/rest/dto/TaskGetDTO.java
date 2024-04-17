@@ -61,7 +61,7 @@ public class TaskGetDTO {
 
     public long getCreatorId() { return creatorId; }
 
-    //public void setCreatorId(long creatorId) { this.creatorId = creatorId; }
+    public void setCreatorId(long creatorId) { this.creatorId = creatorId; }
     
     //public User getCreator() { return creator; }
 
