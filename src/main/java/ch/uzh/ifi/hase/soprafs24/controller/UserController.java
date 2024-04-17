@@ -65,4 +65,5 @@ public class UserController {
     User user = userService.getUserById(id);
     return DTOMapper.INSTANCE.convertEntityToUserGetFullDTO(user);
   }
+
 }

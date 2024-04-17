@@ -102,6 +102,21 @@ public class TaskService {
         taskRepository.delete(taskToBeDeleted);
     }
 
+    @Transactional
+    public void deleteCandidate(long taskId, String token){
+        Task task = this.taskRepository.findById(taskId);
+        User candidate = userRepository.findByToken(token);
+
+        if (task.getCandidates().contains(candidate)) {
+            task.getCandidates().remove(candidate);
+            candidate.getApplications().remove(task);
+            taskRepository.save(task);
+            userRepository.save(candidate);
+        } else {
+            throw new IllegalArgumentException("User is not a candidate for this task");
+        }
+    }
+
     private boolean checkIfCreatorHasEnoughTokens(User creator, Task task) {
         return creator.getCoinBalance() >= task.getPrice();
     }
