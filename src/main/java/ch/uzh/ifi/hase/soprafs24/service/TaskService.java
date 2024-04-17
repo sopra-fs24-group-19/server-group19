@@ -113,7 +113,7 @@ public class TaskService {
             taskRepository.save(task);
             userRepository.save(candidate);
         } else {
-            throw new IllegalArgumentException("User is not a candidate for this task");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The current user is not a candidate for this task");
         }
     }
 
