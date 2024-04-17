@@ -102,7 +102,8 @@ public class TaskServiceIntegrationTest {
         testTask.setDate(new Date());
         testTask.setDuration(30);
         testTask.setPrice(50);
+        Task createdTask = taskService.createTask(testTask, createdUser.getId());
 
-        assertThrows(ResponseStatusException.class, () -> taskService.createTask(testTask, testCreator.getId()));
+        assertThrows(ResponseStatusException.class, () -> taskService.createTask(testTask, createdUser.getId()));
     }
 }
