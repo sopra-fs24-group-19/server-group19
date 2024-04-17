@@ -70,7 +70,7 @@ public class UserService {
     if (userRetrieved == null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Can't find the user."));
     }
-    //userRetrieved.setToken(null);
+    // userRetrieved.setToken(null);
     // userRetrieved.setStatus(UserStatus.OFFLINE);
     this.userRepository.saveAndFlush(userRetrieved);
   }
