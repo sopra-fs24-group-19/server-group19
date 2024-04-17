@@ -1,18 +1,14 @@
 package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
-public class UserGetDTO {
+
+public class ReviewUserDTO {
 
     private Long id;
     private String name;
     private String username;
-    private int coinBalance;
     private String address;
     private String phoneNumber;
     private float radius;
-
-    public int getCoinBalance() { return coinBalance; }
-
-    public void setCoinBalance(int coinBalance) { this.coinBalance = coinBalance; }
 
     public String getAddress() { return address; }
 

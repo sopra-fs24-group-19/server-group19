@@ -1,8 +1,12 @@
 package ch.uzh.ifi.hase.soprafs24.rest.dto;
 import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
+import ch.uzh.ifi.hase.soprafs24.entity.User;
+
 import java.util.Date;
 
 public class TaskGetDTO {
+    private long id;
+
     private String description;
 
     private TaskStatus status;
@@ -16,7 +20,16 @@ public class TaskGetDTO {
     private int duration;
 
     private String title;
+
     private long creatorId;
+
+    //private User creator;
+
+    private User helper;
+
+    public long getId() { return id; }
+
+    public void setId(long id) { this.id = id; }
 
     public String getDescription() { return description; }
 
@@ -49,5 +62,12 @@ public class TaskGetDTO {
     public long getCreatorId() { return creatorId; }
 
     public void setCreatorId(long creatorId) { this.creatorId = creatorId; }
+    
+    //public User getCreator() { return creator; }
 
+    //public void setCreator(User creator) { this.creator = creator; }
+    
+    public User getHelper() { return helper; }
+
+    public void setHelper(User helper) { this.helper = helper; }
 }

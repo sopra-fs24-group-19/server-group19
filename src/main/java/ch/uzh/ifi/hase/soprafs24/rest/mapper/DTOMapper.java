@@ -9,7 +9,6 @@ public interface DTOMapper {
   // TODO: add mappings for all DTOS needed
   DTOMapper INSTANCE = Mappers.getMapper(DTOMapper.class);
 
-
     @Mapping(source = "name", target = "name")
     @Mapping(source = "username", target = "username")
     @Mapping(source = "password", target = "password")
@@ -24,7 +23,7 @@ public interface DTOMapper {
     @Mapping(source = "phoneNumber", target = "phoneNumber")
     @Mapping(source = "address", target = "address")
     @Mapping(source = "coinBalance", target = "coinBalance")
-    UserGetDTO convertEntityToUserGetDTO(User user);
+    UserGetDTO convertEntityToUserGetDTO(User userGetDto);
 
     @Mapping(source = "name", target = "name")
     @Mapping(source = "radius", target = "radius")
@@ -32,6 +31,16 @@ public interface DTOMapper {
     @Mapping(source = "phoneNumber", target = "phoneNumber")
     @Mapping(source = "address", target = "address")
     User convertUserEditDTOToEntity(UserEditDTO userEditDTO);
+
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "radius", target = "radius")
+    @Mapping(source = "username", target = "username")
+    @Mapping(source = "phoneNumber", target = "phoneNumber")
+    @Mapping(source = "address", target = "address")
+    @Mapping(source = "coinBalance", target = "coinBalance")
+    @Mapping(source = "totalComments", target = "totalComments")
+    @Mapping(source = "averageStars", target = "averageStars")
+    UserGetFullDTO convertEntityToUserGetFullDTO(User userGetFull);
 
     @Mapping(source = "compensation", target = "price")
     @Mapping(source = "description", target = "description")
@@ -49,11 +58,22 @@ public interface DTOMapper {
     @Mapping(source = "duration", target = "duration")
     @Mapping(source = "title", target = "title")
     @Mapping(source = "creator.id", target = "creatorId")
+    //@Mapping(source = "creator", target = "creator")
+    @Mapping(source = "id", target = "id")
     TaskGetDTO convertEntityToTaskGetDTO(Task task);
 
     @Mapping(source = "stars", target = "rating")
     @Mapping(source = "comment", target = "review")
     Rating convertRatingPostDTOToEntity(RatingPostDTO ratingPostDTO);
 
-
+    @Mapping(source = "stars", target = "rating")
+    @Mapping(source = "comment", target = "review")
+    Rating convertRatingPutDTOToEntity(RatingPutDTO ratingPutDTO);
+    
+    @Mapping(source = "rating", target = "stars")
+    @Mapping(source = "review", target = "comment")
+    @Mapping(source = "reviewer", target = "reviewer")
+    @Mapping(source = "reviewed", target = "reviewed")
+    @Mapping(source = "creationDate", target = "creationDate")
+    RatingGetDTO convertEntityToRatingGetDTO(Rating rating);
 }

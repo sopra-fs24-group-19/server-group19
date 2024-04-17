@@ -1,9 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
-
 import javax.persistence.*;
-
-import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.List;
 
@@ -42,7 +39,8 @@ public class User implements Serializable {
     @Column(nullable = true)
     private float radius;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "reviewed")
+    @JsonManagedReference
     private List<Rating> ratings;
 
     @OneToMany(mappedBy = "creator")
@@ -54,6 +52,10 @@ public class User implements Serializable {
     @ManyToMany
     @JoinTable(name="applications", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name="taskId"))
     private List<Task> applications;
+
+    private int totalComments;
+
+    private float averageStars;
 
     public Long getId() {
         return id;
@@ -115,6 +117,15 @@ public class User implements Serializable {
 
     public void setApplications(List<Task> applications) { this.applications = applications; }
 
+    public int getTotalComments() { return totalComments; }
 
+    public void setTotalComments(int totalComments) { this.totalComments = totalComments; }
 
+    public float getAverageStars() { return averageStars; }
+
+    public void setAverageStars(float averageStars) { this.averageStars = averageStars; }
+
+    public void addCoins(int coins){
+        this.coinBalance += coins;
+    }
 }

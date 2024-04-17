@@ -1,6 +1,8 @@
 package ch.uzh.ifi.hase.soprafs24.rest.dto;
 
-public class RatingPostDTO {
+import java.util.Date;
+
+public class RatingPutDTO {
 
     private int stars;
 

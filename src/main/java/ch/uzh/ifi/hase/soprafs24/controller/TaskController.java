@@ -43,8 +43,8 @@ public class TaskController {
     @PutMapping("/apply")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void apply(@RequestBody TaskPutDTO taskPutDTO) {
-        //TODO: implement
+    public void apply(@RequestBody TaskPutDTO taskPutDTO, @RequestHeader("Authorization") String token) {
+        taskService.apply(taskPutDTO, token);
     }
 
     @GetMapping("/candidates/{taskId}")
@@ -114,4 +114,10 @@ public class TaskController {
         taskService.deleteTaskWithId(taskId, token);
     }
 
+    @DeleteMapping("/tasks/candidate/{taskId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseBody
+    public void retrieveApplication(@PathVariable long taskId, @RequestHeader("AuthorizationToken") String token){
+        taskService.deleteCandidate(taskId, token);
+    }
 }

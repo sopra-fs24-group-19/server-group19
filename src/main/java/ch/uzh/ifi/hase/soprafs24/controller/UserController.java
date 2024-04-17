@@ -2,17 +2,14 @@ package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetFullDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPutDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.RatingPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserEditDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -64,18 +61,9 @@ public class UserController {
   @GetMapping("/users/{userId}")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
-  public UserGetDTO getUser(@PathVariable("userId") long id) {
+  public UserGetFullDTO getUser(@PathVariable("userId") long id) {
     User user = userService.getUserById(id);
-    return DTOMapper.INSTANCE.convertEntityToUserGetDTO(user);
+    return DTOMapper.INSTANCE.convertEntityToUserGetFullDTO(user);
   }
-
-    @PostMapping("/ratings/{userId}")
-    @ResponseStatus(HttpStatus.CREATED)
-    @ResponseBody
-    public void creatRating(@RequestBody RatingPostDTO ratingPostDTO) {
-        // TODO: implement
-    }
-
-
 
 }
