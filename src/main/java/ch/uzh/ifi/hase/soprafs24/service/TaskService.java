@@ -90,10 +90,10 @@ public class TaskService {
 
     public void deleteTaskWithId(long taskId, String token) {
         Task taskToBeDeleted = this.taskRepository.findById(taskId);
-        User creator = taskToBeDeleted.getCreator();
         if (taskToBeDeleted == null) {
             throw new NoSuchElementException("Task not found with id: " + taskId);
         }
+        User creator = taskToBeDeleted.getCreator();
         if (!checkPermissionToDeleteTask(token,creator.getId())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
                     "only the creator of this task is allowed to delete it");
