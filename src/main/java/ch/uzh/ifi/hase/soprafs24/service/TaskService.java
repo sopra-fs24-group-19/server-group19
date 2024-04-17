@@ -81,8 +81,13 @@ public class TaskService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid token");
         }
         long taskId= taskPutDTO.getTaskId();
-        Application newApplication = new Application();
+
         Task selectedTask = taskRepository.findById(taskId);
+        Application existingApplication = applicationsRepository.findByUserAndTask(candidate, selectedTask);
+        if (existingApplication != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "You already applied");
+        }
+        Application newApplication = new Application();
         newApplication.setTask(selectedTask);
         newApplication.setUser(candidate);
         applicationsRepository.saveAndFlush(newApplication);
