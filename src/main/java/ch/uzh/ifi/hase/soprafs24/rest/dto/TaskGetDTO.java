@@ -5,6 +5,8 @@ import ch.uzh.ifi.hase.soprafs24.entity.User;
 import java.util.Date;
 
 public class TaskGetDTO {
+    private long id;
+
     private String description;
 
     private TaskStatus status;
@@ -24,6 +26,10 @@ public class TaskGetDTO {
     private User creator;
 
     private User helper;
+
+    public long getId() { return id; }
+
+    public void setId(long id) { this.id = id; }
 
     public String getDescription() { return description; }
 
