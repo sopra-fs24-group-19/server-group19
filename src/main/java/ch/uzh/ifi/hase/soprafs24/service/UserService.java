@@ -39,6 +39,7 @@ public class UserService {
   public User createUser(User newUser) {
     newUser.setToken(UUID.randomUUID().toString());
     // newUser.setStatus(UserStatus.ONLINE);
+    newUser.setCoinBalance(50);
     checkIfUserExists(newUser);
     newUser = this.userRepository.save(newUser);
     this.userRepository.flush();
