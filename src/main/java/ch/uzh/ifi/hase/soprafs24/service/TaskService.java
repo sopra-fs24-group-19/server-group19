@@ -89,14 +89,16 @@ public class TaskService {
     }
 
     public void deleteTaskWithId(long taskId, String token) {
-        Task taskToBeDeleted = taskRepository.findById(taskId);
+        Task taskToBeDeleted = this.taskRepository.findById(taskId);
+        User creator = taskToBeDeleted.getCreator();
         if (taskToBeDeleted == null) {
             throw new NoSuchElementException("Task not found with id: " + taskId);
         }
-        if (!checkPermissionToDeleteTask(token, taskToBeDeleted.getCreator().getId())) {
+        if (!checkPermissionToDeleteTask(token,creator.getId())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
                     "only the creator of this task is allowed to delete it");
         }
+        creator.addCoins(taskToBeDeleted.getPrice());
         taskRepository.delete(taskToBeDeleted);
     }
 

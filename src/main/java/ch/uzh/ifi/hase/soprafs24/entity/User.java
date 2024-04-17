@@ -124,4 +124,8 @@ public class User implements Serializable {
     public float getAverageStars() { return averageStars; }
 
     public void setAverageStars(float averageStars) { this.averageStars = averageStars; }
+
+    public void addCoins(int coins){
+        this.coinBalance += coins;
+    }
 }
