@@ -23,7 +23,7 @@ public class TaskGetDTO {
 
     private long creatorId;
 
-    private User creator;
+    //private User creator;
 
     private User helper;
 
@@ -61,11 +61,11 @@ public class TaskGetDTO {
 
     public long getCreatorId() { return creatorId; }
 
-    public void setCreatorId(long creatorId) { this.creatorId = creatorId; }
+    //public void setCreatorId(long creatorId) { this.creatorId = creatorId; }
     
-    public User getCreator() { return creator; }
+    //public User getCreator() { return creator; }
 
-    public void setCreator(User creator) { this.creator = creator; }
+    //public void setCreator(User creator) { this.creator = creator; }
     
     public User getHelper() { return helper; }
 
