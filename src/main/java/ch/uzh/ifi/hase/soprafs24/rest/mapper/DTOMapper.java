@@ -76,4 +76,9 @@ public interface DTOMapper {
     @Mapping(source = "reviewed", target = "reviewed")
     @Mapping(source = "creationDate", target = "creationDate")
     RatingGetDTO convertEntityToRatingGetDTO(Rating rating);
+
+/*     @Mapping(source = "helper", target = "helper")
+    @Mapping(source = "userId", target = "creator")
+    @Mapping(source = "taskId", target = "id")
+    Task convertTaskPutDTOToEntity(TaskPutDTO taskPutDTO); */
 }
