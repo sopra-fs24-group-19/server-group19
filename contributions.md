@@ -43,7 +43,10 @@
 * Week 2 - Github issues worked on:
     * FE US4: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=57051821
     * FE US5: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=57051824
-***
+* Week 3 - Github issues worked on:
+    * FE US4 (API): https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=60169210
+    * Task API setup for frontend - searching which one is more suitable for our project: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=60169481
+    * Further work: connection of front and backend, changing some minor visual details in HomeFeed.tsx, UserProfile.tsx
 
 * Name: Sina Klerings (For further details, please read the comment section in the links)
 * Week 1 - Github issues worked on:
