@@ -23,9 +23,11 @@ public class TaskGetDTO {
 
     private long creatorId;
 
+    private long helperId;
+
     //private User creator;
 
-    private User helper;
+    //private User helper;
 
     public long getId() { return id; }
 
@@ -34,6 +36,10 @@ public class TaskGetDTO {
     public String getDescription() { return description; }
 
     public void setDescription(String description) { this.description = description; }
+
+    public long getHelperId() { return helperId; }
+
+    public void setHelperId(long helperId) { this.helperId = helperId; }
 
     public TaskStatus getStatus() { return status; }
 
@@ -67,7 +73,7 @@ public class TaskGetDTO {
 
     //public void setCreator(User creator) { this.creator = creator; }
     
-    public User getHelper() { return helper; }
+    //public User getHelper() { return helper; }
 
-    public void setHelper(User helper) { this.helper = helper; }
+    //public void setHelper(User helper) { this.helper = helper; }
 }

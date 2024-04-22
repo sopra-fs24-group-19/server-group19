@@ -58,6 +58,7 @@ public interface DTOMapper {
     @Mapping(source = "duration", target = "duration")
     @Mapping(source = "title", target = "title")
     @Mapping(source = "creator.id", target = "creatorId")
+    @Mapping(source = "helper.id", target = "helperId")
     //@Mapping(source = "creator", target = "creator")
     @Mapping(source = "id", target = "id")
     TaskGetDTO convertEntityToTaskGetDTO(Task task);
