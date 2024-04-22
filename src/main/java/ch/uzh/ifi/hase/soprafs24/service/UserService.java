@@ -135,6 +135,11 @@ public class UserService {
     userRepository.save(creator);
   }
 
+    public void addCoins(User user, int amount) {
+        user.setCoinBalance(user.getCoinBalance() + amount);
+        userRepository.save(user);
+    }
+
   private void tokenExistance(String token) {
     if (this.userRepository.findUserByToken(token) == null) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You don't have a valid token.");

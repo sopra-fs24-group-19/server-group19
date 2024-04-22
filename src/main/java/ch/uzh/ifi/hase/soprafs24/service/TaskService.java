@@ -107,6 +107,25 @@ public class TaskService {
         taskRepository.delete(taskToBeDeleted);
     }
 
+    public Task confirmTask(long taskId, String token){
+        Task taskToBeConfirmed = this.taskRepository.findById(taskId);
+        User creator = taskToBeConfirmed.getCreator();
+        User helper =  taskToBeConfirmed.getHelper();
+        long currentUserId = userService.getUserIdByToken(token);
+
+        if (currentUserId != creator.getId() &&  currentUserId != helper.getId()){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "only creator or helper of this task are authorized to confirm it");
+        }
+        if (taskToBeConfirmed.getStatus() == TaskStatus.WAITING_FOR_CONFIRMATION){
+            userService.addCoins(helper, taskToBeConfirmed.getPrice());
+            taskToBeConfirmed.setStatus(TaskStatus.DONE);
+        } else {
+            taskToBeConfirmed.setStatus(TaskStatus.WAITING_FOR_CONFIRMATION);
+        }
+        taskRepository.save(taskToBeConfirmed);
+        return taskToBeConfirmed;
+    }
+
     @Transactional
     public void deleteCandidate(long taskId, String token){
         Task task = this.taskRepository.findById(taskId);

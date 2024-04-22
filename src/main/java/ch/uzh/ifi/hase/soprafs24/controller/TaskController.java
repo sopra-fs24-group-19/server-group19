@@ -68,10 +68,11 @@ public class TaskController {
     }
 
     @PutMapping("/tasks/{taskId}/confirm")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void confirmTask(@RequestBody TaskPutDTO taskPutDTO) {
-        //TODO: implement
+    public TaskGetDTO confirmTask(@PathVariable long taskId, @RequestHeader("Authorization") String token) {
+        Task task = taskService.confirmTask(taskId, token);
+        return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task);
     }
 
     @PutMapping("/tasks/{taskId}/refuse")
