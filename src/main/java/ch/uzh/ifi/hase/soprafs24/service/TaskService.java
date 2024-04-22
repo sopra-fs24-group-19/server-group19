@@ -93,6 +93,30 @@ public class TaskService {
         applicationsRepository.saveAndFlush(newApplication);
     }
 
+    public void selectCandidate(TaskPutDTO taskPutDTO, String token){
+        // QUESTION DANA. AFTER ANSWER DELETE COMMENTS IN DTOMAPPER. necessary because the user in the task entity is saved as an entity and is not mappable with
+        //taskputdto since there the userId is a long
+        User helper = this.userRepository.findUserById(taskPutDTO.getHelperId());
+        User taskCreator = userRepository.findUserById(taskPutDTO.getUserId());
+        Task task = taskRepository.findById(taskPutDTO.getTaskId());
+        Application application = this.applicationsRepository.findByUserAndTask(helper, task);
+
+        //Check the taskCreator is performing the selection action
+        if (!taskCreator.getToken().equals(token)){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the creator of a task can choose the helper");
+        }
+        //Check the task was retrieved correctly
+        if (task == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The task was not found.");
+        }
+        //Check the application actually exists
+        if (application == null){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "This helper has not applied for the job.");
+        }
+
+        task.setHelper(helper);
+    }
+
     public void deleteTaskWithId(long taskId, String token) {
         Task taskToBeDeleted = this.taskRepository.findById(taskId);
         if (taskToBeDeleted == null) {

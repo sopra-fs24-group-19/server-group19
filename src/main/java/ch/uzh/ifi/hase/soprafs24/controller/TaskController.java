@@ -4,6 +4,7 @@ import ch.uzh.ifi.hase.soprafs24.entity.*;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.TaskService;
+import javassist.runtime.DotClass;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
@@ -63,8 +64,8 @@ public class TaskController {
     @PutMapping("/tasks/{taskId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    public void selectCandidate(@RequestBody TaskPutDTO taskPutDTO) {
-        //TODO: implement
+    public void selectCandidate(@RequestBody TaskPutDTO taskPutDTO, @RequestHeader("Authorization") String token) {
+        taskService.selectCandidate(taskPutDTO, token);
     }
 
     @PutMapping("/tasks/{taskId}/confirm")
