@@ -8,8 +8,19 @@
 * Implemented the BE US1, BE US2 as for the requirements.
 
 #### Week 2 (09.04 - 16.04)
+* GitHub issues worked on: #29, #32, #36
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57052401
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57052373
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57052268
+* Additional details:
+I've implemented Create, Get, and Delete functions to manage user reviews. Initially, user objects included all reviews internally to minimize backend requests. However, due to a preference for dedicated services, I've set up a GET service at URI: /users/{userId}. I haven't yet implemented checks to prevent fraudulent reviews.
+Additionally, I've structured the Applications table to facilitate an inner join between tasks and users, ensuring all user applications are consolidated in one dedicated table.
 
-#### Week 3 (17.04 - 23.04)
+#### Week 3 (16.04 - 23.04)
+* GitHub issues worked on: #33
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57052337
+* Additional details:
+Research work to implement real-time collaborative document editing (to implement a todo list) focusing on WebSockets for live, bidirectional communication.
 
 
 ### Dana Rapp
