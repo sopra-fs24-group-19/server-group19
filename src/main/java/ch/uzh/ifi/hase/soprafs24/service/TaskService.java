@@ -134,18 +134,31 @@ public class TaskService {
     public Task confirmTask(long taskId, String token){
         Task taskToBeConfirmed = this.taskRepository.findById(taskId);
         User creator = taskToBeConfirmed.getCreator();
-        User helper =  taskToBeConfirmed.getHelper();
+        User helper = taskToBeConfirmed.getHelper();
         long currentUserId = userService.getUserIdByToken(token);
 
-        if (currentUserId != creator.getId() &&  currentUserId != helper.getId()){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "only creator or helper of this task are authorized to confirm it");
+        if (currentUserId != creator.getId() && currentUserId != helper.getId()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only the creator or helper of this task are authorized to confirm it.");
         }
-        if (taskToBeConfirmed.getStatus() == TaskStatus.WAITING_FOR_CONFIRMATION){
-            userService.addCoins(helper, taskToBeConfirmed.getPrice());
-            taskToBeConfirmed.setStatus(TaskStatus.DONE);
+
+        if (currentUserId == creator.getId() && taskToBeConfirmed.getStatus() != TaskStatus.CONFIRMED_BY_CREATOR) {
+            if (taskToBeConfirmed.getStatus() == TaskStatus.CONFIRMED_BY_HELPER) {
+                taskToBeConfirmed.setStatus(TaskStatus.DONE);
+                userService.addCoins(helper, taskToBeConfirmed.getPrice());
+            } else {
+                taskToBeConfirmed.setStatus(TaskStatus.CONFIRMED_BY_CREATOR);
+            }
+        } else if (currentUserId == helper.getId() && taskToBeConfirmed.getStatus() != TaskStatus.CONFIRMED_BY_HELPER) {
+            if (taskToBeConfirmed.getStatus() == TaskStatus.CONFIRMED_BY_CREATOR) {
+                taskToBeConfirmed.setStatus(TaskStatus.DONE);
+                userService.addCoins(helper, taskToBeConfirmed.getPrice());
+            } else {
+                taskToBeConfirmed.setStatus(TaskStatus.CONFIRMED_BY_HELPER);
+            }
         } else {
-            taskToBeConfirmed.setStatus(TaskStatus.WAITING_FOR_CONFIRMATION);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have already confirmed this task.");
         }
+
         taskRepository.save(taskToBeConfirmed);
         return taskToBeConfirmed;
     }
