@@ -32,3 +32,30 @@
     * Implemented get endpoint for getting candidates who have applied to a specific task
     * Implemented the endpoint getting all tasks the current user has posted
     * Implemented the endpoint for deleting a task the user has posted, including verification whether the user is authorized to delete the task
+
+
+    
+## FRONTEND CONTRIBUTIONS
+* Name: Nina Rubesa
+* Week 1 - Github issues worked on:
+    * Setting up environment: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=57051818
+    * FE US1: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=57054652
+* Week 2 - Github issues worked on:
+    * FE US4: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=57051821
+    * FE US5: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=57051824
+* Week 3 - Github issues worked on:
+    * FE US4 (API): https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=60169210
+    * Task API setup for frontend - searching which one is more suitable for our project: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=60169481
+    * Further work: connection of front and backend, changing some minor visual details in HomeFeed.tsx, UserProfile.tsx
+
+* Name: Sina Klerings (For further details, please read the comment section in the links)
+* Week 1 - Github issues worked on:
+    * FE US2: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask+week%3A%22Week+1%22&pane=issue&itemId=57051828
+    * FE US3: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask+week%3A%22Week+1%22&pane=issue&itemId=57051820
+* Week 2 - Github issues worked on:
+    * FE US5: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask+week%3A%22Week+2%22&pane=issue&itemId=57051822
+    * FE US10: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask+week%3A%22Week+2%22&pane=issue&itemId=57051826
+* Week 3 - Github issues worked on:
+    * FE US2 (further extension using an autocompletion API): https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask+week%3A%22Week+3%22&pane=issue&itemId=60168398
+    * FE US3 (further extension using an autocompletion API): https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask+week%3A%22Week+3%22&pane=issue&itemId=60167986
+    * Further work: removal of mock data, connection of front- and backend as well as the navigation between frontend pages
