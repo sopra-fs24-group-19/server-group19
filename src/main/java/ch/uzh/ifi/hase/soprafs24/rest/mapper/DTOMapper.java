@@ -22,6 +22,8 @@ public interface DTOMapper {
     @Mapping(source = "username", target = "username")
     @Mapping(source = "phoneNumber", target = "phoneNumber")
     @Mapping(source = "address", target = "address")
+    @Mapping(source = "latitude", target = "latitude")
+    @Mapping(source = "longitude", target = "longitude")
     @Mapping(source = "coinBalance", target = "coinBalance")
     UserGetDTO convertEntityToUserGetDTO(User userGetDto);
 
@@ -30,6 +32,8 @@ public interface DTOMapper {
     @Mapping(source = "username", target = "username")
     @Mapping(source = "phoneNumber", target = "phoneNumber")
     @Mapping(source = "address", target = "address")
+    @Mapping(source = "latitude", target = "latitude")
+    @Mapping(source = "longitude", target = "longitude")
     User convertUserEditDTOToEntity(UserEditDTO userEditDTO);
 
     @Mapping(source = "name", target = "name")
@@ -37,6 +41,8 @@ public interface DTOMapper {
     @Mapping(source = "username", target = "username")
     @Mapping(source = "phoneNumber", target = "phoneNumber")
     @Mapping(source = "address", target = "address")
+    @Mapping(source = "latitude", target = "latitude")
+    @Mapping(source = "longitude", target = "longitude")
     @Mapping(source = "coinBalance", target = "coinBalance")
     @Mapping(source = "totalComments", target = "totalComments")
     @Mapping(source = "averageStars", target = "averageStars")
@@ -46,6 +52,8 @@ public interface DTOMapper {
     @Mapping(source = "description", target = "description")
     @Mapping(source = "date", target = "date")
     @Mapping(source = "address", target = "address")
+    @Mapping(source = "latitude", target = "latitude")
+    @Mapping(source = "longitude", target = "longitude")   
     @Mapping(source = "title", target = "title")
     @Mapping(source = "duration", target = "duration")
     Task convertTaskPostDTOToEntity(TaskPostDTO taskPostDTO);
@@ -53,6 +61,8 @@ public interface DTOMapper {
     @Mapping(source = "price", target = "compensation")
     @Mapping(source = "description", target = "description")
     @Mapping(source = "address", target = "address")
+    @Mapping(source = "latitude", target = "latitude")
+    @Mapping(source = "longitude", target = "longitude")
     @Mapping(source = "date", target = "date")
     @Mapping(source = "status", target = "status")
     @Mapping(source = "duration", target = "duration")

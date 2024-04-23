@@ -1,9 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
@@ -35,6 +33,12 @@ public class Task implements Serializable {
 
     @Column(nullable = false)
     private int duration;
+
+    @Column(nullable = true)
+    private String latitude;
+
+    @Column(nullable = true)
+    private String longitude;
 
     @Enumerated
     @Column(nullable=false)
@@ -78,6 +82,14 @@ public class Task implements Serializable {
     public String getAddress() { return address; }
 
     public void setAddress(String address) { this.address = address; }
+
+    public String getLatitude() { return latitude; }
+
+    public void setLatitude(String latitude) { this.latitude = latitude; }
+
+    public String getLongitude() { return longitude; }
+
+    public void setLongitude(String longitude) { this.longitude = longitude; }
 
     public Date getDate() { return date; }
 
