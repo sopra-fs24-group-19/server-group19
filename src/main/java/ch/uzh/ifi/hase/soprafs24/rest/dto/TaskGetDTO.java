@@ -1,6 +1,5 @@
 package ch.uzh.ifi.hase.soprafs24.rest.dto;
 import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
-import ch.uzh.ifi.hase.soprafs24.entity.User;
 
 import java.util.Date;
 
@@ -16,6 +15,10 @@ public class TaskGetDTO {
     private Date date;
 
     private String address;
+
+    private String latitude;
+    
+    private String longitude;
 
     private int duration;
 
@@ -52,6 +55,14 @@ public class TaskGetDTO {
     public String getAddress() { return address; }
 
     public void setAddress(String address) { this.address = address; }
+    
+    public String getLatitude() { return latitude; }
+
+    public void setLatitude(String latitude) { this.latitude = latitude; }
+
+    public String getLongitude() { return longitude; }
+
+    public void setLongitude(String longitude) { this.longitude = longitude; }
 
     public Date getDate() { return date; }
 

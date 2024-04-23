@@ -4,8 +4,6 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
-
 
 @Entity
 @Table(name = "RATING")

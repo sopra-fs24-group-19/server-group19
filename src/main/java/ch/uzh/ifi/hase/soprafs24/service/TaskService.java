@@ -78,14 +78,17 @@ public class TaskService {
         User candidate = userRepository.findUserByToken(token);
         //to check if there is a token or the token has been manipulated
         if (candidate==null || token.isEmpty() || taskPutDTO.getUserId()!=candidate.getId()){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid token");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid token.");
         }
         long taskId= taskPutDTO.getTaskId();
 
         Task selectedTask = taskRepository.findById(taskId);
+        if (selectedTask == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The selected task does not exists.");
+        }
         Application existingApplication = applicationsRepository.findByUserAndTask(candidate, selectedTask);
         if (existingApplication != null) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "You already applied");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "You already applied.");
         }
         Application newApplication = new Application();
         newApplication.setTask(selectedTask);

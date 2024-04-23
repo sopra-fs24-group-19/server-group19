@@ -85,6 +85,8 @@ public class UserService {
     tokenValidation(userToEdit, tokenProvidedbyClient, "Token is invalid.");
     userToEdit.setName(userWithPendingChanges.getName());
     userToEdit.setAddress(userWithPendingChanges.getAddress());
+    userToEdit.setLatitude(userWithPendingChanges.getLatitude());
+    userToEdit.setLongitude(userWithPendingChanges.getLongitude());
     userToEdit.setPhoneNumber(userWithPendingChanges.getPhoneNumber());
     userToEdit.setRadius(userWithPendingChanges.getRadius());
     // TODO SPECIFY ALL THE VARIABLES IN WHICH WE ALLOW UPDATES i.e. we don't allow
