@@ -127,6 +127,7 @@ public class TaskService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
                     "only the creator of this task is allowed to delete it");
         }
+        applicationsRepository.deleteByTaskId(taskId);
         creator.addCoins(taskToBeDeleted.getPrice());
         taskRepository.delete(taskToBeDeleted);
     }
