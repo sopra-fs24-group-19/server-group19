@@ -1,14 +1,30 @@
-## Contributions
-# Week 1 (26.03 - 09.04)
-* Name: Francesco Manzionna
+# Contributions
+## BACKEND CONTRIBUTIONS
+### Francesco Manzionna
+#### Week 1 (26.03 - 09.04)
 * Date: 08/04/2024
 * https://github.com/orgs/sopra-fs24-group-19/projects/1?pane=issue&itemId=57052158
 * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57054747
 * Implemented the BE US1, BE US2 as for the requirements.
 
+#### Week 2 (09.04 - 16.04)
+* GitHub issues worked on: #29, #32, #36
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57052401
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57052373
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57052268
+* Additional details:
+I've implemented Create, Get, and Delete functions to manage user reviews. Initially, user objects included all reviews internally to minimize backend requests. However, due to a preference for dedicated services, I've set up a GET service at URI: /users/{userId}. I haven't yet implemented checks to prevent fraudulent reviews.
+Additionally, I've structured the Applications table to facilitate an inner join between tasks and users, ensuring all user applications are consolidated in one dedicated table.
+
+#### Week 3 (16.04 - 23.04)
+* GitHub issues worked on: #33
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57052337
+* Additional details:
+Research work to implement real-time collaborative document editing (to implement a todo list) focusing on WebSockets for live, bidirectional communication.
 
 
-* Name: Dana Rapp
+### Dana Rapp
+#### Week 1 (26.03 - 09.04)
 * GitHub issues worked on: BE US1, BE US3
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57052445
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57054287
@@ -18,8 +34,7 @@
     * Included and mapped all columns in the database, established relationships between the tables in the database.
     * Implemented the endpoint for creating a new task and integrated the endpoint with the frontend by adjusting all neccessary fields.
 
-# Week 2 (09.04 - 16.04)
-* Name: Dana Rapp
+#### Week 2 (09.04 - 16.04)
 * GitHub issues worked on: #45, #42, #40, #41, #44
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=59409663
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=59409907
@@ -33,6 +48,15 @@
     * Implemented the endpoint getting all tasks the current user has posted
     * Implemented the endpoint for deleting a task the user has posted, including verification whether the user is authorized to delete the task
 
+#### Week 3 (17.04 - 23.04)
+* GitHub issues worked on: #51, #47
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=60050347
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=60594594
+    * further activities: Fixed some bugs and did some code refactoring, deployed the server to google cloud
+  *  task description:
+    * Implemented endpoint for retrieving an application that a user has sent
+    * Implemented endpoint for marking task as done (task is marked as done only when both helper and creator have confirmed)
+    
 
     
 ## FRONTEND CONTRIBUTIONS
