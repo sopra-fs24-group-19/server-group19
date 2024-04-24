@@ -60,7 +60,7 @@ Research work to implement real-time collaborative document editing (to implemen
 
     
 ## FRONTEND CONTRIBUTIONS
-* Name: Nina Rubesa
+* Name: Nina Rubesa (For further details, please read the comment section in the links)
 * Week 1 - Github issues worked on:
     * Setting up environment: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=57051818
     * FE US1: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=57054652
@@ -72,7 +72,7 @@ Research work to implement real-time collaborative document editing (to implemen
     * Task API setup for frontend - searching which one is more suitable for our project: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=60169481
     * Further work: connection of front and backend, changing some minor visual details in HomeFeed.tsx, UserProfile.tsx
 * Week 4 - Github issues worked on:
-   * FE US4 (API, adjusting filtering): https://github.com/sopra-fs24-group-19/client-group19/issues/13
+   * FE US4 (API, adjusting filtering, styling): https://github.com/sopra-fs24-group-19/client-group19/issues/13
        
 
 * Name: Sina Klerings (For further details, please read the comment section in the links)
