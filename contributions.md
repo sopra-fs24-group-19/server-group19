@@ -25,6 +25,7 @@ Research work to implement real-time collaborative document editing (to implemen
 
 ### Dana Rapp
 #### Week 1 (26.03 - 09.04)
+
 * GitHub issues worked on: BE US1, BE US3
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57052445
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57054287
