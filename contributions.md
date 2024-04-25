@@ -25,6 +25,7 @@ Research work to implement real-time collaborative document editing (to implemen
 
 ### Dana Rapp
 #### Week 1 (26.03 - 09.04)
+
 * GitHub issues worked on: BE US1, BE US3
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57052445
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=57054287
@@ -60,7 +61,7 @@ Research work to implement real-time collaborative document editing (to implemen
 
     
 ## FRONTEND CONTRIBUTIONS
-* Name: Nina Rubesa
+* Name: Nina Rubesa (For further details, please read the comment section in the links)
 * Week 1 - Github issues worked on:
     * Setting up environment: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=57051818
     * FE US1: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=57054652
@@ -71,6 +72,9 @@ Research work to implement real-time collaborative document editing (to implemen
     * FE US4 (API): https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=60169210
     * Task API setup for frontend - searching which one is more suitable for our project: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=60169481
     * Further work: connection of front and backend, changing some minor visual details in HomeFeed.tsx, UserProfile.tsx
+* Week 4 - Github issues worked on:
+   * FE US4 (API, adjusting filtering, styling): https://github.com/sopra-fs24-group-19/client-group19/issues/13
+       
 
 * Name: Sina Klerings (For further details, please read the comment section in the links)
 * Week 1 - Github issues worked on:
@@ -83,3 +87,4 @@ Research work to implement real-time collaborative document editing (to implemen
     * FE US2 (further extension using an autocompletion API): https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask+week%3A%22Week+3%22&pane=issue&itemId=60168398
     * FE US3 (further extension using an autocompletion API): https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask+week%3A%22Week+3%22&pane=issue&itemId=60167986
     * Further work: removal of mock data, connection of front- and backend as well as the navigation between frontend pages
+* Week 4 - Joker week -> no contributions, only minor bug fixes and adjustments
