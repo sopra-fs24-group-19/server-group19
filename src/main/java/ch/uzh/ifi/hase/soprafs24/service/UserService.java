@@ -85,6 +85,8 @@ public class UserService {
     tokenValidation(userToEdit, tokenProvidedbyClient, "Token is invalid.");
     userToEdit.setName(userWithPendingChanges.getName());
     userToEdit.setAddress(userWithPendingChanges.getAddress());
+    userToEdit.setLatitude(userWithPendingChanges.getLatitude());
+    userToEdit.setLongitude(userWithPendingChanges.getLongitude());
     userToEdit.setPhoneNumber(userWithPendingChanges.getPhoneNumber());
     userToEdit.setRadius(userWithPendingChanges.getRadius());
     // TODO SPECIFY ALL THE VARIABLES IN WHICH WE ALLOW UPDATES i.e. we don't allow
@@ -134,6 +136,11 @@ public class UserService {
     creator.setCoinBalance(creator.getCoinBalance() - price);
     userRepository.save(creator);
   }
+
+    public void addCoins(User user, int amount) {
+        user.setCoinBalance(user.getCoinBalance() + amount);
+        userRepository.save(user);
+    }
 
   private void tokenExistance(String token) {
     if (this.userRepository.findUserByToken(token) == null) {

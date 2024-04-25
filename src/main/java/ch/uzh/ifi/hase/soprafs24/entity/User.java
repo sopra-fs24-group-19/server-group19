@@ -34,6 +34,12 @@ public class User implements Serializable {
     private String address;
 
     @Column(nullable = true)
+    private String latitude;
+
+    @Column(nullable = true)
+    private String longitude;
+
+    @Column(nullable = true)
     private String phoneNumber;
 
     @Column(nullable = true)
@@ -100,6 +106,14 @@ public class User implements Serializable {
     public String getAddress() { return address; }
 
     public void setAddress(String address) { this.address = address; }
+
+    public String getLatitude() { return latitude; }
+
+    public void setLatitude(String latitude) { this.latitude = latitude; }
+
+    public String getLongitude() { return longitude; }
+
+    public void setLongitude(String longitude) { this.longitude = longitude; }
 
     public String getPassword() { return password; }
 

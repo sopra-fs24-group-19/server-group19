@@ -1,5 +1,4 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
-import java.util.Collections;
 import ch.uzh.ifi.hase.soprafs24.entity.*;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
@@ -63,15 +62,16 @@ public class TaskController {
     @PutMapping("/tasks/{taskId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    public void selectCandidate(@RequestBody TaskPutDTO taskPutDTO) {
-        //TODO: implement
+    public void selectCandidate(@RequestBody TaskPutDTO taskPutDTO, @RequestHeader("Authorization") String token) {
+        taskService.selectCandidate(taskPutDTO, token);
     }
 
     @PutMapping("/tasks/{taskId}/confirm")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void confirmTask(@RequestBody TaskPutDTO taskPutDTO) {
-        //TODO: implement
+    public TaskGetDTO confirmTask(@PathVariable long taskId, @RequestHeader("Authorization") String token) {
+        Task task = taskService.confirmTask(taskId, token);
+        return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task);
     }
 
     @PutMapping("/tasks/{taskId}/refuse")

@@ -78,14 +78,46 @@ public class TaskService {
         User candidate = userRepository.findUserByToken(token);
         //to check if there is a token or the token has been manipulated
         if (candidate==null || token.isEmpty() || taskPutDTO.getUserId()!=candidate.getId()){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid token");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid token.");
         }
         long taskId= taskPutDTO.getTaskId();
-        Application newApplication = new Application();
+
         Task selectedTask = taskRepository.findById(taskId);
+        if (selectedTask == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The selected task does not exists.");
+        }
+        Application existingApplication = applicationsRepository.findByUserAndTask(candidate, selectedTask);
+        if (existingApplication != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "You already applied.");
+        }
+        Application newApplication = new Application();
         newApplication.setTask(selectedTask);
         newApplication.setUser(candidate);
         applicationsRepository.saveAndFlush(newApplication);
+    }
+
+    public void selectCandidate(TaskPutDTO taskPutDTO, String token){
+        // QUESTION DANA. AFTER ANSWER DELETE COMMENTS IN DTOMAPPER. necessary because the user in the task entity is saved as an entity and is not mappable with
+        //taskputdto since there the userId is a long
+        User helper = this.userRepository.findUserById(taskPutDTO.getHelperId());
+        User taskCreator = userRepository.findUserById(taskPutDTO.getUserId());
+        Task task = taskRepository.findById(taskPutDTO.getTaskId());
+        Application application = this.applicationsRepository.findByUserAndTask(helper, task);
+
+        //Check the taskCreator is performing the selection action
+        if (!taskCreator.getToken().equals(token)){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the creator of a task can choose the helper");
+        }
+        //Check the task was retrieved correctly
+        if (task == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The task was not found.");
+        }
+        //Check the application actually exists
+        if (application == null){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "This helper has not applied for the job.");
+        }
+
+        task.setHelper(helper);
     }
 
     public void deleteTaskWithId(long taskId, String token) {
@@ -98,8 +130,41 @@ public class TaskService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
                     "only the creator of this task is allowed to delete it");
         }
+        applicationsRepository.deleteByTaskId(taskId);
         creator.addCoins(taskToBeDeleted.getPrice());
         taskRepository.delete(taskToBeDeleted);
+    }
+
+    public Task confirmTask(long taskId, String token){
+        Task taskToBeConfirmed = this.taskRepository.findById(taskId);
+        User creator = taskToBeConfirmed.getCreator();
+        User helper = taskToBeConfirmed.getHelper();
+        long currentUserId = userService.getUserIdByToken(token);
+
+        if (currentUserId != creator.getId() && currentUserId != helper.getId()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only the creator or helper of this task are authorized to confirm it.");
+        }
+
+        if (currentUserId == creator.getId() && taskToBeConfirmed.getStatus() != TaskStatus.CONFIRMED_BY_CREATOR) {
+            if (taskToBeConfirmed.getStatus() == TaskStatus.CONFIRMED_BY_HELPER) {
+                taskToBeConfirmed.setStatus(TaskStatus.DONE);
+                userService.addCoins(helper, taskToBeConfirmed.getPrice());
+            } else {
+                taskToBeConfirmed.setStatus(TaskStatus.CONFIRMED_BY_CREATOR);
+            }
+        } else if (currentUserId == helper.getId() && taskToBeConfirmed.getStatus() != TaskStatus.CONFIRMED_BY_HELPER) {
+            if (taskToBeConfirmed.getStatus() == TaskStatus.CONFIRMED_BY_CREATOR) {
+                taskToBeConfirmed.setStatus(TaskStatus.DONE);
+                userService.addCoins(helper, taskToBeConfirmed.getPrice());
+            } else {
+                taskToBeConfirmed.setStatus(TaskStatus.CONFIRMED_BY_HELPER);
+            }
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have already confirmed this task.");
+        }
+
+        taskRepository.save(taskToBeConfirmed);
+        return taskToBeConfirmed;
     }
 
     @Transactional

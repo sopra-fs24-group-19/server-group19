@@ -1,11 +1,14 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
 //import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
+import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.Task;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.TaskRepository;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.TaskPostDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.TaskGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPutDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.TaskService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -233,7 +236,88 @@ public class TaskControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    @Test
+    public void deleteCandidate_Success() throws Exception {
+        long taskId = 1L;
+        String token = "validToken";
 
+        doNothing().when(taskService).deleteCandidate(taskId, token);
+
+        mockMvc.perform(delete("/tasks/candidate/{taskId}", taskId)
+                        .header("AuthorizationToken", token))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void deleteCandidate_Failure_NotFound() throws Exception {
+        long taskId = 1L;
+        String token = "invalidToken";
+
+        doThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "The current user is not a candidate for this task"))
+                .when(taskService).deleteCandidate(taskId, token);
+
+        mockMvc.perform(delete("/tasks/candidate/{taskId}", taskId)
+                        .header("AuthorizationToken", token))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void confirmTask_Success_ByCreator() throws Exception {
+        long taskId = 1L;
+        String token = "validTokenCreator";
+        Task task = new Task();
+        task.setId(taskId);
+        task.setStatus(TaskStatus.CONFIRMED_BY_CREATOR);
+
+        Mockito.when(taskService.confirmTask(taskId, token)).thenReturn(task);
+
+        mockMvc.perform(put("/tasks/{taskId}/confirm", taskId)
+                        .header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status", is(task.getStatus().toString())));
+    }
+
+    @Test
+    public void confirmTask_Success_ByHelper() throws Exception {
+        long taskId = 1L;
+        String token = "validTokenHelper";
+        Task task = new Task();
+        task.setId(taskId);
+        task.setStatus(TaskStatus.CONFIRMED_BY_HELPER);
+
+        Mockito.when(taskService.confirmTask(taskId, token)).thenReturn(task);
+        //Mockito.when(DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task)).thenReturn(new TaskGetDTO());
+
+        mockMvc.perform(put("/tasks/{taskId}/confirm", taskId)
+                        .header("Authorization", token))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void confirmTask_UnauthorizedAccess() throws Exception {
+        long taskId = 1L;
+        String token = "invalidToken";
+
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only the creator or helper of this task are authorized to confirm it."))
+                .when(taskService).confirmTask(taskId, token);
+
+        mockMvc.perform(put("/tasks/{taskId}/confirm", taskId)
+                        .header("Authorization", token))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void confirmTask_AlreadyConfirmed() throws Exception {
+        long taskId = 1L;
+        String token = "redundantToken";
+
+        Mockito.doThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST, "You have already confirmed this task."))
+                .when(taskService).confirmTask(taskId, token);
+
+        mockMvc.perform(put("/tasks/{taskId}/confirm", taskId)
+                        .header("Authorization", token))
+                .andExpect(status().isBadRequest());
+    }
 
     private String asJsonString(final Object object) {
         try {
