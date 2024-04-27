@@ -59,6 +59,9 @@ public class User implements Serializable {
     @JoinTable(name="applications", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name="taskId"))
     private List<Task> applications;
 
+    @OneToMany(mappedBy = "author")
+    private List<Todo> todos;
+
     private int totalComments;
 
     private float averageStars;

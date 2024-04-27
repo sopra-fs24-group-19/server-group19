@@ -47,6 +47,10 @@ public class TaskService {
         return this.taskRepository.findAll();
     }
 
+    public Task getTaskById(long id) {
+        return this.taskRepository.findById(id);
+    }
+
     public List<Task> getTasksByCreator(long userId) {
         return this.taskRepository.findByCreatorId(userId);
     }

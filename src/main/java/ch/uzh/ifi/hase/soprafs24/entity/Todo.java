@@ -22,6 +22,10 @@ public class Todo implements Serializable {
     private boolean done;
 
     @ManyToOne
+    @JoinColumn(name = "authorId", referencedColumnName = "id")
+    private User author;
+
+    @ManyToOne
     @JoinColumn(name = "taskId", referencedColumnName = "id")
     private Task task;
 
@@ -44,6 +48,10 @@ public class Todo implements Serializable {
     public Task getTask() { return task; }
 
     public void setTask(Task task) { this.task = task; }
+
+    public User getAuthor() { return author; }
+
+    public void setAuthor(User author) { this.author = author; }
 
 
 }
