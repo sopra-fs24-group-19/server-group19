@@ -53,7 +53,10 @@ public class Task implements Serializable {
     private User helper;
 
     @ManyToMany(mappedBy = "applications")
-    private List<User> candidates = new ArrayList<>();;
+    private List<User> candidates = new ArrayList<>();
+
+    @OneToMany(mappedBy = "task")
+    private List<Todo> todos;
 
     public Long getId() {
         return id;
