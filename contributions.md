@@ -57,7 +57,17 @@ Research work to implement real-time collaborative document editing (to implemen
   *  task description:
     * Implemented endpoint for retrieving an application that a user has sent
     * Implemented endpoint for marking task as done (task is marked as done only when both helper and creator have confirmed)
-    
+
+#### Week 4 (24.04 - 02.05)
+* GitHub issues worked on: #54, #55, #56
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61203545
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61207387
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61224532
+*  task description:
+    * Added a database table for storing to-do items
+    * Implemented endpoint for adding a new to-do, including authorization check
+    * Implemented endpoint for updating an existing to-do (updating its status and description)
+
 
     
 ## FRONTEND CONTRIBUTIONS
