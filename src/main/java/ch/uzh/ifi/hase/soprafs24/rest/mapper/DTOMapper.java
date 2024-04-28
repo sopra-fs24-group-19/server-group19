@@ -64,6 +64,10 @@ public interface DTOMapper {
     @Mapping(source = "description", target = "description")
     Todo convertTodoPostDTOToEntity(TodoPostDTO todoPostDTO);
 
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "done", target = "done")
+    Todo convertTodoPutDTOToEntity(TodoPutDTO todoPutDTO);
+
 
     @Mapping(source = "price", target = "compensation")
     @Mapping(source = "description", target = "description")
