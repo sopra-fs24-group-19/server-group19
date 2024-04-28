@@ -71,4 +71,20 @@ public class TodoService {
         }
         return true;
     }
+
+    public void updateTodo(Todo todoInput, String token, long id) {
+
+        Todo existingTodo = todoRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo not found with id: " + todoInput.getId()));
+
+        long userId = userService.getUserIdByToken(token);
+        if (userId != existingTodo.getAuthor().getId()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only the author of this Todo is authorized to update it.");
+        }
+
+        existingTodo.setDescription(todoInput.getDescription());
+        existingTodo.setDone(todoInput.isDone());
+
+        todoRepository.save(existingTodo);
+    }
 }

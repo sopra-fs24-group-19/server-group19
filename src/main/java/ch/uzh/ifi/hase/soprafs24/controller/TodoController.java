@@ -32,4 +32,13 @@ public class TodoController {
         Todo todoToDelete = DTOMapper.INSTANCE.convertTodoPostDTOToEntity(todoPostDTO);
         todoService.deleteTodo(todoToDelete,token);
     }
+    
+    @PutMapping("/todo/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public void updateTodo(@RequestBody TodoPutDTO todoPutDTO, @RequestHeader("Authorization") String token, @PathVariable("id") long id) {
+        Todo todoInput = DTOMapper.INSTANCE.convertTodoPutDTOToEntity(todoPutDTO);
+        //long taskId = todoPostDTO.getTaskId();
+        todoService.updateTodo(todoInput,token, id);
+    }
 }
