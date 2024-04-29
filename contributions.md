@@ -87,7 +87,8 @@ Research work to implement real-time collaborative document editing (to implemen
    * FE US5: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61231454
    * FE US8: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=61231223
    * Deleting a task you posted: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61231607
-   * Displaying the rest of coins when you are creating a task
+   * Displaying the rest of the coins when you are creating a task
+   * User-friendly message when there are no tasks in your radius
    
        
 
