@@ -122,6 +122,7 @@ public class TaskService {
         }
 
         task.setHelper(helper);
+        deleteApplicationsByTask(task);
     }
 
     public void deleteTaskWithId(long taskId, String token) {
@@ -193,5 +194,12 @@ public class TaskService {
     private boolean checkPermissionToDeleteTask(String token, long creatorId) {
         long currentUserId = userService.getUserIdByToken(token);
         return currentUserId == creatorId;
+    }
+
+    private void deleteApplicationsByTask(Task task){
+        List<Application> applicationList = applicationsRepository.findByTasksId(task.getId());
+        for (Application application : applicationList) {
+            applicationsRepository.delete(application);
+        }
     }
 }

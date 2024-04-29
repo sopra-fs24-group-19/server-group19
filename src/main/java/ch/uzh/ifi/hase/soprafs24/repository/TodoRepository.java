@@ -7,8 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository("todoRepository")
 public interface TodoRepository extends JpaRepository<Todo, Long> {
 
+    Todo findTodoById(Long id);
+
+    List<Todo> findByTaskId(Long taskId);
 }
