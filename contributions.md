@@ -22,6 +22,13 @@ Additionally, I've structured the Applications table to facilitate an inner join
 * Additional details:
 Research work to implement real-time collaborative document editing (to implement a todo list) focusing on WebSockets for live, bidirectional communication.
 
+#### Week 3 (23.04 - 30.04)
+* GitHub issues worked on: #57, #58
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61233390
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61233480
+* Additional details:
+Fixed minor functionalities such as deleting all applications when a user is selected as an helper.
+
 
 ### Dana Rapp
 #### Week 1 (26.03 - 09.04)
