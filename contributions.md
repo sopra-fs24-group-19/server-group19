@@ -84,6 +84,11 @@ Research work to implement real-time collaborative document editing (to implemen
     * Further work: connection of front and backend, changing some minor visual details in HomeFeed.tsx, UserProfile.tsx
 * Week 4 - Github issues worked on:
    * FE US4 (API, adjusting filtering, styling): https://github.com/sopra-fs24-group-19/client-group19/issues/13
+   * FE US5: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61231454
+   * FE US8: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=61231223
+   * Deleting a task you posted: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61231607
+   * Displaying the rest of coins when you are creating a task
+   
        
 
 * Name: Sina Klerings (For further details, please read the comment section in the links)
