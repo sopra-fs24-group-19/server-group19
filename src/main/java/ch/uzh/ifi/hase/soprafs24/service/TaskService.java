@@ -122,6 +122,7 @@ public class TaskService {
         }
 
         task.setHelper(helper);
+        task.setStatus(TaskStatus.IN_PROGRESS);
         deleteApplicationsByTask(task, helper);
     }
 
