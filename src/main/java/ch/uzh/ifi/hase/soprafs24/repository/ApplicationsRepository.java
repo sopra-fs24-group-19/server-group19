@@ -16,8 +16,9 @@ import org.springframework.stereotype.Repository;
 public interface ApplicationsRepository extends JpaRepository<Application, Long> {
     Application findByUserAndTask(User user, Task task);
 
-    @Query("SELECT a FROM Application a WHERE a.task.id = ?1")
-    List<Application> findByTasksId(Long taskId);
+
+    @Query("SELECT a FROM Application a WHERE a.task.id = ?1 AND a.user.id != ?2")
+    List<Application> findApplicationsByTaskIdExcludingHelperId(Long taskId, Long userId);
 
 
     @Transactional

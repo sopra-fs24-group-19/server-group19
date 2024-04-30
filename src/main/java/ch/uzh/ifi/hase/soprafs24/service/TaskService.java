@@ -122,7 +122,7 @@ public class TaskService {
         }
 
         task.setHelper(helper);
-        deleteApplicationsByTask(task);
+        deleteApplicationsByTask(task, helper);
     }
 
     public void deleteTaskWithId(long taskId, String token) {
@@ -196,8 +196,9 @@ public class TaskService {
         return currentUserId == creatorId;
     }
 
-    private void deleteApplicationsByTask(Task task){
-        List<Application> applicationList = applicationsRepository.findByTasksId(task.getId());
+    private void deleteApplicationsByTask(Task task, User helper){
+        long helperId= helper.getId();
+        List<Application> applicationList = applicationsRepository.findApplicationsByTaskIdExcludingHelperId(task.getId(), helperId);
         for (Application application : applicationList) {
             applicationsRepository.delete(application);
         }
