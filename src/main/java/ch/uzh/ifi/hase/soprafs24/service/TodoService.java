@@ -119,6 +119,6 @@ public class TodoService {
         existingTodo.setDescription(todoInput.getDescription());
         existingTodo.setDone(todoInput.isDone());
 
-        todoRepository.save(existingTodo);
+        todoRepository.saveAndFlush(existingTodo);
     }
 }
