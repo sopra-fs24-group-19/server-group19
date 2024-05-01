@@ -46,15 +46,21 @@ public class TodoService {
 
         if (authorId != taskCreator.getId() && authorId != taskHelper.getId()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-                    "Only the creator or helper of this task are authorized to confirm it.");
+                    "Only the creator or helper of this task are authorized to create a to-do.");
         }
-        // to here should be in a separate function
+
         todo.setTask(task);
-        //shouldn't the description be updated
         todo.setDone(false);
         todo.setAuthor(userService.getUserById(authorId));
         todoRepository.save(todo);
         todoRepository.flush();
+    }
+
+    public void createDefaultTodo(long taskId, String creatorToken, String title){
+        Todo todo = new Todo();
+        todo.setDescription(title);
+        todo.setDone(false);
+        createTodo(todo, taskId, creatorToken);
     }
 
     //QUESTION: Only the creator of a task and the helper are able to see all todos?
@@ -107,18 +113,36 @@ public class TodoService {
     }
 
     public void updateTodo(Todo todoInput, String token, long id) {
-
         Todo existingTodo = todoRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo not found with id: " + todoInput.getId()));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Todo not found with id: " + id));
 
         long userId = userService.getUserIdByToken(token);
-        if (userId != existingTodo.getAuthor().getId()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only the author of this Todo is authorized to update it.");
+
+        if (userId != existingTodo.getTask().getCreator().getId() && userId != existingTodo.getTask().getHelper().getId()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                    "Only the creator or helper of this task are authorized to update a to-do.");
         }
 
-        existingTodo.setDescription(todoInput.getDescription());
-        existingTodo.setDone(todoInput.isDone());
+        if (!existingTodo.getDescription().equals(todoInput.getDescription())) {
+            if (userId != existingTodo.getAuthor().getId()) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only the author of this Todo is authorized to update the description.");
+            }
+            existingTodo.setDescription(todoInput.getDescription());
+        }
 
+        if (existingTodo.isDone() != todoInput.isDone()) {
+            if (userId != existingTodo.getTask().getCreator().getId()) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only the creator of the task can update the status of this Todo.");
+            }
+            existingTodo.setDone(todoInput.isDone());
+        }
         todoRepository.saveAndFlush(existingTodo);
     }
+
+    public boolean areAllTodosDone(Long taskId) {
+        List<Todo> todos = todoRepository.findAllByTaskId(taskId);
+        return todos.stream().allMatch(Todo::isDone);
+    }
+
+
 }

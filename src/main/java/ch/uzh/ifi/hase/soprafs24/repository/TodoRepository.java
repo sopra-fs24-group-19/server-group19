@@ -15,4 +15,6 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
     Todo findTodoById(Long id);
 
     List<Todo> findByTaskId(Long taskId);
+
+    List<Todo> findAllByTaskId(Long taskId);
 }
