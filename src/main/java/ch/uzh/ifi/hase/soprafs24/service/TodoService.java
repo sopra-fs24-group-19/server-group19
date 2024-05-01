@@ -127,4 +127,10 @@ public class TodoService {
         todoRepository.saveAndFlush(existingTodo);
     }
 
+    public boolean areAllTodosDone(Long taskId) {
+        List<Todo> todos = todoRepository.findAllByTaskId(taskId);
+        return todos.stream().allMatch(Todo::isDone);
+    }
+
+
 }

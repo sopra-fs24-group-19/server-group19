@@ -8,6 +8,7 @@ import ch.uzh.ifi.hase.soprafs24.service.TodoService;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -53,5 +54,11 @@ public class TodoController {
     public List<TodoGetDTO> getTodosFromTask(@RequestHeader("Authorization") String token, @PathVariable("id") long taskId) {
         List<TodoGetDTO> todosList= todoService.getTodosFromTask(token, taskId);
         return todosList;
-}
+    }
+
+    @GetMapping("/allTodosDone/{taskId}")
+    public ResponseEntity<Boolean> areAllTodosDone(@PathVariable Long taskId) {
+        boolean allDone = todoService.areAllTodosDone(taskId);
+        return ResponseEntity.ok(allDone);
+    }
 }
