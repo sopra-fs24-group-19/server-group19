@@ -32,8 +32,8 @@ public class TodoController {
     @DeleteMapping("/todo")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    public void deleteTodo(@RequestBody TodoPostDTO todoPostDTO, @RequestHeader("Authorization") String token) {
-        Todo todoToDelete = DTOMapper.INSTANCE.convertTodoPostDTOToEntity(todoPostDTO);
+    public void deleteTodo(@RequestBody TodoPutDTO todoPutDTO, @RequestHeader("Authorization") String token) {
+        Todo todoToDelete = DTOMapper.INSTANCE.convertTodoPutDTOToEntity(todoPutDTO);
         todoService.deleteTodo(todoToDelete, token);
     }
 
