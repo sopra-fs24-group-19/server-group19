@@ -1,20 +1,19 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
-import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.Task;
+import ch.uzh.ifi.hase.soprafs24.entity.Todo;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
-import ch.uzh.ifi.hase.soprafs24.repository.ApplicationsRepository;
-import ch.uzh.ifi.hase.soprafs24.repository.TaskRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.TodoRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -22,323 +21,111 @@ import static org.mockito.Mockito.*;
 public class TodoServiceTest {
 
     @Mock
-    private TaskRepository taskRepository;
-
+    private TodoRepository todoRepository;
     @Mock
-    private ApplicationsRepository applicationsRepository;
-
+    private TaskService taskService;
+    @Mock
+    private UserService userService;
     @Mock
     private UserRepository userRepository;
 
-    @Mock
-    private UserService userService;
-
     @InjectMocks
-    private TaskService taskService;
+    private TodoService todoService;
 
-    private Task testTask;
-    private User testCreator;
-    private User testCandidate;
-
-    private User testHelper;
+    private User user, invalidUser, helper;
+    private Task task;
+    private Todo todo;
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
+        user = new User();
+        user.setId(1L);
+        user.setToken("validToken");
 
-        testCreator = new User();
-        testCreator.setCoinBalance(50);
-        testCreator.setId(1L);
-        testCreator.setToken("validToken");
+        invalidUser = new User();
+        invalidUser.setId(2L);
+        invalidUser.setToken("invalidToken");
 
-        testCandidate = new User();
-        testCandidate.setCoinBalance(50);
-        testCandidate.setId(2L);
-        testCandidate.setName("candidateName");
-        testCandidate.setUsername("candidateUsername");
+        helper = new User();
+        helper.setId(3L);
+        helper.setToken("validToken");
 
-        testHelper = new User();
-        testHelper.setCoinBalance(50);
-        testHelper.setId(2L);
-        testHelper.setName("helperName");
-        testHelper.setUsername("helperUsername");
+        task = new Task();
+        task.setId(1L);
+        task.setCreator(user);
+        task.setHelper(helper);
 
-        testTask = new Task();
-        testTask.setId(1L);
-        testTask.setTitle("testTitle");
-        testTask.setDescription("testDescription");
-        testTask.setAddress("testAddress");
-        testTask.setCreator(testCreator);
-        testTask.setDate(new Date());
-        testTask.setDuration(30);
-        testTask.setPrice(20);
-
-
-        Mockito.when(taskRepository.save(Mockito.any())).thenReturn(testTask);
-        Mockito.when(userService.getUserById(Mockito.anyLong())).thenReturn(testCreator);
-
+        todo = new Todo();
+        todo.setId(1L);
+        todo.setTask(task);
+        todo.setAuthor(user);
+        todo.setDescription("description");
+        todo.setDone(false);
     }
 
     @Test
-    public void createTask_validInputs_success() {
+    public void createTodo_success() {
+        when(taskService.getTaskById(anyLong())).thenReturn(task);
+        when(userService.getUserIdByToken(user.getToken())).thenReturn(user.getId());
+        when(todoRepository.save(any(Todo.class))).thenReturn(todo);
 
-        Task createdTask = taskService.createTask(testTask, testCreator.getId());
+        todoService.createTodo(todo, task.getId(), user.getToken());
 
-        Mockito.verify(taskRepository, Mockito.times(1)).save(Mockito.any());
-
-        assertEquals(testTask.getId(), createdTask.getId());
-        assertEquals(testCreator.getId(), testTask.getCreator().getId());
-        assertEquals(testTask.getDescription(), createdTask.getDescription());
-        assertEquals(testTask.getTitle(), createdTask.getTitle());
-        assertEquals(testTask.getPrice(), createdTask.getPrice());
-        assertEquals(testTask.getDate(), createdTask.getDate());
-        assertEquals(testTask.getDuration(), createdTask.getDuration());
-        assertEquals(testTask.getAddress(), createdTask.getAddress());
-
+        verify(todoRepository).save(todo);
     }
 
     @Test
-    public void createTask_lowCreditBalance_throwsException() {
+    public void createTodo_unauthorizedUser_throwsException() {
+        when(taskService.getTaskById(anyLong())).thenReturn(task);
+        when(userService.getUserIdByToken("invalidToken")).thenReturn(invalidUser.getId());
 
-        testCreator.setCoinBalance(10);
-
-        assertThrows(ResponseStatusException.class, () -> taskService.createTask(testTask, testCreator.getId()));
+        assertThrows(ResponseStatusException.class, () -> todoService.createTodo(todo, task.getId(), "invalidToken"),
+                "Should throw an exception if the user is neither creator nor helper");
     }
 
     @Test
-    public void deleteTaskWithId_success() {
+    public void updateTodo_success() {
+        when(todoRepository.findById(todo.getId())).thenReturn(java.util.Optional.of(todo));
+        when(userService.getUserIdByToken(user.getToken())).thenReturn(user.getId());
 
-        long taskId = 1L;
-        String token = "validToken";
+        todo.setDescription("Updated description");
+        todo.setDone(true);
+        todoService.updateTodo(todo, user.getToken(), todo.getId());
 
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
-        Mockito.when(userService.getUserIdByToken("validToken")).thenReturn(testCreator.getId());
-
-        taskService.deleteTaskWithId(taskId, token);
-
-        Mockito.verify(taskRepository).delete(testTask);
+        verify(todoRepository).saveAndFlush(todo);
     }
 
     @Test
-    public void deleteTaskWithId_taskNotFound_throwsException() {
+    public void updateDescription_unauthorizedUpdate_throwsException() {
+        when(todoRepository.findById(todo.getId())).thenReturn(java.util.Optional.of(todo));
+        when(userService.getUserIdByToken("invalidToken")).thenReturn(invalidUser.getId());
 
-        long taskId = 5L;
-        String token = "validToken";
-        assertThrows(NoSuchElementException.class, () -> taskService.deleteTaskWithId(taskId, token));
+        todo.setDescription("new description");
+
+        assertThrows(ResponseStatusException.class, () -> todoService.updateTodo(todo, "invalidToken", todo.getId()),
+                "Should throw an exception if the user is not the author of the todo");
+    }
+
+    // TODO: add more tests to test also status update
+
+    @Test
+    public void areAllTodosDone_allDone() {
+        List<Todo> todos = List.of(new Todo() {{ setDone(true); }}, new Todo() {{ setDone(true); }});
+        when(todoRepository.findAllByTaskId(task.getId())).thenReturn(todos);
+
+        assertTrue(todoService.areAllTodosDone(task.getId()), "Should return true when all todos are done");
     }
 
     @Test
-    public void deleteTaskWithId_unauthorizedAccess_throwsException() {
+    public void areAllTodosDone_notAllDone() {
+        List<Todo> todos = List.of(new Todo() {{ setDone(true); }}, new Todo() {{ setDone(false); }});
+        when(todoRepository.findAllByTaskId(task.getId())).thenReturn(todos);
 
-        long taskId = 1L;
-        String token = "invalidToken";
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
-
-        assertThrows(ResponseStatusException.class, () -> taskService.deleteTaskWithId(taskId, token),
-                "only the creator of this task is allowed to delete it");
+        assertFalse(todoService.areAllTodosDone(task.getId()), "Should return true when all todos are done");
     }
 
-    @Test
-    public void getTasksByApplicant_returnsListOfTasks(){
-        List<Task> expected = Collections.singletonList(testTask);
-        Mockito.when(taskRepository.findTasksByApplicantId(Mockito.anyLong())).thenReturn(expected);
 
-        long userId = 1L;
 
-        List<Task> actual = taskService.getTasksByApplicant(userId);
 
-        assertEquals(expected.size(), actual.size());
-        assertEquals(expected.get(0).getAddress(), actual.get(0).getAddress());
-        assertEquals(expected.get(0).getDuration(), actual.get(0).getDuration());
-        assertEquals(expected.get(0).getDescription(), actual.get(0).getDescription());
-        assertEquals(expected.get(0).getTitle(), actual.get(0).getTitle());
-        assertEquals(expected.get(0).getCreator(), actual.get(0).getCreator());
-
-        verify(taskRepository).findTasksByApplicantId(userId);
     }
-
-    @Test
-    public void getTasksByCreator_returnsListOfTasks(){
-        List<Task> expected = Collections.singletonList(testTask);
-        Mockito.when(taskRepository.findByCreatorId(Mockito.anyLong())).thenReturn(expected);
-
-        long creatorId = 1L;
-
-        List<Task> actual = taskService.getTasksByCreator(creatorId);
-
-        assertEquals(expected.size(), actual.size());
-        assertEquals(expected.get(0).getAddress(), actual.get(0).getAddress());
-        assertEquals(expected.get(0).getDuration(), actual.get(0).getDuration());
-        assertEquals(expected.get(0).getDescription(), actual.get(0).getDescription());
-        assertEquals(expected.get(0).getTitle(), actual.get(0).getTitle());
-        assertEquals(expected.get(0).getCreator(), actual.get(0).getCreator());
-
-        verify(taskRepository).findByCreatorId(creatorId);
-    }
-
-    @Test
-    public void getTasks_returnsListOfTasks(){
-        List<Task> expected = Collections.singletonList(testTask);
-        Mockito.when(taskRepository.findAll()).thenReturn(expected);
-
-        List<Task> actual = taskService.getTasks();
-
-        assertEquals(expected.size(), actual.size());
-        assertEquals(expected.get(0).getAddress(), actual.get(0).getAddress());
-        assertEquals(expected.get(0).getDuration(), actual.get(0).getDuration());
-        assertEquals(expected.get(0).getDescription(), actual.get(0).getDescription());
-        assertEquals(expected.get(0).getTitle(), actual.get(0).getTitle());
-        assertEquals(expected.get(0).getCreator(), actual.get(0).getCreator());
-
-        verify(taskRepository).findAll();
-    }
-
-    @Test
-    public void getCandidates_returnsListOfUsers(){
-        List<User> expected = Collections.singletonList(testCandidate);
-        Mockito.when(userService.getCandidatesByTaskId(testCreator.getId())).thenReturn(expected);
-
-        List<User> actual = taskService.getCandidatesForTaskWithId(testCreator.getId());
-
-        assertEquals(expected.size(), actual.size());
-        assertEquals(expected.get(0).getId(), actual.get(0).getId());
-        assertEquals(expected.get(0).getName(), actual.get(0).getName());
-        assertEquals(expected.get(0).getUsername(), actual.get(0).getUsername());
-        assertEquals(expected.get(0).getCoinBalance(), actual.get(0).getCoinBalance());
-
-        verify(userService).getCandidatesByTaskId(testCreator.getId());
-    }
-
-    @Test
-    public void deleteCandidate_Success() {
-        long taskId = 1L;
-        String token = "validToken";
-
-        List<User> candidates = new ArrayList<>();
-        candidates.add(testCandidate);
-
-        List<Task> applications = new ArrayList<>();
-        applications.add(testTask);
-        testCandidate.setApplications(applications);
-
-        testTask.setCandidates(candidates);
-        testCandidate.setApplications(applications);
-
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
-        Mockito.when(userRepository.findByToken(token)).thenReturn(testCandidate);
-
-        taskService.deleteCandidate(taskId, token);
-
-        assertFalse(testTask.getCandidates().contains(testCandidate), "Candidate should be removed from the task");
-        assertFalse(testCandidate.getApplications().contains(testTask), "Task should be removed from the candidate's applications");
-        Mockito.verify(taskRepository).save(testTask);
-        Mockito.verify(userRepository).save(testCandidate);
-    }
-
-    @Test
-    public void deleteCandidate_NotFoundInTask_ThrowsException() {
-        long taskId = 1L;
-        String token = "validToken";
-        List<User> candidates = Collections.emptyList();
-
-        testTask.setCandidates(candidates);
-
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
-        Mockito.when(userRepository.findByToken(token)).thenReturn(testCandidate);
-
-        assertThrows(ResponseStatusException.class, () -> taskService.deleteCandidate(taskId, token),
-                "Should throw exception as the user is not a candidate for the task");
-
-        Mockito.verify(taskRepository, never()).save(any(Task.class));
-        Mockito.verify(userRepository, never()).save(any(User.class));
-    }
-
-    @Test
-    public void confirmTask_Success_CreatorConfirmsFirst() {
-        long taskId = 1L;
-        String creatorToken = "creatorToken";
-        Task testTask = new Task();
-        testTask.setStatus(TaskStatus.CREATED);
-        testTask.setCreator(testCreator);
-        testTask.setHelper(testHelper);
-        testTask.setPrice(100);
-
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
-        Mockito.when(userService.getUserIdByToken(creatorToken)).thenReturn(testCreator.getId());
-
-        Task confirmedTask = taskService.confirmTask(taskId, creatorToken);
-
-        assertEquals(TaskStatus.CONFIRMED_BY_CREATOR, confirmedTask.getStatus());
-        Mockito.verify(taskRepository).save(testTask);
-    }
-
-    @Test
-    public void confirmTask_Success_HelperConfirmsFirst() {
-        long taskId = 1L;
-        String helperToken = "helperToken";
-        Task testTask = new Task();
-        testTask.setStatus(TaskStatus.CREATED);
-        testTask.setCreator(testCreator);
-        testTask.setHelper(testHelper);
-        testTask.setPrice(100);
-
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
-        Mockito.when(userService.getUserIdByToken(helperToken)).thenReturn(testHelper.getId());
-
-        Task confirmedTask = taskService.confirmTask(taskId, helperToken);
-
-        assertEquals(TaskStatus.CONFIRMED_BY_HELPER, confirmedTask.getStatus());
-        Mockito.verify(taskRepository).save(testTask);
-    }
-
-    @Test
-    public void confirmTask_Success_BothConfirmTaskDone() {
-        long taskId = 1L;
-        String creatorToken = "creatorToken";
-        Task testTask = new Task();
-        testTask.setStatus(TaskStatus.CONFIRMED_BY_HELPER); // Helper has already confirmed
-        testTask.setCreator(testCreator);
-        testTask.setHelper(testHelper);
-        testTask.setPrice(100);
-
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
-        Mockito.when(userService.getUserIdByToken(creatorToken)).thenReturn(testCreator.getId());
-
-        Task confirmedTask = taskService.confirmTask(taskId, creatorToken);
-
-        assertEquals(TaskStatus.DONE, confirmedTask.getStatus());
-        Mockito.verify(userService).addCoins(testHelper, 100);
-        Mockito.verify(taskRepository).save(testTask);
-    }
-
-    @Test
-    public void confirmTask_Unauthorized_User() {
-        long taskId = 1L;
-        String unauthorizedToken = "unauthorizedToken";
-        Task testTask = new Task();
-        testTask.setCreator(testCreator);
-        testTask.setHelper(testHelper);
-
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
-        Mockito.when(userService.getUserIdByToken(unauthorizedToken)).thenReturn(999L); // Some unrelated user
-
-        assertThrows(ResponseStatusException.class, () -> taskService.confirmTask(taskId, unauthorizedToken));
-    }
-
-    @Test
-    public void confirmTask_AlreadyConfirmed_ThrowsBadRequest() {
-        long taskId = 1L;
-        String creatorToken = "creatorToken";
-        Task testTask = new Task();
-        testTask.setStatus(TaskStatus.CONFIRMED_BY_CREATOR); // Creator has already confirmed
-        testTask.setCreator(testCreator);
-        testTask.setHelper(testHelper);
-
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
-        Mockito.when(userService.getUserIdByToken(creatorToken)).thenReturn(testCreator.getId());
-
-        assertThrows(ResponseStatusException.class, () -> taskService.confirmTask(taskId, creatorToken),
-                "You have already confirmed this task.");
-    }
-
-}

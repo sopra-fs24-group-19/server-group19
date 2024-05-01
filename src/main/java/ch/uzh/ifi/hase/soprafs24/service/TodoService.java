@@ -118,6 +118,11 @@ public class TodoService {
 
         long userId = userService.getUserIdByToken(token);
 
+        if (userId != existingTodo.getTask().getCreator().getId() && userId != existingTodo.getTask().getHelper().getId()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                    "Only the creator or helper of this task are authorized to update a to-do.");
+        }
+
         if (!existingTodo.getDescription().equals(todoInput.getDescription())) {
             if (userId != existingTodo.getAuthor().getId()) {
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only the author of this Todo is authorized to update the description.");

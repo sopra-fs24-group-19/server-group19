@@ -93,4 +93,19 @@ public class TodoControllerTest {
                         .content(objectMapper.writeValueAsString(todoPostDTO)))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    public void testAreAllTodosDone() throws Exception {
+        Long taskId = 1L;
+        boolean allTodosDone = true;
+
+        when(todoService.areAllTodosDone(taskId)).thenReturn(allTodosDone);
+
+        mockMvc.perform(get("/allTodosDone/{taskId}", taskId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));
+
+        verify(todoService, times(1)).areAllTodosDone(taskId);
+    }
 }
