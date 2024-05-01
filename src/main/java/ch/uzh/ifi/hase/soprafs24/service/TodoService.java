@@ -56,6 +56,13 @@ public class TodoService {
         todoRepository.flush();
     }
 
+    public void createDefaultTodo(long taskId, String creatorToken, String title){
+        Todo todo = new Todo();
+        todo.setDescription(title);
+        todo.setDone(false);
+        createTodo(todo, taskId, creatorToken);
+    }
+
     //QUESTION: Only the creator of a task and the helper are able to see all todos?
     public List<TodoGetDTO> getTodosFromTask( String token, long taskId){
         //Tokenvalidation
