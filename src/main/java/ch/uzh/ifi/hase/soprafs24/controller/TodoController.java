@@ -29,13 +29,12 @@ public class TodoController {
 
         todoService.createTodo(todoInput, taskId, token);
     }
-    //TODO Refactor this method
-    @DeleteMapping("/todo")
+    @DeleteMapping("/todo/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ResponseBody
-    public void deleteTodo(@RequestBody TodoPutDTO todoPutDTO, @RequestHeader("Authorization") String token) {
-        Todo todoToDelete = DTOMapper.INSTANCE.convertTodoPutDTOToEntity(todoPutDTO);
-        todoService.deleteTodo(todoToDelete, token);
+    public void deleteTodo(@PathVariable("id") long id, @RequestHeader("Authorization") String token) {
+        //Todo todoToDelete = DTOMapper.INSTANCE.convertTodoPutDTOToEntity(todoPutDTO);
+        todoService.deleteTodo(id, token);
     }
 
     @PutMapping("/todo/{id}")
