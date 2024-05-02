@@ -21,9 +21,11 @@ public class RatingController {
     @PostMapping("/ratings/{reviewedId}")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public void createRating(@PathVariable("reviewedId") long reviewedId, @RequestBody RatingPostDTO ratingPostDTO,
+    public RatingGetDTO createRating(@PathVariable("reviewedId") long reviewedId, @RequestBody RatingPostDTO ratingPostDTO,
             @RequestHeader("Authorization") String token) {
-        ratingService.createReview(reviewedId, ratingPostDTO, token);
+        Rating newReview = ratingService.createReview(reviewedId, ratingPostDTO, token);
+        RatingGetDTO createdReview = DTOMapper.INSTANCE.convertEntityToRatingGetDTO(newReview);
+        return createdReview;
     }
 
     @GetMapping("/ratings/{userId}")

@@ -1,8 +1,11 @@
 package ch.uzh.ifi.hase.soprafs24.rest.mapper;
 import ch.uzh.ifi.hase.soprafs24.entity.*;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.*;
+import ch.uzh.ifi.hase.soprafs24.service.TaskService;
+import ch.uzh.ifi.hase.soprafs24.service.TodoService;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper
 public interface DTOMapper {
@@ -57,6 +60,20 @@ public interface DTOMapper {
     @Mapping(source = "title", target = "title")
     @Mapping(source = "duration", target = "duration")
     Task convertTaskPostDTOToEntity(TaskPostDTO taskPostDTO);
+
+
+    @Mapping(source = "description", target = "description")
+    Todo convertTodoPostDTOToEntity(TodoPostDTO todoPostDTO);
+
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "done", target = "done")
+    Todo convertTodoPutDTOToEntity(TodoPutDTO todoPutDTO);
+
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "done", target = "done")
+    TodoGetDTO convertEntityToTodoGetDTO(Todo todo);
 
     @Mapping(source = "price", target = "compensation")
     @Mapping(source = "description", target = "description")

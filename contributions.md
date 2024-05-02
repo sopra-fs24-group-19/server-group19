@@ -22,6 +22,13 @@ Additionally, I've structured the Applications table to facilitate an inner join
 * Additional details:
 Research work to implement real-time collaborative document editing (to implement a todo list) focusing on WebSockets for live, bidirectional communication.
 
+#### Week 4 (23.04 - 30.04)
+* GitHub issues worked on: #57, #58
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61233390
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61233480
+* Additional details:
+Fixed minor functionalities such as deleting all applications when a user is selected as an helper.
+
 
 ### Dana Rapp
 #### Week 1 (26.03 - 09.04)
@@ -57,7 +64,29 @@ Research work to implement real-time collaborative document editing (to implemen
   *  task description:
     * Implemented endpoint for retrieving an application that a user has sent
     * Implemented endpoint for marking task as done (task is marked as done only when both helper and creator have confirmed)
-    
+
+#### Week 4 (24.04 - 30.04)
+* GitHub issues worked on: #54, #55, #56
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61203545
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61207387
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61224532
+*  task description:
+    * Added a database table for storing to-do items
+    * Implemented endpoint for adding a new to-do, including authorization check
+    * Implemented endpoint for updating an existing to-do (updating its status and description)
+
+#### Week 5 (31.04 - 07.05)
+* GitHub issues worked on: #59, #60, #61
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61447620
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61447784
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61448066
+* task description:
+  * Modified the authorization for updating tasks such that:
+     * the description of a todo can be updated only by the author of the todo 
+     *  the helper cannot update the status of any todo (no matter who posted it)
+     * the help seeker (creator of the task the todo belongs to) can update the status of both todos that he posted and that the helper posted
+  * Implemented endpoint checking whether all to-do items related to a specific task have been marked as done
+  * Modified the create task function so that when creating a task, also a default to-do item is created
 
     
 ## FRONTEND CONTRIBUTIONS
@@ -74,6 +103,12 @@ Research work to implement real-time collaborative document editing (to implemen
     * Further work: connection of front and backend, changing some minor visual details in HomeFeed.tsx, UserProfile.tsx
 * Week 4 - Github issues worked on:
    * FE US4 (API, adjusting filtering, styling): https://github.com/sopra-fs24-group-19/client-group19/issues/13
+   * FE US5: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61231454
+   * FE US8: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=61231223
+   * Deleting a task you posted: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61231607
+   * Displaying the rest of the coins when you are creating a task
+   * User-friendly message when there are no tasks in your radius
+   
        
 
 * Name: Sina Klerings (For further details, please read the comment section in the links)

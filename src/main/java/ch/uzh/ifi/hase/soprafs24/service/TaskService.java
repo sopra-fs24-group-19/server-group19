@@ -9,12 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.entity.Application;
 import ch.uzh.ifi.hase.soprafs24.entity.Task;
-//import ch.uzh.ifi.hase.soprafs24.service.UserService;
+import ch.uzh.ifi.hase.soprafs24.service.TodoService;
 import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ public class TaskService {
 
     private final Logger log = LoggerFactory.getLogger(TaskService.class);
     private final UserService userService;
+    private final TodoService todoService;
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final ApplicationsRepository applicationsRepository;
@@ -36,15 +38,20 @@ public class TaskService {
             @Qualifier("taskRepository") TaskRepository taskRepository,
             ApplicationsRepository applicationsRepository,
             UserRepository userRepository,
-                UserService userService) {
+                UserService userService, @Lazy TodoService todoService) {
         this.taskRepository = taskRepository;
         this.userService = userService;
         this.userRepository = userRepository;
+        this.todoService = todoService;
         this.applicationsRepository= applicationsRepository;
     }
 
     public List<Task> getTasks() {
         return this.taskRepository.findAll();
+    }
+
+    public Task getTaskById(long id) {
+        return this.taskRepository.findById(id);
     }
 
     public List<Task> getTasksByCreator(long userId) {
@@ -67,10 +74,10 @@ public class TaskService {
         }
         newTask.setCreator(creator);
         newTask.setStatus(TaskStatus.CREATED);
-        newTask = taskRepository.save(newTask);
-        taskRepository.flush();
+        newTask = taskRepository.saveAndFlush(newTask);
         userService.subtractCoins(creator, newTask.getPrice());
-        log.debug("Created task: {}", newTask);
+
+        todoService.createDefaultTodo(newTask.getId(), creator.getToken(), newTask.getTitle());
         return newTask;
     }
 
@@ -118,6 +125,8 @@ public class TaskService {
         }
 
         task.setHelper(helper);
+        task.setStatus(TaskStatus.IN_PROGRESS);
+        deleteApplicationsByTask(task, helper);
     }
 
     public void deleteTaskWithId(long taskId, String token) {
@@ -190,4 +199,13 @@ public class TaskService {
         long currentUserId = userService.getUserIdByToken(token);
         return currentUserId == creatorId;
     }
+
+    public void deleteApplicationsByTask(Task task, User helper){
+        long helperId= helper.getId();
+        List<Application> applicationList = applicationsRepository.findApplicationsByTaskIdExcludingHelperId(task.getId(), helperId);
+        for (Application application : applicationList) {
+            applicationsRepository.delete(application);
+        }
+    }
 }
+
