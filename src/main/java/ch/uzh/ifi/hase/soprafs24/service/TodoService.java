@@ -80,8 +80,8 @@ public class TodoService {
         return todoGetDtoList;}
 
 
-    public void deleteTodo(Todo todoToDelete, String token) {
-        Todo todoRetrieved = todoRepository.findTodoById(todoToDelete.getId());
+    public void deleteTodo(long id, String token) {
+        Todo todoRetrieved = todoRepository.findTodoById(id);
         tokenValidationTodo(todoRetrieved, token);
 
         todoRepository.delete(todoRetrieved);

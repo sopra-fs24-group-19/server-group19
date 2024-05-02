@@ -34,7 +34,7 @@ public class RatingService {
         this.userRepository = userRepository;
     }
 
-    public void createReview(long reviewedId, RatingPostDTO rating, String token) {
+    public Rating createReview(long reviewedId, RatingPostDTO rating, String token) {
         Rating newReview = new Rating();
         newReview.setRating(rating.getStars());
         newReview.setReview(rating.getComment());
@@ -42,6 +42,7 @@ public class RatingService {
         newReview.setReviewer(this.userRepository.findUserById(rating.getReviewerId()));
         newReview.setCreationDate(LocalDateTime.now());
         ratingRepository.saveAndFlush(newReview);
+        return newReview;
     }
 
     public void deleteReview(long reviewId, String token) {

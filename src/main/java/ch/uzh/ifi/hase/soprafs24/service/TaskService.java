@@ -200,7 +200,7 @@ public class TaskService {
         return currentUserId == creatorId;
     }
 
-    private void deleteApplicationsByTask(Task task, User helper){
+    public void deleteApplicationsByTask(Task task, User helper){
         long helperId= helper.getId();
         List<Application> applicationList = applicationsRepository.findApplicationsByTaskIdExcludingHelperId(task.getId(), helperId);
         for (Application application : applicationList) {
@@ -208,3 +208,4 @@ public class TaskService {
         }
     }
 }
+
