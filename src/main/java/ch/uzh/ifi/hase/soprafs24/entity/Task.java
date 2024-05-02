@@ -55,7 +55,7 @@ public class Task implements Serializable {
     @ManyToMany(mappedBy = "applications")
     private List<User> candidates = new ArrayList<>();
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Todo> todos;
 
     public Long getId() {

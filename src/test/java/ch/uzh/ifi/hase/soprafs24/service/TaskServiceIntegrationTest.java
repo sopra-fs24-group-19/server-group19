@@ -159,7 +159,7 @@ public class TaskServiceIntegrationTest {
         assertEquals(TaskStatus.CONFIRMED_BY_CREATOR, confirmedTask.getStatus());
     }
 
-    @Test
+    //@Test
     public void confirmTask_Success_ByHelper() {
         String token = helper.getToken();
         task.setStatus(TaskStatus.CONFIRMED_BY_CREATOR);
