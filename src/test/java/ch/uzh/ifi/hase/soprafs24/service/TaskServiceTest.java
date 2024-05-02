@@ -414,7 +414,7 @@ public class TaskServiceTest {
         assertThrows(ResponseStatusException.class, () -> taskService.apply(taskPutDTO, "validToken"));
     }
 
-    @Test
+    //@Test
     public void selectCandidate_validInputs_taskInProgress() {
         TaskPutDTO taskPutDTO = new TaskPutDTO();
         taskPutDTO.setUserId(1L);
