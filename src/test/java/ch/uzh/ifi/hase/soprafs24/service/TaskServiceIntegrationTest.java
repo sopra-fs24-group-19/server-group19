@@ -131,22 +131,23 @@ public class TaskServiceIntegrationTest {
     public void createTask_lowCoinBalance_throwsException() {
 
         User testCreator = new User();
-        testCreator.setCoinBalance(20);
+        //testCreator.setCoinBalance(20);
+        testCreator.setId(1L);
         testCreator.setName("testName");
         testCreator.setUsername("testUsername");
         testCreator.setPassword("testPassword");
         User createdUser = userService.createUser(testCreator);
 
         Task testTask = new Task();
-        //testTask.setId(1L);
+        testTask.setId(1L);
         testTask.setTitle("testTitle");
         testTask.setDescription("testDescription");
         testTask.setAddress("testAddress");
         testTask.setCreator(testCreator);
         testTask.setDate(new Date());
         testTask.setDuration(30);
-        testTask.setPrice(50);
-        Task createdTask = taskService.createTask(testTask, createdUser.getId());
+        testTask.setPrice(60);
+        //Task createdTask = taskService.createTask(testTask, createdUser.getId());
 
         assertThrows(ResponseStatusException.class, () -> taskService.createTask(testTask, createdUser.getId()));
     }
@@ -159,18 +160,22 @@ public class TaskServiceIntegrationTest {
         assertEquals(TaskStatus.CONFIRMED_BY_CREATOR, confirmedTask.getStatus());
     }
 
-    //@Test
+
+    @Test
     public void confirmTask_Success_ByHelper() {
         String token = helper.getToken();
-        task.setStatus(TaskStatus.CONFIRMED_BY_CREATOR);
-        taskRepository.save(task);
+        Task originalTask = taskRepository.findById(task.getId())
+                .orElseThrow(() -> new NoSuchElementException("Task not found"));
 
+        originalTask.setStatus(TaskStatus.CONFIRMED_BY_CREATOR);
+
+        taskRepository.save(originalTask);
         Task confirmedTask = taskService.confirmTask(task.getId(), token);
         helper = userRepository.findById(helper.getId()).orElseThrow();
-
         assertEquals(TaskStatus.DONE, confirmedTask.getStatus());
         assertEquals(70, helper.getCoinBalance());
     }
+
 
     @Test
     public void confirmTask_Unauthorized_User() {
