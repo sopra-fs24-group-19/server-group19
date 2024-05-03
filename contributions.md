@@ -76,10 +76,11 @@ Fixed minor functionalities such as deleting all applications when a user is sel
     * Implemented endpoint for updating an existing to-do (updating its status and description)
 
 #### Week 5 (31.04 - 07.05)
-* GitHub issues worked on: #59, #60, #61
+* GitHub issues worked on: #59, #60, #61, #67
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61447620
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61447784
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61448066
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61825298
 * task description:
   * Modified the authorization for updating tasks such that:
      * the description of a todo can be updated only by the author of the todo 
@@ -87,6 +88,8 @@ Fixed minor functionalities such as deleting all applications when a user is sel
      * the help seeker (creator of the task the todo belongs to) can update the status of both todos that he posted and that the helper posted
   * Implemented endpoint checking whether all to-do items related to a specific task have been marked as done
   * Modified the create task function so that when creating a task, also a default to-do item is created
+  * Implemented a new endpoint that allows the frontend to retrieve a task using its id
+*  further activities: Fixed some bugs, deployed the server to Google cloud, wrote tests for the new features
 
     
 ## FRONTEND CONTRIBUTIONS
