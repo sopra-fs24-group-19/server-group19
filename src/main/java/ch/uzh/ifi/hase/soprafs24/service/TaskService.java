@@ -74,10 +74,12 @@ public class TaskService {
         }
         newTask.setCreator(creator);
         newTask.setStatus(TaskStatus.CREATED);
-        newTask = taskRepository.saveAndFlush(newTask);
         userService.subtractCoins(creator, newTask.getPrice());
-
-        todoService.createDefaultTodo(newTask.getId(), creator.getToken(), newTask.getTitle());
+        long taskId = newTask.getId();
+        String title = newTask.getTitle();
+        newTask = taskRepository.save(newTask);
+        taskRepository.flush();
+        todoService.createDefaultTodo(taskId, creator.getToken(), title);
         return newTask;
     }
 

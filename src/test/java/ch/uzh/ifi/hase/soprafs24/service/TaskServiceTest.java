@@ -38,6 +38,9 @@ public class TaskServiceTest {
     @Mock
     private UserService userService;
 
+    @Mock
+    private TodoService todoService;
+
     @InjectMocks
     private TaskService taskService;
 
@@ -78,15 +81,14 @@ public class TaskServiceTest {
         testTask.setDuration(30);
         testTask.setPrice(20);
 
-
         Mockito.when(taskRepository.save(Mockito.any())).thenReturn(testTask);
         Mockito.when(userService.getUserById(Mockito.anyLong())).thenReturn(testCreator);
 
     }
 
-    //@Test
+    @Test
     public void createTask_validInputs_success() {
-
+        doNothing().when(todoService).createDefaultTodo(anyLong(), anyString(), anyString());
         Task createdTask = taskService.createTask(testTask, testCreator.getId());
 
         Mockito.verify(taskRepository, Mockito.times(1)).save(Mockito.any());
