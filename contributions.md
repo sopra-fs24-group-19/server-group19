@@ -123,3 +123,7 @@ Fixed minor functionalities such as deleting all applications when a user is sel
     * FE US3 (further extension using an autocompletion API): https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask+week%3A%22Week+3%22&pane=issue&itemId=60167986
     * Further work: removal of mock data, connection of front- and backend as well as the navigation between frontend pages
 * Week 4 - Joker week -> no contributions, only minor bug fixes and adjustments
+* Week 5 - Github issues worked on:
+    * TODO List - design: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61801048
+    * Show users information in the header: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61801252
+    * Note: The commit noted in the issues contains a lot more bug fixes, design fixes and extension, for more details, please visit the commit
