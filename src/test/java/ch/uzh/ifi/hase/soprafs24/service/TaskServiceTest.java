@@ -88,7 +88,7 @@ public class TaskServiceTest {
 
     @Test
     public void createTask_validInputs_success() {
-        doNothing().when(todoService).createDefaultTodo(anyLong(), anyString(), anyString());
+        //doNothing().when(todoService).createDefaultTodo(anyLong(), anyString(), anyString());
         Task createdTask = taskService.createTask(testTask, testCreator.getId());
 
         Mockito.verify(taskRepository, Mockito.times(1)).save(Mockito.any());

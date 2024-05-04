@@ -77,9 +77,6 @@ public class TaskService {
         userService.subtractCoins(creator, newTask.getPrice());
         newTask = taskRepository.save(newTask);
         taskRepository.flush();
-        long taskId = newTask.getId();
-        String title = newTask.getTitle();
-        todoService.createDefaultTodo(taskId, creator.getToken(), title);
         return newTask;
     }
 

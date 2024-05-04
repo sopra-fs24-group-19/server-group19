@@ -5,6 +5,7 @@ import ch.uzh.ifi.hase.soprafs24.repository.*;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,12 +57,6 @@ public class TodoService {
         todoRepository.flush();
     }
 
-    public void createDefaultTodo(long taskId, String creatorToken, String title){
-        Todo todo = new Todo();
-        todo.setDescription(title);
-        todo.setDone(false);
-        createTodo(todo, taskId, creatorToken);
-    }
 
     //QUESTION: Only the creator of a task and the helper are able to see all todos?
     public List<TodoGetDTO> getTodosFromTask( String token, long taskId){
@@ -141,6 +136,9 @@ public class TodoService {
 
     public boolean areAllTodosDone(Long taskId) {
         List<Todo> todos = todoRepository.findAllByTaskId(taskId);
+        if (todos.isEmpty()) {
+            return false;
+        }
         return todos.stream().allMatch(Todo::isDone);
     }
 
