@@ -114,4 +114,16 @@ public class Task implements Serializable {
 
     public void setDuration(int duration) { this.duration = duration; }
 
+    public void addCandidate(User user) {
+        if (!candidates.contains(user)) {
+            candidates.add(user);
+            user.getApplications().add(this);
+        }
+    }
+
+    public boolean hasCandidate(User candidate) {
+        return candidates.contains(candidate);
+    }
+
+
 }

@@ -5,7 +5,6 @@ import ch.uzh.ifi.hase.soprafs24.repository.*;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,16 +25,14 @@ public class TodoService {
     private final TaskService taskService;
     private final UserService userService;
     private final TodoRepository todoRepository;
-    private final UserRepository userRepository;
 
     @Autowired
     public TodoService(
             @Qualifier("todoRepository") TodoRepository todoRepository, TaskService taskService,
-            UserService userService, UserRepository userRepository) {
+            UserService userService) {
         this.todoRepository = todoRepository;
         this.taskService = taskService;
         this.userService = userService;
-        this.userRepository= userRepository;
     }
 
     public void createTodo(Todo todo, long taskId, String token) {
@@ -98,7 +95,7 @@ public class TodoService {
     private boolean tokenValidationTodo(Todo todo, String token) {
         Task task = todo.getTask();
         User todoAuthor = todo.getAuthor();
-        User authenticatedUser = this.userRepository.findUserByToken(token);
+        User authenticatedUser = this.userService.getUserByToken(token);
 
         if (authenticatedUser != todoAuthor) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,

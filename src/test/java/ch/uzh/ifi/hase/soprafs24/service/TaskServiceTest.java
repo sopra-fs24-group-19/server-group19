@@ -3,21 +3,16 @@ package ch.uzh.ifi.hase.soprafs24.service;
 import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.*;
 import ch.uzh.ifi.hase.soprafs24.repository.*;
-import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.TaskPutDTO;
-import ch.uzh.ifi.hase.soprafs24.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
-
-import org.junit.jupiter.api.Test;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -30,16 +25,7 @@ public class TaskServiceTest {
     private TaskRepository taskRepository;
 
     @Mock
-    private ApplicationsRepository applicationsRepository;
-
-    @Mock
-    private UserRepository userRepository;
-
-    @Mock
     private UserService userService;
-
-    @Mock
-    private TodoService todoService;
 
     @InjectMocks
     private TaskService taskService;
@@ -118,7 +104,7 @@ public class TaskServiceTest {
         long taskId = 1L;
         String token = "validToken";
 
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
+        Mockito.when(taskRepository.findById(taskId)).thenReturn(Optional.ofNullable(testTask));
         Mockito.when(userService.getUserIdByToken("validToken")).thenReturn(testCreator.getId());
 
         taskService.deleteTaskWithId(taskId, token);
@@ -139,7 +125,7 @@ public class TaskServiceTest {
 
         long taskId = 1L;
         String token = "invalidToken";
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
+        Mockito.when(taskRepository.findById(taskId)).thenReturn(Optional.ofNullable(testTask));
 
         assertThrows(ResponseStatusException.class, () -> taskService.deleteTaskWithId(taskId, token),
                 "only the creator of this task is allowed to delete it");
@@ -231,15 +217,15 @@ public class TaskServiceTest {
         testTask.setCandidates(candidates);
         testCandidate.setApplications(applications);
 
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
-        Mockito.when(userRepository.findByToken(token)).thenReturn(testCandidate);
+        Mockito.when(taskRepository.findById(taskId)).thenReturn(Optional.ofNullable(testTask));
+        Mockito.when(userService.getUserByToken(token)).thenReturn(testCandidate);
 
         taskService.deleteCandidate(taskId, token);
 
         assertFalse(testTask.getCandidates().contains(testCandidate), "Candidate should be removed from the task");
         assertFalse(testCandidate.getApplications().contains(testTask), "Task should be removed from the candidate's applications");
         Mockito.verify(taskRepository).save(testTask);
-        Mockito.verify(userRepository).save(testCandidate);
+        Mockito.verify(userService).saveUser(testCandidate);
     }
 
     @Test
@@ -250,14 +236,14 @@ public class TaskServiceTest {
 
         testTask.setCandidates(candidates);
 
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
-        Mockito.when(userRepository.findByToken(token)).thenReturn(testCandidate);
+        Mockito.when(taskRepository.findById(taskId)).thenReturn(Optional.ofNullable(testTask));
+        Mockito.when(userService.getUserByToken(token)).thenReturn(testCandidate);
 
         assertThrows(ResponseStatusException.class, () -> taskService.deleteCandidate(taskId, token),
                 "Should throw exception as the user is not a candidate for the task");
 
         Mockito.verify(taskRepository, never()).save(any(Task.class));
-        Mockito.verify(userRepository, never()).save(any(User.class));
+        Mockito.verify(userService, never()).saveUser(any(User.class));
     }
 
     @Test
@@ -270,7 +256,7 @@ public class TaskServiceTest {
         testTask.setHelper(testHelper);
         testTask.setPrice(100);
 
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
+        Mockito.when(taskRepository.findById(taskId)).thenReturn(Optional.of(testTask));
         Mockito.when(userService.getUserIdByToken(creatorToken)).thenReturn(testCreator.getId());
 
         Task confirmedTask = taskService.confirmTask(taskId, creatorToken);
@@ -289,7 +275,7 @@ public class TaskServiceTest {
         testTask.setHelper(testHelper);
         testTask.setPrice(100);
 
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
+        Mockito.when(taskRepository.findById(taskId)).thenReturn(Optional.of(testTask));
         Mockito.when(userService.getUserIdByToken(helperToken)).thenReturn(testHelper.getId());
 
         Task confirmedTask = taskService.confirmTask(taskId, helperToken);
@@ -308,7 +294,7 @@ public class TaskServiceTest {
         testTask.setHelper(testHelper);
         testTask.setPrice(100);
 
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
+        Mockito.when(taskRepository.findById(taskId)).thenReturn(Optional.of(testTask));
         Mockito.when(userService.getUserIdByToken(creatorToken)).thenReturn(testCreator.getId());
 
         Task confirmedTask = taskService.confirmTask(taskId, creatorToken);
@@ -326,7 +312,7 @@ public class TaskServiceTest {
         testTask.setCreator(testCreator);
         testTask.setHelper(testHelper);
 
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
+        Mockito.when(taskRepository.findById(taskId)).thenReturn(Optional.of(testTask));
         Mockito.when(userService.getUserIdByToken(unauthorizedToken)).thenReturn(999L); // Some unrelated user
 
         assertThrows(ResponseStatusException.class, () -> taskService.confirmTask(taskId, unauthorizedToken));
@@ -341,7 +327,7 @@ public class TaskServiceTest {
         testTask.setCreator(testCreator);
         testTask.setHelper(testHelper);
 
-        Mockito.when(taskRepository.findById(taskId)).thenReturn(testTask);
+        Mockito.when(taskRepository.findById(taskId)).thenReturn(Optional.of(testTask));
         Mockito.when(userService.getUserIdByToken(creatorToken)).thenReturn(testCreator.getId());
 
         assertThrows(ResponseStatusException.class, () -> taskService.confirmTask(taskId, creatorToken),
@@ -356,17 +342,17 @@ public class TaskServiceTest {
 
         User candidate = new User();
         candidate.setId(1L);
+        candidate.setApplications(new ArrayList<>(Collections.emptyList()));
 
         Task task = new Task();
         task.setId(1L);
 
-        when(userRepository.findUserByToken(anyString())).thenReturn(candidate);
-        when(taskRepository.findById(anyLong())).thenReturn(task);
-        when(applicationsRepository.findByUserAndTask(any(User.class), any(Task.class))).thenReturn(null);
+
+        when(userService.getUserByToken(anyString())).thenReturn(candidate);
+        when(taskRepository.findById(anyLong())).thenReturn(Optional.of(task));
 
         taskService.apply(taskPutDTO, "validToken");
-
-        verify(applicationsRepository, times(1)).saveAndFlush(any(Application.class));
+        assertTrue(task.getCandidates().contains(candidate));
     }
 
     @Test
@@ -375,7 +361,7 @@ public class TaskServiceTest {
         taskPutDTO.setUserId(1L);
         taskPutDTO.setTaskId(1L);
 
-        when(userRepository.findUserByToken(anyString())).thenReturn(null);
+        when(userService.getUserByToken(anyString())).thenReturn(null);
 
         assertThrows(ResponseStatusException.class, () -> taskService.apply(taskPutDTO, "invalidToken"));
     }
@@ -389,8 +375,8 @@ public class TaskServiceTest {
         User candidate = new User();
         candidate.setId(1L);
 
-        when(userRepository.findUserByToken(anyString())).thenReturn(candidate);
-        when(taskRepository.findById(anyLong())).thenReturn(null);
+        when(userService.getUserByToken(anyString())).thenReturn(candidate);
+        when(taskRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(ResponseStatusException.class, () -> taskService.apply(taskPutDTO, "validToken"));
     }
@@ -406,17 +392,15 @@ public class TaskServiceTest {
 
         Task task = new Task();
         task.setId(1L);
+        task.setCandidates(new ArrayList<>(Collections.singletonList(candidate)));
 
-        Application existingApplication = new Application();
-
-        when(userRepository.findUserByToken(anyString())).thenReturn(candidate);
-        when(taskRepository.findById(anyLong())).thenReturn(task);
-        when(applicationsRepository.findByUserAndTask(any(User.class), any(Task.class))).thenReturn(existingApplication);
+        when(userService.getUserByToken(anyString())).thenReturn(candidate);
+        when(taskRepository.findById(anyLong())).thenReturn(Optional.of(task));
 
         assertThrows(ResponseStatusException.class, () -> taskService.apply(taskPutDTO, "validToken"));
     }
 
-    //@Test
+    @Test
     public void selectCandidate_validInputs_taskInProgress() {
         TaskPutDTO taskPutDTO = new TaskPutDTO();
         taskPutDTO.setUserId(1L);
@@ -432,21 +416,16 @@ public class TaskServiceTest {
 
         Task task = new Task();
         task.setId(1L);
+        task.setCandidates(new ArrayList<>(Collections.singletonList(helper)));
 
-        Application application = new Application();
-        application.setUser(helper);
-        application.setTask(task);
-
-        when(userRepository.findUserById(anyLong())).thenReturn(helper, creator);
-        when(taskRepository.findById(anyLong())).thenReturn(task);
-        when(applicationsRepository.findByUserAndTask(any(User.class), any(Task.class))).thenReturn(application);
-        when(userRepository.findUserByToken("validToken")).thenReturn(creator); // Ensure the token matches
+        when(userService.getUserById(anyLong())).thenReturn(helper, creator);
+        when(taskRepository.findById(anyLong())).thenReturn(Optional.of(task));
+        when(userService.getUserByToken("validToken")).thenReturn(creator);
 
         taskService.selectCandidate(taskPutDTO, "validToken");
 
         assertEquals(helper, task.getHelper());
         assertEquals(TaskStatus.IN_PROGRESS, task.getStatus());
-        verify(taskService, times(1)).deleteApplicationsByTask(task, helper);
     }
 
     @Test
@@ -461,7 +440,7 @@ public class TaskServiceTest {
         creator.setId(1L);
         creator.setToken("invalidToken");
 
-        when(userRepository.findUserById(anyLong())).thenReturn(creator);
+        when(userService.getUserById(anyLong())).thenReturn(creator);
 
         assertThrows(ResponseStatusException.class, () -> taskService.selectCandidate(taskPutDTO, "validToken"));
     }
@@ -477,8 +456,8 @@ public class TaskServiceTest {
         creator.setId(1L);
         creator.setToken("validToken");
 
-        when(userRepository.findUserById(anyLong())).thenReturn(creator);
-        when(taskRepository.findById(anyLong())).thenReturn(null);
+        when(userService.getUserById(anyLong())).thenReturn(creator);
+        when(taskRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(ResponseStatusException.class, () -> taskService.selectCandidate(taskPutDTO, "validToken"));
     }
@@ -500,35 +479,31 @@ public class TaskServiceTest {
         Task task = new Task();
         task.setId(1L);
 
-        when(userRepository.findUserById(anyLong())).thenReturn(helper, creator);
-        when(taskRepository.findById(anyLong())).thenReturn(task);
-        when(applicationsRepository.findByUserAndTask(any(User.class), any(Task.class))).thenReturn(null);
+        when(userService.getUserById(anyLong())).thenReturn(helper, creator);
+        when(taskRepository.findById(anyLong())).thenReturn(Optional.of(task));
 
         assertThrows(ResponseStatusException.class, () -> taskService.selectCandidate(taskPutDTO, "validToken"));
     }
 
     @Test
-    public void deleteApplicationsByTask_validInputs_applicationsDeleted() {
-        User helper = new User();
-        helper.setId(1L);
+    public void clearOtherCandidates_validInputs_applicationsDeleted() {
+        User helper1 = new User();
+        helper1.setId(1L);
+
+        User helper2 = new User();
+        helper2.setId(2L);
 
         Task task = new Task();
         task.setId(1L);
 
-        Application application1 = new Application();
-        application1.setUser(helper);
-        application1.setTask(task);
+        task.setCandidates(new ArrayList<>(Arrays.asList(helper1, helper2)));
+        helper1.setApplications(new ArrayList<>(Collections.singletonList(task)));
+        helper2.setApplications(new ArrayList<>(Collections.singletonList(task)));
 
-        Application application2 = new Application();
-        application2.setUser(helper);
-        application2.setTask(task);
+        taskService.clearOtherCandidates(task, helper1);
+        assertEquals(1, task.getCandidates().size());
+        assertTrue(task.getCandidates().contains(helper1));
+        assertFalse(task.getCandidates().contains(helper2));
 
-        List<Application> applicationList = Arrays.asList(application1, application2);
-
-        when(applicationsRepository.findApplicationsByTaskIdExcludingHelperId(anyLong(), anyLong())).thenReturn(applicationList);
-
-        taskService.deleteApplicationsByTask(task, helper);
-
-        verify(applicationsRepository, times(applicationList.size())).delete(any(Application.class));
     }
 }
