@@ -29,6 +29,16 @@ Research work to implement real-time collaborative document editing (to implemen
 * Additional details:
 Fixed minor functionalities such as deleting all applications when a user is selected as an helper.
 
+#### Week 5 (31.04 - 07.05)
+* GitHub issues worked on: #69, #70
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61903991
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61904035
+* Additional details:
+    * Several controls have been implemented to ensure the legitimacy of reviews and prevent fraudulent behavior:
+        * A user can only review another user if they have previously collaborated on a task or assisted the other user in completing a task.
+        * It is verified that after the completion of a task, a user can leave only one review for the other user.
+        * It is not permitted for a user to review themselves, in order to prevent fraud.
+    * Additionally, the Delete TODO endpoint has been redesigned: it now only accepts the ID of the todo and the token, enhancing security and clarity.
 
 ### Dana Rapp
 #### Week 1 (26.03 - 09.04)
