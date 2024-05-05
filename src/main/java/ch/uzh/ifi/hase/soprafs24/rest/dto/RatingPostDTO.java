@@ -10,6 +10,8 @@ public class RatingPostDTO {
 
     private String comment;
 
+    private long taskId;
+
     public void setStars(int stars) { this.stars = stars; }
 
     public int getStars() { return stars; }
@@ -25,4 +27,8 @@ public class RatingPostDTO {
     public long getReviewedId() { return reviewedId; }
 
     public void setReviewedId(long reviewedId) { this.reviewedId = reviewedId; }
+
+    public long getTaskId() { return taskId; }
+
+    public void setTaskId(long taskId) { this.taskId = taskId; }
 }

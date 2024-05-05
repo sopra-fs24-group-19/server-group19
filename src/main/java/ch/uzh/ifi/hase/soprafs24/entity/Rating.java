@@ -33,6 +33,18 @@ public class Rating implements Serializable {
     @JsonBackReference
     private User reviewed;
 
+    @ManyToOne
+    @JoinColumn(name="task_id")
+    private Task task;
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
+
     public Long getId() {
         return id;
     }

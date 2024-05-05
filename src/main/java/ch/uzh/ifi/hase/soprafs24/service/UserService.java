@@ -123,7 +123,7 @@ public class UserService {
   public long getUserIdByToken(String token) {
     User user = this.userRepository.findByToken(token);
     if (user == null) {
-      throw new NoSuchElementException("User not found with token: " + token);
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "\n User not found with token: \n " + token);
     }
     return user.getId();
   }
