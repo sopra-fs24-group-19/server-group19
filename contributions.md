@@ -76,22 +76,34 @@ Fixed minor functionalities such as deleting all applications when a user is sel
     * Implemented endpoint for updating an existing to-do (updating its status and description)
 
 #### Week 5 (31.04 - 07.05)
-* GitHub issues worked on: #59, #60, #61, #67
+* GitHub issues worked on: #59, #60, #61, #67, #72
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61447620
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61447784
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61448066
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61825298
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=62175719
 * task description:
-  * Modified the authorization for updating tasks such that:
-     * the description of a todo can be updated only by the author of the todo 
+  * #59: Modified the authorization for updating tasks such that:
+     *  the description of a todo can be updated only by the author of the todo 
      *  the helper cannot update the status of any todo (no matter who posted it)
      * the help seeker (creator of the task the todo belongs to) can update the status of both todos that he posted and that the helper posted
-  * Implemented endpoint checking whether all to-do items related to a specific task have been marked as done
-  * Modified the create task function so that when creating a task, also a default to-do item is created (this has been changed later as we decided to handle this differently. Instead of creating a default todo upon task creation, I added a check to the allTodosDone method so that it returns false if there have never been any todos associated with the given task)
-  * Implemented a new endpoint that allows the frontend to retrieve a task using its id
-*  further activities: Fixed some bugs, deployed the server to Google cloud, wrote tests for the new features, code refactoring (fixed some dependency issues due to cross-calling the repositories from different services)
+  * #60: Implemented endpoint checking whether all to-do items related to a specific task have been marked as done
+  * #61: Modified the create task function so that when creating a task, also a default to-do item is created (this has been changed later as we decided to handle this differently. Instead of creating a default todo upon task creation, I added a check to the allTodosDone method so that it returns false if there have never been any todos associated with the given task)
+  * #67: Implemented a new endpoint that allows the frontend to retrieve a task using its id
+  * #72: overall code refactoring (fixed some dependency issues due to cross-calling the repositories from different services)
+*  further activities: Fixed some bugs, deployed the server to Google cloud, wrote tests for the new features
 
-    
+#### Week 6 (07.05 - 14.05)
+* GitHub issues worked on: #24, #25, #71
+  * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=62164588
+  * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=62174535
+  * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=62134907
+* task descriptions:
+  * #24 (Frontend): Created a page for displaying a user ranking based on how many tasks they have been completed
+  * #25 (Frontend): Added a button to the header that redirects the user to the leaderboard page
+  * #71 (Backend): Implemented a new get endpoint that returns a list of users sorted by the number of tasks they have completed, along with their rank and the number of completed tasks
+  
+
 ## FRONTEND CONTRIBUTIONS
 * Name: Nina Rubesa (For further details, please read the comment section in the links)
 * Week 1 - Github issues worked on:
