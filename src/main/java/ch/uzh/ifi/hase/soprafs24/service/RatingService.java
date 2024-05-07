@@ -1,12 +1,9 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
 import ch.uzh.ifi.hase.soprafs24.repository.RatingRepository;
-import ch.uzh.ifi.hase.soprafs24.repository.TaskRepository;
+//import ch.uzh.ifi.hase.soprafs24.repository.TaskRepository;
 import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.Rating;
-import ch.uzh.ifi.hase.soprafs24.entity.Task;
-import ch.uzh.ifi.hase.soprafs24.entity.User;
-import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.RatingPostDTO;
 
 import org.slf4j.Logger;
@@ -25,16 +22,11 @@ import java.util.List;
 public class RatingService {
     private final Logger log = LoggerFactory.getLogger(RatingService.class);
     private final RatingRepository ratingRepository;
-    private final TaskRepository taskRepository;
-    private final UserRepository userRepository;
     private final UserService userService;
 
     @Autowired
-    public RatingService(@Qualifier("ratingRepository") RatingRepository ratingRepository,
-            TaskRepository taskRepository, UserRepository userRepository, UserService userService) {
+    public RatingService(@Qualifier("ratingRepository") RatingRepository ratingRepository, UserService userService) {
         this.ratingRepository = ratingRepository;
-        this.taskRepository = taskRepository;
-        this.userRepository = userRepository;
         this.userService = userService;
     }
 
@@ -56,7 +48,6 @@ public class RatingService {
         isReviewAuthorized(reviewCreatorId, reviewedId, taskId);
 
         Rating newReview = new Rating();
-
         newReview.setRating(ratingPostDTO.getStars());
         newReview.setReview(ratingPostDTO.getComment());
         newReview.setReviewed(this.userRepository.findUserById(reviewedId));
@@ -68,7 +59,7 @@ public class RatingService {
     }
 
     public void deleteReview(long reviewId, String token) {
-        long idUserRetrieved = this.userRepository.findUserByToken(token).getId();
+        long idUserRetrieved = this.userService.getUserIdByToken(token);
         long idReviewer = this.ratingRepository.findRatingById(reviewId).getReviewer().getId();
         if (idUserRetrieved != idReviewer) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the author of a review can delete it");
@@ -82,29 +73,9 @@ public class RatingService {
         }
         List<Rating> reviewList = this.ratingRepository.findRatingsByReviewedId(userId);
         return reviewList;
-    }
 
-    public int findReviews(User reviewer, User reviewed) {
-        int reviewsCount = 0;
-        for (Rating rating : reviewed.getRatings()) {
-            if (rating.getReviewer() == reviewer) {
-                reviewsCount += 1;
-            }
-        }
-        return reviewsCount;
-    }
-
-    public int findCreatedJobs(User helper, User creator) {
-        List<Task> createdJobs = this.taskRepository.findByCreatorId(creator.getId());
-        int createdJobsCount = createdJobs.size();
-        return createdJobsCount;
-    }
-
-    public int findHelpedJobs(User helper, User creator) {
-        List<Task> helpedJobs = this.taskRepository.findByHelperId(creator.getId());
-        int createdJobsCount = helpedJobs.size();
-        return createdJobsCount;
-    }
+    } 
+    
 
     private boolean isReviewAuthorized(long id_reviewer, long id_reviewed, long id_task) {
         Task task = taskService.getTaskById(id_task);

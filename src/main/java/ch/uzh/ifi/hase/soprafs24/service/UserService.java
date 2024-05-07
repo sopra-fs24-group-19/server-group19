@@ -1,9 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
-import ch.uzh.ifi.hase.soprafs24.entity.Rating;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
-import ch.uzh.ifi.hase.soprafs24.repository.RatingRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +22,10 @@ public class UserService {
   private final Logger log = LoggerFactory.getLogger(UserService.class);
 
   private final UserRepository userRepository;
-  private final RatingRepository ratingRepository;
 
   @Autowired
-  public UserService(@Qualifier("userRepository") UserRepository userRepository, RatingRepository ratingRepository) {
+  public UserService(@Qualifier("userRepository") UserRepository userRepository) {
     this.userRepository = userRepository;
-    this.ratingRepository = ratingRepository;
-  }
-
-  public List<User> getUsers() {
-    return this.userRepository.findAll();
   }
 
   public User createUser(User newUser) {
@@ -51,12 +43,12 @@ public class UserService {
     User userRetrieved = this.userRepository.findByUsername(userLogin.getUsername());
     if (userRetrieved == null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-          String.format("The username you provided was not found in the database."));
+              "The username you provided was not found in the database.");
     }
     String userLoginPassword = userLogin.getPassword();
     String userRetrievedPassword = userRetrieved.getPassword();
     if (!userLoginPassword.equals(userRetrievedPassword)) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("The password was not correct."));
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The password was not correct.");
     }
     userRetrieved.setToken(UUID.randomUUID().toString());
     // userRetrieved.setStatus(UserStatus.ONLINE);
@@ -68,7 +60,7 @@ public class UserService {
     tokenExistance(token);
     User userRetrieved = this.userRepository.findUserByToken(token);
     if (userRetrieved == null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Can't find the user."));
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't find the user.");
     }
     // userRetrieved.setToken(null);
     // userRetrieved.setStatus(UserStatus.OFFLINE);
@@ -102,13 +94,18 @@ public class UserService {
     }
   }
 
+  public User getUserByToken(String token){
+      return this.userRepository.findByToken(token);
+  }
+
   public User getUserById(long id) {
     Optional<User> user = this.userRepository.findById(id);
-    if (!user.isPresent()) {
+    if (user.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no user exists with id" + id);
-    } 
+    }
+    //User userToEnrich = user.get();
+    /*
     List<Rating> allRatings= this.ratingRepository.findRatingsByReviewedId(id);
-    User userToEnrich = user.get();
     int sumOfAllRatings = 0;
     for ( Rating rating : allRatings){
       sumOfAllRatings += rating.getRating();
@@ -117,7 +114,8 @@ public class UserService {
     float averageRating = totalRatings > 0 ? (float) sumOfAllRatings / totalRatings : 0;
     userToEnrich.setTotalComments(totalRatings);
     userToEnrich.setAverageStars(averageRating);
-    return userToEnrich;
+    */
+    return user.get();
   }
 
   public long getUserIdByToken(String token) {
@@ -154,4 +152,8 @@ public class UserService {
     }
     return true;
   }
+
+    public void saveUser(User user) {
+      userRepository.save(user);
+    }
 }
