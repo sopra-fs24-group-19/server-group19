@@ -87,9 +87,9 @@ Fixed minor functionalities such as deleting all applications when a user is sel
      *  the helper cannot update the status of any todo (no matter who posted it)
      * the help seeker (creator of the task the todo belongs to) can update the status of both todos that he posted and that the helper posted
   * Implemented endpoint checking whether all to-do items related to a specific task have been marked as done
-  * Modified the create task function so that when creating a task, also a default to-do item is created
+  * Modified the create task function so that when creating a task, also a default to-do item is created (this has been changed later as we decided to handle this differently. Instead of creating a default todo upon task creation, I added a check to the allTodosDone method so that it returns false if there have never been any todos associated with the given task)
   * Implemented a new endpoint that allows the frontend to retrieve a task using its id
-*  further activities: Fixed some bugs, deployed the server to Google cloud, wrote tests for the new features
+*  further activities: Fixed some bugs, deployed the server to Google cloud, wrote tests for the new features, code refactoring (fixed some dependency issues due to cross-calling the repositories from different services)
 
     
 ## FRONTEND CONTRIBUTIONS
@@ -111,6 +111,10 @@ Fixed minor functionalities such as deleting all applications when a user is sel
    * Deleting a task you posted: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61231607
    * Displaying the rest of the coins when you are creating a task
    * User-friendly message when there are no tasks in your radius
+* Week 4 - Github issues worked on: #20, #23
+    * ToDo List - functionality: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61800385
+    * ToDo List - making a template and connecting it to other pages: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61900653
+  
    
        
 

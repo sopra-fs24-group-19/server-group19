@@ -58,6 +58,17 @@ public class Task implements Serializable {
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Todo> todos;
 
+    @OneToMany(mappedBy = "task")
+    private List<Rating> ratings;
+
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
+    }
+
     public Long getId() {
         return id;
     }

@@ -1,6 +1,8 @@
 package ch.uzh.ifi.hase.soprafs24.repository;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Rating;
+import ch.uzh.ifi.hase.soprafs24.entity.Task;
+
 import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +23,6 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
     @Modifying
     @Query("DELETE FROM Rating r WHERE r.id = :reviewId")
     void deleteRatingById(@Param("reviewId") long reviewId);
+
+    boolean existsByTaskAndReviewerId(Task task, Long reviewerId);
 }

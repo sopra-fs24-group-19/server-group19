@@ -24,8 +24,8 @@ public class RatingController {
     public RatingGetDTO createRating(@PathVariable("reviewedId") long reviewedId, @RequestBody RatingPostDTO ratingPostDTO,
             @RequestHeader("Authorization") String token) {
         Rating newReview = ratingService.createReview(reviewedId, ratingPostDTO, token);
-        RatingGetDTO createdReview = DTOMapper.INSTANCE.convertEntityToRatingGetDTO(newReview);
-        return createdReview;
+        RatingGetDTO reviewToSendBack = DTOMapper.INSTANCE.convertEntityToRatingGetDTO(newReview);
+        return reviewToSendBack;
     }
 
     @GetMapping("/ratings/{userId}")
