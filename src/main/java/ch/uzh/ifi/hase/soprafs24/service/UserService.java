@@ -1,6 +1,10 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import java.util.NoSuchElementException;
-import java.util.List;
-import java.util.UUID;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -155,5 +155,29 @@ public class UserService {
 
     public void saveUser(User user) {
       userRepository.save(user);
+    }
+
+    public List<Object[]> getRankedUsers() {
+        List<Object[]> leaderboardData = userRepository.findUsersWithMostTasksAsHelper();
+        List<Object[]> rankedUsers = new ArrayList<>();
+        int rank = 1;
+        int nextRank = 1;
+        Long previousTaskCount = null;
+
+        for (int i = 0; i < leaderboardData.size(); i++) {
+            long  userId = (Long) leaderboardData.get(i)[0];
+            User user = getUserById(userId);
+            Long taskCount = (Long) leaderboardData.get(i)[1];
+
+            if (previousTaskCount != null && !taskCount.equals(previousTaskCount)) {
+                nextRank++;
+                rank = nextRank;
+
+            }
+            rankedUsers.add(new Object[]{user, taskCount, rank});
+            previousTaskCount = taskCount;
+        }
+
+        return rankedUsers;
     }
 }

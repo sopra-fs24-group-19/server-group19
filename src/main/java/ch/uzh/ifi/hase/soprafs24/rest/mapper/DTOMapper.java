@@ -105,6 +105,10 @@ public interface DTOMapper {
     @Mapping(source = "creationDate", target = "creationDate")
     RatingGetDTO convertEntityToRatingGetDTO(Rating rating);
 
+    default UserTaskCountDTO toUserTaskCountDTO(User user, Long taskCount, Integer rank) {
+        return new UserTaskCountDTO(user.getId(), user.getUsername(), taskCount, rank);
+    }
+
 /*     @Mapping(source = "helper", target = "helper")
     @Mapping(source = "userId", target = "creator")
     @Mapping(source = "taskId", target = "id")
