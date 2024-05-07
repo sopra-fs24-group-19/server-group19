@@ -1,5 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
+import ch.uzh.ifi.hase.soprafs24.entity.Task;
 import ch.uzh.ifi.hase.soprafs24.repository.RatingRepository;
 //import ch.uzh.ifi.hase.soprafs24.repository.TaskRepository;
 import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
@@ -50,8 +51,8 @@ public class RatingService {
         Rating newReview = new Rating();
         newReview.setRating(ratingPostDTO.getStars());
         newReview.setReview(ratingPostDTO.getComment());
-        newReview.setReviewed(this.userRepository.findUserById(reviewedId));
-        newReview.setReviewer(this.userRepository.findUserById(reviewCreatorId));
+        newReview.setReviewed(this.userService.getUserById(reviewedId));
+        newReview.setReviewer(this.userService.getUserById(reviewCreatorId));
         newReview.setTask(task);
         newReview.setCreationDate(LocalDateTime.now());
         ratingRepository.saveAndFlush(newReview);
