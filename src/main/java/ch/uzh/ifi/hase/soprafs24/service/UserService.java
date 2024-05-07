@@ -1,10 +1,8 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
+import ch.uzh.ifi.hase.soprafs24.entity.Rating;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.*;
-
 import java.util.*;
-import java.util.stream.Collectors;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,14 +21,16 @@ public class UserService {
 
   private final UserRepository userRepository;
 
+  private final RatingService ratingService;
+
   @Autowired
-  public UserService(@Qualifier("userRepository") UserRepository userRepository) {
+  public UserService(@Qualifier("userRepository") UserRepository userRepository, RatingService ratingService) {
     this.userRepository = userRepository;
+    this.ratingService = ratingService;
   }
 
   public User createUser(User newUser) {
     newUser.setToken(UUID.randomUUID().toString());
-    // newUser.setStatus(UserStatus.ONLINE);
     newUser.setCoinBalance(50);
     checkIfUserExists(newUser);
     newUser = this.userRepository.save(newUser);
@@ -51,7 +51,6 @@ public class UserService {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The password was not correct.");
     }
     userRetrieved.setToken(UUID.randomUUID().toString());
-    // userRetrieved.setStatus(UserStatus.ONLINE);
     this.userRepository.saveAndFlush(userRetrieved);
     return userRetrieved;
   }
@@ -62,8 +61,6 @@ public class UserService {
     if (userRetrieved == null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't find the user.");
     }
-    // userRetrieved.setToken(null);
-    // userRetrieved.setStatus(UserStatus.OFFLINE);
     this.userRepository.saveAndFlush(userRetrieved);
   }
 
@@ -81,8 +78,6 @@ public class UserService {
     userToEdit.setLongitude(userWithPendingChanges.getLongitude());
     userToEdit.setPhoneNumber(userWithPendingChanges.getPhoneNumber());
     userToEdit.setRadius(userWithPendingChanges.getRadius());
-    // TODO SPECIFY ALL THE VARIABLES IN WHICH WE ALLOW UPDATES i.e. we don't allow
-    // to change the username
     this.userRepository.saveAndFlush(userToEdit);
   }
 
@@ -103,9 +98,9 @@ public class UserService {
     if (user.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no user exists with id" + id);
     }
-    //User userToEnrich = user.get();
-    /*
-    List<Rating> allRatings= this.ratingRepository.findRatingsByReviewedId(id);
+    User userToEnrich = user.get();
+
+    List<Rating> allRatings= this.ratingService.findRatingsByReviewedId(id);
     int sumOfAllRatings = 0;
     for ( Rating rating : allRatings){
       sumOfAllRatings += rating.getRating();
@@ -114,7 +109,6 @@ public class UserService {
     float averageRating = totalRatings > 0 ? (float) sumOfAllRatings / totalRatings : 0;
     userToEnrich.setTotalComments(totalRatings);
     userToEnrich.setAverageStars(averageRating);
-    */
     return user.get();
   }
 

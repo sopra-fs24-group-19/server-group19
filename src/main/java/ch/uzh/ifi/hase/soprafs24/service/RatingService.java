@@ -68,6 +68,10 @@ public class RatingService {
         this.ratingRepository.deleteRatingById(reviewId);
     }
 
+    public List<Rating> findRatingsByReviewedId (long id){
+        return this.ratingRepository.findRatingsByReviewedId(id);
+    }
+
     public List<Rating> getRatingsOfAnUser(Long userId, String token) {
         if (token.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You don't have a valid token");

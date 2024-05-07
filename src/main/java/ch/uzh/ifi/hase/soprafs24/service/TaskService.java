@@ -75,7 +75,6 @@ public class TaskService {
     public void apply(TaskPutDTO taskPutDTO, String token) {
         User candidate = userService.getUserByToken(token);
 
-        // Check for valid token and user
         if (candidate == null || token.isEmpty() || taskPutDTO.getUserId() != candidate.getId()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid token.");
         }
@@ -89,10 +88,8 @@ public class TaskService {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "You already applied.");
         }
 
-        // Add the candidate to the task
         selectedTask.addCandidate(candidate);
 
-        // Save the updated task
         taskRepository.save(selectedTask);
     }
 
@@ -109,19 +106,16 @@ public class TaskService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the creator of a task can choose the helper");
         }
 
-        // Check if the helper is a valid candidate for the task
         if (!task.hasCandidate(helper)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "This helper has not applied for the job.");
         }
 
-        // Set the helper and update the task status
         task.setHelper(helper);
         task.setStatus(TaskStatus.IN_PROGRESS);
 
-        // Clear other applications
         clearOtherCandidates(task, helper);
 
-        taskRepository.save(task); // Save the task with the new helper and status
+        taskRepository.save(task);
     }
 
     public void clearOtherCandidates(Task task, User selectedHelper) {
@@ -132,14 +126,14 @@ public class TaskService {
 
         // Update each candidate's applications to remove this task
         for (User candidate : candidatesToRemove) {
-            candidate.getApplications().remove(task); // Remove the task from the candidate's applications
-            userService.saveUser(candidate); // Persist changes to each candidate
+            candidate.getApplications().remove(task);
+            userService.saveUser(candidate);
         }
 
         // Clear candidates and re-add only the selected helper directly, if not already present
         task.getCandidates().removeIf(candidate -> !candidate.equals(selectedHelper));
 
-        taskRepository.save(task); // Save changes to the task
+        taskRepository.save(task);
     }
 
 
@@ -160,7 +154,6 @@ public class TaskService {
             userService.saveUser(candidate);
         }
 
-        // Safely delete the task, as no foreign key constraints should block this operation
         taskRepository.delete(taskToBeDeleted);
 
         // Update the coins for the task creator
@@ -227,14 +220,5 @@ public class TaskService {
         return currentUserId == creatorId;
     }
 
-    /*
-    public void deleteApplicationsByTask(Task task, User helper){
-        long helperId= helper.getId();
-        List<Application> applicationList = applicationsRepository.findApplicationsByTaskIdExcludingHelperId(task.getId(), helperId);
-        for (Application application : applicationList) {
-            applicationsRepository.delete(application);
-        }
-    }
-     */
 }
 
