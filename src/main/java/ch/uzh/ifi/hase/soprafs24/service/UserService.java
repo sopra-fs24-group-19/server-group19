@@ -94,7 +94,16 @@ public class UserService {
       return this.userRepository.findByToken(token);
   }
 
-  public User getUserById(long id) {
+
+  public User getUserById(long id){
+      Optional<User> user = this.userRepository.findById(id);
+      if (user.isEmpty()) {
+          throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no user exists with id" + id);
+      }
+      return user.get();
+  }
+
+  public User getUserWithRatings(long id) {
     Optional<User> user = this.userRepository.findById(id);
     if (user.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no user exists with id" + id);

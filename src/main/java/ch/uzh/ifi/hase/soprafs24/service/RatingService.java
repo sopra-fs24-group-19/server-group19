@@ -51,8 +51,8 @@ public class RatingService {
         Rating newReview = new Rating();
         newReview.setRating(ratingPostDTO.getStars());
         newReview.setReview(ratingPostDTO.getComment());
-        newReview.setReviewed(this.userService.getUserById(reviewedId));
-        newReview.setReviewer(this.userService.getUserById(reviewCreatorId));
+        newReview.setReviewed(this.userService.getUserWithRatings(reviewedId));
+        newReview.setReviewer(this.userService.getUserWithRatings(reviewCreatorId));
         newReview.setTask(task);
         newReview.setCreationDate(LocalDateTime.now());
         ratingRepository.saveAndFlush(newReview);

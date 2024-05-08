@@ -60,7 +60,7 @@ public class UserController {
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public UserGetFullDTO getUser(@PathVariable("userId") long id) {
-    User user = userService.getUserById(id);
+    User user = userService.getUserWithRatings(id);
     return DTOMapper.INSTANCE.convertEntityToUserGetFullDTO(user);
   }
 
