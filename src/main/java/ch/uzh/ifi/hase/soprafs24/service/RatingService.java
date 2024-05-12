@@ -88,9 +88,9 @@ public class RatingService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found");
         }
 
-        if (task.getStatus() != TaskStatus.DONE) {
+/*         if (task.getStatus() != TaskStatus.DONE) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only tasks that are done can be reviewed.");
-        }
+        } */
 
         // Check if the reviewer is either the creator or the helper of the task
         if (task.getCreator().getId() != id_reviewer && task.getHelper().getId() != id_reviewer) {
