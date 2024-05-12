@@ -123,7 +123,7 @@ Fixed minor functionalities such as deleting all applications when a user is sel
    * Deleting a task you posted: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61231607
    * Displaying the rest of the coins when you are creating a task
    * User-friendly message when there are no tasks in your radius
-* Week 4 - Github issues worked on: #20, #23
+* Week 5 - Github issues worked on: #20, #23
     * ToDo List - functionality: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61800385
     * ToDo List - making a template and connecting it to other pages: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61900653
   
