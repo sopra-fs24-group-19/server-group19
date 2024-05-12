@@ -1,19 +1,18 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
+import ch.uzh.ifi.hase.soprafs24.entity.Rating;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import java.util.*;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-import java.util.NoSuchElementException;
-import java.util.List;
-import java.util.UUID;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -23,14 +22,16 @@ public class UserService {
 
   private final UserRepository userRepository;
 
+  private final RatingService ratingService;
+
   @Autowired
-  public UserService(@Qualifier("userRepository") UserRepository userRepository) {
+  public UserService(@Qualifier("userRepository") UserRepository userRepository, @Lazy RatingService ratingService) {
     this.userRepository = userRepository;
+    this.ratingService = ratingService;
   }
 
   public User createUser(User newUser) {
     newUser.setToken(UUID.randomUUID().toString());
-    // newUser.setStatus(UserStatus.ONLINE);
     newUser.setCoinBalance(50);
     checkIfUserExists(newUser);
     newUser = this.userRepository.save(newUser);
@@ -51,7 +52,6 @@ public class UserService {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The password was not correct.");
     }
     userRetrieved.setToken(UUID.randomUUID().toString());
-    // userRetrieved.setStatus(UserStatus.ONLINE);
     this.userRepository.saveAndFlush(userRetrieved);
     return userRetrieved;
   }
@@ -62,8 +62,6 @@ public class UserService {
     if (userRetrieved == null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't find the user.");
     }
-    // userRetrieved.setToken(null);
-    // userRetrieved.setStatus(UserStatus.OFFLINE);
     this.userRepository.saveAndFlush(userRetrieved);
   }
 
@@ -81,8 +79,6 @@ public class UserService {
     userToEdit.setLongitude(userWithPendingChanges.getLongitude());
     userToEdit.setPhoneNumber(userWithPendingChanges.getPhoneNumber());
     userToEdit.setRadius(userWithPendingChanges.getRadius());
-    // TODO SPECIFY ALL THE VARIABLES IN WHICH WE ALLOW UPDATES i.e. we don't allow
-    // to change the username
     this.userRepository.saveAndFlush(userToEdit);
   }
 
@@ -98,14 +94,23 @@ public class UserService {
       return this.userRepository.findByToken(token);
   }
 
-  public User getUserById(long id) {
+
+  public User getUserById(long id){
+      Optional<User> user = this.userRepository.findById(id);
+      if (user.isEmpty()) {
+          throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no user exists with id" + id);
+      }
+      return user.get();
+  }
+
+  public User getUserWithRatings(long id) {
     Optional<User> user = this.userRepository.findById(id);
     if (user.isEmpty()) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no user exists with id" + id);
     }
-    //User userToEnrich = user.get();
-    /*
-    List<Rating> allRatings= this.ratingRepository.findRatingsByReviewedId(id);
+    User userToEnrich = user.get();
+
+    List<Rating> allRatings= this.ratingService.findRatingsByReviewedId(id);
     int sumOfAllRatings = 0;
     for ( Rating rating : allRatings){
       sumOfAllRatings += rating.getRating();
@@ -114,7 +119,6 @@ public class UserService {
     float averageRating = totalRatings > 0 ? (float) sumOfAllRatings / totalRatings : 0;
     userToEnrich.setTotalComments(totalRatings);
     userToEnrich.setAverageStars(averageRating);
-    */
     return user.get();
   }
 
@@ -155,5 +159,29 @@ public class UserService {
 
     public void saveUser(User user) {
       userRepository.save(user);
+    }
+
+    public List<Object[]> getRankedUsers() {
+        List<Object[]> leaderboardData = userRepository.findUsersWithMostTasksAsHelper();
+        List<Object[]> rankedUsers = new ArrayList<>();
+        int rank = 1;
+        int nextRank = 1;
+        Long previousTaskCount = null;
+
+        for (int i = 0; i < leaderboardData.size(); i++) {
+            long  userId = (Long) leaderboardData.get(i)[0];
+            User user = getUserById(userId);
+            Long taskCount = (Long) leaderboardData.get(i)[1];
+
+            if (previousTaskCount != null && !taskCount.equals(previousTaskCount)) {
+                nextRank++;
+                rank = nextRank;
+
+            }
+            rankedUsers.add(new Object[]{user, taskCount, rank});
+            previousTaskCount = taskCount;
+        }
+
+        return rankedUsers;
     }
 }

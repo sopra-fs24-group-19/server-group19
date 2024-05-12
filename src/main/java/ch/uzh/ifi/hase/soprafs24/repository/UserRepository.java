@@ -21,7 +21,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   @Query("SELECT u FROM User u JOIN u.applications t WHERE t.id = :taskId")
   List<User> findUsersByTaskId(Long taskId);
- 
+
+    @Query("SELECT u.id, COUNT(t) FROM User u LEFT JOIN u.assignedTasks t WHERE t.status = 0 GROUP BY u.id ORDER BY COUNT(t) DESC")
+    List<Object[]> findUsersWithMostTasksAsHelper();
+
 
 
 

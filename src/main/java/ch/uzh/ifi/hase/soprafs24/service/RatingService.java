@@ -51,8 +51,8 @@ public class RatingService {
         Rating newReview = new Rating();
         newReview.setRating(ratingPostDTO.getStars());
         newReview.setReview(ratingPostDTO.getComment());
-        newReview.setReviewed(this.userService.getUserById(reviewedId));
-        newReview.setReviewer(this.userService.getUserById(reviewCreatorId));
+        newReview.setReviewed(this.userService.getUserWithRatings(reviewedId));
+        newReview.setReviewer(this.userService.getUserWithRatings(reviewCreatorId));
         newReview.setTask(task);
         newReview.setCreationDate(LocalDateTime.now());
         ratingRepository.saveAndFlush(newReview);
@@ -66,6 +66,10 @@ public class RatingService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the author of a review can delete it");
         }
         this.ratingRepository.deleteRatingById(reviewId);
+    }
+
+    public List<Rating> findRatingsByReviewedId (long id){
+        return this.ratingRepository.findRatingsByReviewedId(id);
     }
 
     public List<Rating> getRatingsOfAnUser(Long userId, String token) {

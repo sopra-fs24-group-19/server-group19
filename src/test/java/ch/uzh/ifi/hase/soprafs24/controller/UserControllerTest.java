@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class UserControllerTest {
     user.setId(1L);
     user.setPassword("password");
 
-    Mockito.when(userService.getUserById(Mockito.anyLong())).thenReturn(user);
+    Mockito.when(userService.getUserWithRatings(Mockito.anyLong())).thenReturn(user);
 
     MockHttpServletRequestBuilder getRequest = get("/users/1").contentType(MediaType.APPLICATION_JSON);
 
@@ -72,7 +73,7 @@ public class UserControllerTest {
     @Test
     public void invalidId_whenGetUserBy_thenThrowNotFound() throws Exception {
 
-        Mockito.when(userService.getUserById(Mockito.anyLong())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Mockito.when(userService.getUserWithRatings(Mockito.anyLong())).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         MockHttpServletRequestBuilder getRequest = get("/users/1").contentType(MediaType.APPLICATION_JSON);
 
@@ -106,6 +107,47 @@ public class UserControllerTest {
         .andExpect(jsonPath("$.name", is(user.getName())))
         .andExpect(jsonPath("$.username", is(user.getUsername())));
   }
+
+    @Test
+    public void getLeaderboard_success() throws Exception {
+
+        User user1 = new User();
+        user1.setId(1L);
+        user1.setName("User One");
+        User user2 = new User();
+        user2.setId(2L);
+        user2.setName("User Two");
+
+        List<Object[]> rankedUsers = Arrays.asList(
+                new Object[] {user1, 10L, 1},
+                new Object[] {user2, 5L, 2}
+        );
+
+        Mockito.when(userService.getRankedUsers()).thenReturn(rankedUsers);
+
+        mockMvc.perform(get("/leaderboard").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].taskCount", is(10)))
+                .andExpect(jsonPath("$[0].rank", is(1)))
+                .andExpect(jsonPath("$[1].id", is(2)))
+                .andExpect(jsonPath("$[1].taskCount", is(5)))
+                .andExpect(jsonPath("$[1].rank", is(2)));
+    }
+
+    @Test
+    public void getLeaderboard_emptyList() throws Exception {
+
+        List<Object[]> rankedUsers = Collections.emptyList();
+
+        Mockito.when(userService.getRankedUsers()).thenReturn(rankedUsers);
+
+
+        mockMvc.perform(get("/leaderboard").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
+    }
 
   /**
    * Helper Method to convert userPostDTO into a JSON string such that the input

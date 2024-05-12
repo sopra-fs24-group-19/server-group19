@@ -29,6 +29,29 @@ Research work to implement real-time collaborative document editing (to implemen
 * Additional details:
 Fixed minor functionalities such as deleting all applications when a user is selected as an helper.
 
+#### Week 5 (31.04 - 07.05)
+* GitHub issues worked on: #69, #70
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61903991
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61904035
+* Additional details:
+    * Several controls have been implemented to ensure the legitimacy of reviews and prevent fraudulent behavior:
+        * A user can only review another user if they have previously collaborated on a task or assisted the other user in completing a task.
+        * It is verified that after the completion of a task, a user can leave only one review for the other user.
+        * It is not permitted for a user to review themselves, in order to prevent fraud.
+    * Additionally, the Delete TODO endpoint has been redesigned: it now only accepts the ID of the todo and the token, enhancing security and clarity.
+ 
+#### Week 6 (08.05 - 15.05)
+* GitHub issues worked on: #31, #32 (both frontend)
+    * https://github.com/sopra-fs24-group-19/client-group19/issues/31
+    * https://github.com/sopra-fs24-group-19/client-group19/issues/32
+* Additional details:
+    * Enhancement of User Detail Page:
+        * The user detail page has been updated to now display for each review the author, creation date, star rating, and comment. Additionally, clicking on the author's name of each review will display their profile. The SCSS has also been modified to make the appearance more visually appealing.
+    * General frontend overhaul:
+        * Fixed a bug that caused the server to crash; now, each GET request for updates is sent every two seconds instead of every millisecond.
+        * Replaced hrefs with links for some redirections to leverage the single-page application concept of React, avoiding page reloads and making the application noticeably more responsive.
+        * Attempted to fix the logo by changing the image path; it is not yet working in the deployed version, suspecting that the build file has not been correctly switched on Google Cloud.
+        * Fixed the favicon, which was not being displayed correctly.
 
 ### Dana Rapp
 #### Week 1 (26.03 - 09.04)
@@ -76,22 +99,34 @@ Fixed minor functionalities such as deleting all applications when a user is sel
     * Implemented endpoint for updating an existing to-do (updating its status and description)
 
 #### Week 5 (31.04 - 07.05)
-* GitHub issues worked on: #59, #60, #61, #67
+* GitHub issues worked on: #59, #60, #61, #67, #72
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61447620
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61447784
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61448066
     * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=61825298
+    * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=62175719
 * task description:
-  * Modified the authorization for updating tasks such that:
-     * the description of a todo can be updated only by the author of the todo 
+  * #59: Modified the authorization for updating tasks such that:
+     *  the description of a todo can be updated only by the author of the todo 
      *  the helper cannot update the status of any todo (no matter who posted it)
      * the help seeker (creator of the task the todo belongs to) can update the status of both todos that he posted and that the helper posted
-  * Implemented endpoint checking whether all to-do items related to a specific task have been marked as done
-  * Modified the create task function so that when creating a task, also a default to-do item is created (this has been changed later as we decided to handle this differently. Instead of creating a default todo upon task creation, I added a check to the allTodosDone method so that it returns false if there have never been any todos associated with the given task)
-  * Implemented a new endpoint that allows the frontend to retrieve a task using its id
-*  further activities: Fixed some bugs, deployed the server to Google cloud, wrote tests for the new features, code refactoring (fixed some dependency issues due to cross-calling the repositories from different services)
+  * #60: Implemented endpoint checking whether all to-do items related to a specific task have been marked as done
+  * #61: Modified the create task function so that when creating a task, also a default to-do item is created (this has been changed later as we decided to handle this differently. Instead of creating a default todo upon task creation, I added a check to the allTodosDone method so that it returns false if there have never been any todos associated with the given task)
+  * #67: Implemented a new endpoint that allows the frontend to retrieve a task using its id
+  * #72: overall code refactoring (fixed some dependency issues due to cross-calling the repositories from different services)
+*  further activities: Fixed some bugs, deployed the server to Google cloud, wrote tests for the new features
 
-    
+#### Week 6 (07.05 - 14.05)
+* GitHub issues worked on: #24, #25, #71
+  * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=62164588
+  * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=62174535
+  * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/4?pane=issue&itemId=62134907
+* task descriptions:
+  * #24 (Frontend): Created a page for displaying a user ranking based on how many tasks they have been completed
+  * #25 (Frontend): Added a button to the header that redirects the user to the leaderboard page
+  * #71 (Backend): Implemented a new get endpoint that returns a list of users sorted by the number of tasks they have completed, along with their rank and the number of completed tasks
+  
+
 ## FRONTEND CONTRIBUTIONS
 * Name: Nina Rubesa (For further details, please read the comment section in the links)
 * Week 1 - Github issues worked on:
@@ -111,7 +146,7 @@ Fixed minor functionalities such as deleting all applications when a user is sel
    * Deleting a task you posted: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61231607
    * Displaying the rest of the coins when you are creating a task
    * User-friendly message when there are no tasks in your radius
-* Week 4 - Github issues worked on: #20, #23
+* Week 5 - Github issues worked on: #20, #23
     * ToDo List - functionality: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61800385
     * ToDo List - making a template and connecting it to other pages: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61900653
   
