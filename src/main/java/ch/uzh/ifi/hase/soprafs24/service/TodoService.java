@@ -25,16 +25,14 @@ public class TodoService {
     private final TaskService taskService;
     private final UserService userService;
     private final TodoRepository todoRepository;
-    private final UserRepository userRepository;
 
     @Autowired
     public TodoService(
             @Qualifier("todoRepository") TodoRepository todoRepository, TaskService taskService,
-            UserService userService, UserRepository userRepository) {
+            UserService userService) {
         this.todoRepository = todoRepository;
         this.taskService = taskService;
         this.userService = userService;
-        this.userRepository= userRepository;
     }
 
     public void createTodo(Todo todo, long taskId, String token) {
@@ -56,12 +54,6 @@ public class TodoService {
         todoRepository.flush();
     }
 
-    public void createDefaultTodo(long taskId, String creatorToken, String title){
-        Todo todo = new Todo();
-        todo.setDescription(title);
-        todo.setDone(false);
-        createTodo(todo, taskId, creatorToken);
-    }
 
     //QUESTION: Only the creator of a task and the helper are able to see all todos?
     public List<TodoGetDTO> getTodosFromTask( String token, long taskId){
@@ -103,7 +95,7 @@ public class TodoService {
     private boolean tokenValidationTodo(Todo todo, String token) {
         Task task = todo.getTask();
         User todoAuthor = todo.getAuthor();
-        User authenticatedUser = this.userRepository.findUserByToken(token);
+        User authenticatedUser = this.userService.getUserByToken(token);
 
         if (authenticatedUser != todoAuthor) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
@@ -141,6 +133,9 @@ public class TodoService {
 
     public boolean areAllTodosDone(Long taskId) {
         List<Todo> todos = todoRepository.findAllByTaskId(taskId);
+        if (todos.isEmpty()) {
+            return false;
+        }
         return todos.stream().allMatch(Todo::isDone);
     }
 

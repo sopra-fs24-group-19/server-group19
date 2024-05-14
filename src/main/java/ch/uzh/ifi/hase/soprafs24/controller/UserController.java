@@ -1,17 +1,15 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.entity.User;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.UserGetFullDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPutDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.UserEditDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.*;
 import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
@@ -62,8 +60,20 @@ public class UserController {
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public UserGetFullDTO getUser(@PathVariable("userId") long id) {
-    User user = userService.getUserById(id);
+    User user = userService.getUserWithRatings(id);
     return DTOMapper.INSTANCE.convertEntityToUserGetFullDTO(user);
   }
+
+    @GetMapping("/leaderboard")
+    public List<UserTaskCountDTO> getLeaderboard() {
+        List<Object[]> rankedUsers = userService.getRankedUsers();
+        return rankedUsers.stream()
+                .map(objects -> DTOMapper.INSTANCE.toUserTaskCountDTO(
+                        (User) objects[0],
+                        (Long) objects[1],
+                        (Integer) objects[2])
+                )
+                .collect(Collectors.toList());
+    }
 
 }

@@ -81,6 +81,14 @@ public class TaskController {
         //TODO: implement
     }
 
+    @GetMapping("tasks/{taskId}")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public TaskGetDTO getTaskById(@PathVariable long taskId){
+        return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(taskService.getTaskById(taskId));
+
+    }
+
     @GetMapping("/tasks/created/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

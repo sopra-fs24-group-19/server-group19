@@ -1,24 +1,22 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 
-import ch.uzh.ifi.hase.soprafs24.repository.ApplicationsRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.TaskRepository;
-import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.TaskPutDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
-import ch.uzh.ifi.hase.soprafs24.entity.Application;
 import ch.uzh.ifi.hase.soprafs24.entity.Task;
-import ch.uzh.ifi.hase.soprafs24.service.TodoService;
 import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
+
+import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -28,22 +26,14 @@ public class TaskService {
 
     private final Logger log = LoggerFactory.getLogger(TaskService.class);
     private final UserService userService;
-    private final TodoService todoService;
     private final TaskRepository taskRepository;
-    private final UserRepository userRepository;
-    private final ApplicationsRepository applicationsRepository;
 
     @Autowired
     public TaskService(
             @Qualifier("taskRepository") TaskRepository taskRepository,
-            ApplicationsRepository applicationsRepository,
-            UserRepository userRepository,
-                UserService userService, @Lazy TodoService todoService) {
+                UserService userService) {
         this.taskRepository = taskRepository;
         this.userService = userService;
-        this.userRepository = userRepository;
-        this.todoService = todoService;
-        this.applicationsRepository= applicationsRepository;
     }
 
     public List<Task> getTasks() {
@@ -51,7 +41,8 @@ public class TaskService {
     }
 
     public Task getTaskById(long id) {
-        return this.taskRepository.findById(id);
+        return this.taskRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Task not found with ID: " + id));
     }
 
     public List<Task> getTasksByCreator(long userId) {
@@ -74,78 +65,105 @@ public class TaskService {
         }
         newTask.setCreator(creator);
         newTask.setStatus(TaskStatus.CREATED);
-        newTask = taskRepository.saveAndFlush(newTask);
         userService.subtractCoins(creator, newTask.getPrice());
-
-        todoService.createDefaultTodo(newTask.getId(), creator.getToken(), newTask.getTitle());
+        newTask = taskRepository.save(newTask);
+        taskRepository.flush();
         return newTask;
     }
 
-    public void apply(TaskPutDTO taskPutDTO, String token){
-        User candidate = userRepository.findUserByToken(token);
-        //to check if there is a token or the token has been manipulated
-        if (candidate==null || token.isEmpty() || taskPutDTO.getUserId()!=candidate.getId()){
+    @Transactional
+    public void apply(TaskPutDTO taskPutDTO, String token) {
+        User candidate = userService.getUserByToken(token);
+
+        if (candidate == null || token.isEmpty() || taskPutDTO.getUserId() != candidate.getId()) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid token.");
         }
-        long taskId= taskPutDTO.getTaskId();
 
-        Task selectedTask = taskRepository.findById(taskId);
-        if (selectedTask == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The selected task does not exists.");
-        }
-        Application existingApplication = applicationsRepository.findByUserAndTask(candidate, selectedTask);
-        if (existingApplication != null) {
+        long taskId = taskPutDTO.getTaskId();
+        Task selectedTask = taskRepository.findById(taskId).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "The selected task does not exist."));
+
+        // Check if the candidate has already applied
+        if (selectedTask.getCandidates().contains(candidate)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "You already applied.");
         }
-        Application newApplication = new Application();
-        newApplication.setTask(selectedTask);
-        newApplication.setUser(candidate);
-        applicationsRepository.saveAndFlush(newApplication);
+
+        selectedTask.addCandidate(candidate);
+
+        taskRepository.save(selectedTask);
     }
 
-    public void selectCandidate(TaskPutDTO taskPutDTO, String token){
-        // QUESTION DANA. AFTER ANSWER DELETE COMMENTS IN DTOMAPPER. necessary because the user in the task entity is saved as an entity and is not mappable with
-        //taskputdto since there the userId is a long
-        User helper = this.userRepository.findUserById(taskPutDTO.getHelperId());
-        User taskCreator = userRepository.findUserById(taskPutDTO.getUserId());
-        Task task = taskRepository.findById(taskPutDTO.getTaskId());
-        Application application = this.applicationsRepository.findByUserAndTask(helper, task);
 
-        //Check the taskCreator is performing the selection action
-        if (!taskCreator.getToken().equals(token)){
+    @Transactional
+    public void selectCandidate(TaskPutDTO taskPutDTO, String token) {
+        User helper = userService.getUserById(taskPutDTO.getHelperId());
+        User taskCreator = userService.getUserById(taskPutDTO.getUserId());
+        Task task = taskRepository.findById(taskPutDTO.getTaskId()).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "The task was not found."));
+
+        // Check the taskCreator is performing the selection action
+        if (!taskCreator.getToken().equals(token)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the creator of a task can choose the helper");
         }
-        //Check the task was retrieved correctly
-        if (task == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The task was not found.");
-        }
-        //Check the application actually exists
-        if (application == null){
+
+        if (!task.hasCandidate(helper)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "This helper has not applied for the job.");
         }
 
         task.setHelper(helper);
         task.setStatus(TaskStatus.IN_PROGRESS);
-        deleteApplicationsByTask(task, helper);
+
+        clearOtherCandidates(task, helper);
+
+        taskRepository.save(task);
     }
 
-    public void deleteTaskWithId(long taskId, String token) {
-        Task taskToBeDeleted = this.taskRepository.findById(taskId);
-        if (taskToBeDeleted == null) {
-            throw new NoSuchElementException("Task not found with id: " + taskId);
+    public void clearOtherCandidates(Task task, User selectedHelper) {
+        // Collect candidates to remove (all except the selected helper)
+        List<User> candidatesToRemove = task.getCandidates().stream()
+                .filter(candidate -> !candidate.equals(selectedHelper))
+                .toList();
+
+        // Update each candidate's applications to remove this task
+        for (User candidate : candidatesToRemove) {
+            candidate.getApplications().remove(task);
+            userService.saveUser(candidate);
         }
-        User creator = taskToBeDeleted.getCreator();
-        if (!checkPermissionToDeleteTask(token,creator.getId())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-                    "only the creator of this task is allowed to delete it");
-        }
-        applicationsRepository.deleteByTaskId(taskId);
-        creator.addCoins(taskToBeDeleted.getPrice());
-        taskRepository.delete(taskToBeDeleted);
+
+        // Clear candidates and re-add only the selected helper directly, if not already present
+        task.getCandidates().removeIf(candidate -> !candidate.equals(selectedHelper));
+
+        taskRepository.save(task);
     }
+
+
+    @Transactional
+    public void deleteTaskWithId(long taskId, String token) {
+        Task taskToBeDeleted = taskRepository.findById(taskId)
+                .orElseThrow(() -> new NoSuchElementException("Task not found with id: " + taskId));
+
+        User creator = taskToBeDeleted.getCreator();
+        if (!checkPermissionToDeleteTask(token, creator.getId())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                    "Only the creator of this task is allowed to delete it");
+        }
+
+        // Manage the removal of candidates from the task
+        for (User candidate : new ArrayList<>(taskToBeDeleted.getCandidates())) {
+            candidate.getApplications().remove(taskToBeDeleted);
+            userService.saveUser(candidate);
+        }
+
+        taskRepository.delete(taskToBeDeleted);
+
+        // Update the coins for the task creator
+        creator.addCoins(taskToBeDeleted.getPrice());
+        userService.saveUser(creator);
+    }
+
 
     public Task confirmTask(long taskId, String token){
-        Task taskToBeConfirmed = this.taskRepository.findById(taskId);
+        Task taskToBeConfirmed = this.getTaskById(taskId);
         User creator = taskToBeConfirmed.getCreator();
         User helper = taskToBeConfirmed.getHelper();
         long currentUserId = userService.getUserIdByToken(token);
@@ -176,16 +194,18 @@ public class TaskService {
         return taskToBeConfirmed;
     }
 
+
+
     @Transactional
     public void deleteCandidate(long taskId, String token){
-        Task task = this.taskRepository.findById(taskId);
-        User candidate = userRepository.findByToken(token);
+        Task task = this.getTaskById(taskId);
+        User candidate = userService.getUserByToken(token);
 
         if (task.getCandidates().contains(candidate)) {
             task.getCandidates().remove(candidate);
             candidate.getApplications().remove(task);
             taskRepository.save(task);
-            userRepository.save(candidate);
+            userService.saveUser(candidate);
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "The current user is not a candidate for this task");
         }
@@ -200,12 +220,5 @@ public class TaskService {
         return currentUserId == creatorId;
     }
 
-    public void deleteApplicationsByTask(Task task, User helper){
-        long helperId= helper.getId();
-        List<Application> applicationList = applicationsRepository.findApplicationsByTaskIdExcludingHelperId(task.getId(), helperId);
-        for (Application application : applicationList) {
-            applicationsRepository.delete(application);
-        }
-    }
 }
 
