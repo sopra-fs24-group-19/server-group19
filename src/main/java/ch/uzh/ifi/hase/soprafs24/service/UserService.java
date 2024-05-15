@@ -44,7 +44,7 @@ public class UserService {
     User userRetrieved = this.userRepository.findByUsername(userLogin.getUsername());
     if (userRetrieved == null) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-              "The username you provided was not found in the database.");
+          "The username you provided was not found in the database.");
     }
     String userLoginPassword = userLogin.getPassword();
     String userRetrievedPassword = userRetrieved.getPassword();
@@ -90,17 +90,16 @@ public class UserService {
     }
   }
 
-  public User getUserByToken(String token){
-      return this.userRepository.findByToken(token);
+  public User getUserByToken(String token) {
+    return this.userRepository.findByToken(token);
   }
 
-
-  public User getUserById(long id){
-      Optional<User> user = this.userRepository.findById(id);
-      if (user.isEmpty()) {
-          throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no user exists with id" + id);
-      }
-      return user.get();
+  public User getUserById(long id) {
+    Optional<User> user = this.userRepository.findById(id);
+    if (user.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no user exists with id" + id);
+    }
+    return user.get();
   }
 
   public User getUserWithRatings(long id) {
@@ -110,9 +109,9 @@ public class UserService {
     }
     User userToEnrich = user.get();
 
-    List<Rating> allRatings= this.ratingService.findRatingsByReviewedId(id);
+    List<Rating> allRatings = this.ratingService.findRatingsByReviewedId(id);
     int sumOfAllRatings = 0;
-    for ( Rating rating : allRatings){
+    for (Rating rating : allRatings) {
       sumOfAllRatings += rating.getRating();
     }
     int totalRatings = allRatings.size();
@@ -139,10 +138,10 @@ public class UserService {
     userRepository.save(creator);
   }
 
-    public void addCoins(User user, int amount) {
-        user.setCoinBalance(user.getCoinBalance() + amount);
-        userRepository.save(user);
-    }
+  public void addCoins(User user, int amount) {
+    user.setCoinBalance(user.getCoinBalance() + amount);
+    userRepository.save(user);
+  }
 
   private void tokenExistance(String token) {
     if (this.userRepository.findUserByToken(token) == null) {
@@ -157,31 +156,42 @@ public class UserService {
     return true;
   }
 
-    public void saveUser(User user) {
-      userRepository.save(user);
+  public void saveUser(User user) {
+    userRepository.save(user);
+  }
+
+  public List<Object[]> getRankedUsers() {
+    List<Object[]> leaderboardData = userRepository.findUsersWithMostTasksAsHelper();
+    List<Object[]> rankedUsers = new ArrayList<>();
+    int rank = 1;
+    int nextRank = 1;
+    Long previousTaskCount = null;
+
+    for (int i = 0; i < leaderboardData.size(); i++) {
+      long userId = (Long) leaderboardData.get(i)[0];
+      User user = getUserById(userId);
+      Long taskCount = (Long) leaderboardData.get(i)[1];
+
+      if (previousTaskCount != null && !taskCount.equals(previousTaskCount)) {
+        nextRank++;
+        rank = nextRank;
+
+      }
+      rankedUsers.add(new Object[] { user, taskCount, rank });
+      previousTaskCount = taskCount;
     }
 
-    public List<Object[]> getRankedUsers() {
-        List<Object[]> leaderboardData = userRepository.findUsersWithMostTasksAsHelper();
-        List<Object[]> rankedUsers = new ArrayList<>();
-        int rank = 1;
-        int nextRank = 1;
-        Long previousTaskCount = null;
+    return rankedUsers;
+  }
 
-        for (int i = 0; i < leaderboardData.size(); i++) {
-            long  userId = (Long) leaderboardData.get(i)[0];
-            User user = getUserById(userId);
-            Long taskCount = (Long) leaderboardData.get(i)[1];
-
-            if (previousTaskCount != null && !taskCount.equals(previousTaskCount)) {
-                nextRank++;
-                rank = nextRank;
-
-            }
-            rankedUsers.add(new Object[]{user, taskCount, rank});
-            previousTaskCount = taskCount;
-        }
-
-        return rankedUsers;
+  public boolean tokenValidity(String token, long userId){
+    User userRetrieved = this.userRepository.findUserByToken(token);
+    if (userRetrieved == null) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user found with the provided token");
     }
+    String tokenUserRetrieved = userRetrieved.getToken();
+    boolean areTokensEqual = tokenUserRetrieved.equals(token);
+    return areTokensEqual;
+  }
+
 }
