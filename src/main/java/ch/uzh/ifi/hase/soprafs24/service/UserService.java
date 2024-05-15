@@ -187,7 +187,7 @@ public class UserService {
   public boolean tokenValidity(String token, long userId){
     User userRetrieved = this.userRepository.findUserByToken(token);
     if (userRetrieved == null) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user found with the provided token");
+      return false;
     }
     String tokenUserRetrieved = userRetrieved.getToken();
     boolean areTokensEqual = tokenUserRetrieved.equals(token);
