@@ -149,6 +149,11 @@ Fixed minor functionalities such as deleting all applications when a user is sel
 * Week 5 - Github issues worked on: #20, #23
     * ToDo List - functionality: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61800385
     * ToDo List - making a template and connecting it to other pages: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61900653
+* Week 6 - Github issues worked on: #35, #33, #34, #36
+    * ToDo - Delete: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?groupedBy%5BcolumnId%5D=Assignees&sortedBy%5Bdirection%5D=asc&sortedBy%5BcolumnId%5D=84598672&pane=issue&itemId=62630787
+    * ToDo - Task Done - Status update: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?groupedBy%5BcolumnId%5D=Assignees&sortedBy%5Bdirection%5D=asc&sortedBy%5BcolumnId%5D=84598672&pane=issue&itemId=62630852
+    * ToDo - user friendly message: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?groupedBy%5BcolumnId%5D=Assignees&sortedBy%5Bdirection%5D=asc&sortedBy%5BcolumnId%5D=84598672&pane=issue&itemId=62631059
+    * Leaving review - adjustment: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?groupedBy%5BcolumnId%5D=Assignees&sortedBy%5Bdirection%5D=asc&sortedBy%5BcolumnId%5D=84598672&pane=issue&itemId=62630966
   
    
        
