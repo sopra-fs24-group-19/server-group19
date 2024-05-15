@@ -125,7 +125,12 @@ Fixed minor functionalities such as deleting all applications when a user is sel
   * #24 (Frontend): Created a page for displaying a user ranking based on how many tasks they have been completed
   * #25 (Frontend): Added a button to the header that redirects the user to the leaderboard page
   * #71 (Backend): Implemented a new get endpoint that returns a list of users sorted by the number of tasks they have completed, along with their rank and the number of completed tasks
-  
+
+#### Week 7 (14.05 - 20.05)
+* GitHub issues worked on: #38
+ * https://github.com/orgs/sopra-fs24-group-19/projects/1/views/1?pane=issue&itemId=63056530
+* task descriptions:
+    * #38 (frontend): Created two filter options on the homefeed and implemented filtering of the shown tasks according to the user-specified filters
 
 ## FRONTEND CONTRIBUTIONS
 * Name: Nina Rubesa (For further details, please read the comment section in the links)
