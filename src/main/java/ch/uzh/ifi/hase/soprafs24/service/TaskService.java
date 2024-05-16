@@ -17,14 +17,13 @@ import org.springframework.http.HttpStatus;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
 @Transactional
 public class TaskService {
-
-    private final Logger log = LoggerFactory.getLogger(TaskService.class);
     private final UserService userService;
     private final TaskRepository taskRepository;
 
@@ -37,7 +36,8 @@ public class TaskService {
     }
 
     public List<Task> getTasks() {
-        return this.taskRepository.findAll();
+        Date today = new Date();
+        return taskRepository.findAllWithDateAfterOrEqual(today);
     }
 
     public Task getTaskById(long id) {
@@ -83,7 +83,6 @@ public class TaskService {
         Task selectedTask = taskRepository.findById(taskId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "The selected task does not exist."));
 
-        // Check if the candidate has already applied
         if (selectedTask.getCandidates().contains(candidate)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "You already applied.");
         }
@@ -101,7 +100,6 @@ public class TaskService {
         Task task = taskRepository.findById(taskPutDTO.getTaskId()).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "The task was not found."));
 
-        // Check the taskCreator is performing the selection action
         if (!taskCreator.getToken().equals(token)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Only the creator of a task can choose the helper");
         }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -39,6 +40,14 @@ public class RatingController {
             ratingGetDTOList.add(DTOMapper.INSTANCE.convertEntityToRatingGetDTO(rating));
         }
         return ratingGetDTOList;
+    }
+
+    @GetMapping("/ratings/{taskId}/{userId}/isReviewed")
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public ResponseEntity<Boolean> checkIfReviewed(@PathVariable("taskId") long taskId, @PathVariable("userId") long userId, @RequestHeader("Authorization") String token) {
+        boolean isReviewed = ratingService.checkIfReviewed(taskId, userId, token);
+        return ResponseEntity.ok(isReviewed);
     }
 
     @DeleteMapping("/ratings/{reviewId}")

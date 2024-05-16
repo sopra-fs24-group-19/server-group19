@@ -30,31 +30,24 @@ public class UserController {
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
   }
 
-    @PutMapping("/users") //QUESTION the path should be /login
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public UserGetDTO loginUser(@RequestBody UserPutDTO userPutDTO, HttpServletResponse response) {
-      User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
-      User userRetrieved = this.userService.login(userInput);
-      UserGetDTO userSentToClient = DTOMapper.INSTANCE.convertEntityToUserGetDTO(userRetrieved);
-      response.addHeader("Authorization", userRetrieved.getToken());
-      return userSentToClient;
-    }
+  @PutMapping("/users")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public UserGetDTO loginUser(@RequestBody UserPutDTO userPutDTO, HttpServletResponse response) {
+    User userInput = DTOMapper.INSTANCE.convertUserPutDTOtoEntity(userPutDTO);
+    User userRetrieved = this.userService.login(userInput);
+    UserGetDTO userSentToClient = DTOMapper.INSTANCE.convertEntityToUserGetDTO(userRetrieved);
+    response.addHeader("Authorization", userRetrieved.getToken());
+    return userSentToClient;
+  }
 
-    @PutMapping("/logout")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ResponseBody
-    public void logout(@RequestHeader("Authorization") String token) {
-      this.userService.logOut(token);
-    }
-
-    @PutMapping("/users/{id}") //QUESTION This logically conflicts with PUT login, even though it would work
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void editProfile(@PathVariable Long id, @RequestBody UserEditDTO userEditDTO,
-        @RequestHeader("Authorization") String token) {
-      User userWithPendingChanges = DTOMapper.INSTANCE.convertUserEditDTOToEntity(userEditDTO);
-      this.userService.editProfile(userWithPendingChanges, token, id);
-    }
+  @PutMapping("/users/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void editProfile(@PathVariable Long id, @RequestBody UserEditDTO userEditDTO,
+      @RequestHeader("Authorization") String token) {
+    User userWithPendingChanges = DTOMapper.INSTANCE.convertUserEditDTOToEntity(userEditDTO);
+    this.userService.editProfile(userWithPendingChanges, token, id);
+  }
 
   @GetMapping("/users/{userId}")
   @ResponseStatus(HttpStatus.OK)
@@ -64,16 +57,22 @@ public class UserController {
     return DTOMapper.INSTANCE.convertEntityToUserGetFullDTO(user);
   }
 
-    @GetMapping("/leaderboard")
-    public List<UserTaskCountDTO> getLeaderboard() {
-        List<Object[]> rankedUsers = userService.getRankedUsers();
-        return rankedUsers.stream()
-                .map(objects -> DTOMapper.INSTANCE.toUserTaskCountDTO(
-                        (User) objects[0],
-                        (Long) objects[1],
-                        (Integer) objects[2])
-                )
-                .collect(Collectors.toList());
-    }
+  @GetMapping("/leaderboard")
+  public List<UserTaskCountDTO> getLeaderboard() {
+    List<Object[]> rankedUsers = userService.getRankedUsers();
+    return rankedUsers.stream()
+        .map(objects -> DTOMapper.INSTANCE.toUserTaskCountDTO(
+            (User) objects[0],
+            (Long) objects[1],
+            (Integer) objects[2]))
+        .collect(Collectors.toList());
+  }
+
+  @GetMapping("/auth/{userId}")
+  @ResponseStatus(HttpStatus.OK)
+  @ResponseBody
+  public boolean tokenValidity(@RequestHeader("Authorization") String token,@PathVariable("userId") long userId ) {
+    return this.userService.tokenValidity(token, userId);
+  }
 
 }

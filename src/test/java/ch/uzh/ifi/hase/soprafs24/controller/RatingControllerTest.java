@@ -1,8 +1,6 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Rating;
-import ch.uzh.ifi.hase.soprafs24.repository.RatingRepository;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.RatingGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.RatingPostDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.RatingPutDTO;
 import ch.uzh.ifi.hase.soprafs24.service.RatingService;
@@ -36,14 +34,11 @@ public class RatingControllerTest {
     @MockBean
     private RatingService ratingService;
 
-    @MockBean
-    private RatingRepository ratingRepository;
-
     @Test
     public void createRating_validInputRatingCreated() throws Exception {
         Rating rating = new Rating();
         RatingPostDTO ratingPostDTO = new RatingPostDTO();
-        Long reviewedId = 1L;
+        long reviewedId = 1L;
         String token = "111";
 
         Mockito.when(ratingService.createReview(reviewedId, ratingPostDTO, token)).thenReturn(rating);
@@ -55,7 +50,6 @@ public class RatingControllerTest {
 
         mockMvc.perform(postRequest)
                 .andExpect(status().isCreated());
-
     }
 
     @Test
@@ -84,16 +78,44 @@ public class RatingControllerTest {
     public void deleteRating_validReviewIdAndToken_ratingDeleted() throws Exception {
     long reviewId = 1L;
     String token = "Bearer token";
-    RatingPutDTO ratingPutDTO = new RatingPutDTO(); // create a RatingPutDTO object
+    RatingPutDTO ratingPutDTO = new RatingPutDTO();
 
     doNothing().when(ratingService).deleteReview(reviewId, token);
 
     mockMvc.perform(delete("/ratings/{reviewId}", reviewId)
                     .header("Authorization", token)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(asJsonString(ratingPutDTO))) // include the RatingPutDTO object in the request body
+                    .content(asJsonString(ratingPutDTO)))
             .andExpect(status().isNoContent());
 }
+
+    @Test
+    public void checkIfReviewed_reviewExists_returnsTrue() throws Exception {
+        long taskId = 1L;
+        long userId = 1L;
+        String token = "Bearer token";
+
+        when(ratingService.checkIfReviewed(taskId, userId, token)).thenReturn(true);
+
+        mockMvc.perform(get("/ratings/{taskId}/{userId}/isReviewed", taskId, userId)
+                        .header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));
+    }
+
+    @Test
+    public void checkIfReviewed_noReviewExists_returnsFalse() throws Exception {
+        long taskId = 1L;
+        long userId = 1L;
+        String token = "Bearer token";
+
+        when(ratingService.checkIfReviewed(taskId, userId, token)).thenReturn(false);
+
+        mockMvc.perform(get("/ratings/{taskId}/{userId}/isReviewed", taskId, userId)
+                        .header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(content().string("false"));
+    }
 
 
 }
