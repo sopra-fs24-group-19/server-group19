@@ -116,4 +116,9 @@ public class RatingService {
 
         return true;
     }
+
+    public boolean checkIfReviewed(long taskId, long userId, String token) {
+        Task task = taskService.getTaskById(taskId);
+        return ratingRepository.existsByTaskAndReviewerId(task, userId);
+    }
 }
