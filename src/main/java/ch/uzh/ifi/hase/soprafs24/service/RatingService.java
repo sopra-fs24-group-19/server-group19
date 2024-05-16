@@ -2,8 +2,6 @@ package ch.uzh.ifi.hase.soprafs24.service;
 
 import ch.uzh.ifi.hase.soprafs24.entity.Task;
 import ch.uzh.ifi.hase.soprafs24.repository.RatingRepository;
-//import ch.uzh.ifi.hase.soprafs24.repository.TaskRepository;
-import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.Rating;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.RatingPostDTO;
 
@@ -21,18 +19,17 @@ import java.util.List;
 @Service
 @Transactional
 public class RatingService {
-    private final Logger log = LoggerFactory.getLogger(RatingService.class);
     private final RatingRepository ratingRepository;
     private final UserService userService;
 
-    @Autowired
-    public RatingService(@Qualifier("ratingRepository") RatingRepository ratingRepository, UserService userService) {
-        this.ratingRepository = ratingRepository;
-        this.userService = userService;
-    }
+    private final TaskService taskService;
 
     @Autowired
-    private TaskService taskService;
+    public RatingService(@Qualifier("ratingRepository") RatingRepository ratingRepository, UserService userService, TaskService taskService) {
+        this.ratingRepository = ratingRepository;
+        this.userService = userService;
+        this.taskService = taskService;
+    }
 
     public Rating createReview(long reviewedId, RatingPostDTO ratingPostDTO, String token) {
         long userIdFromToken = userService.getUserIdByToken(token);
@@ -78,23 +75,14 @@ public class RatingService {
         }
         List<Rating> reviewList = this.ratingRepository.findRatingsByReviewedId(userId);
         return reviewList;
-
     } 
-    
 
-    private boolean isReviewAuthorized(long id_reviewer, long id_reviewed, long id_task) {
+    public boolean isReviewAuthorized(long id_reviewer, long id_reviewed, long id_task) {
         Task task = taskService.getTaskById(id_task);
-
-        // Check if the task is completed. Only after a task is completed users can
-        // leave reviews
 
         if (task == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Task not found");
         }
-
-/*         if (task.getStatus() != TaskStatus.DONE) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only tasks that are done can be reviewed.");
-        } */
 
         // Check if the reviewer is either the creator or the helper of the task
         if (task.getCreator().getId() != id_reviewer && task.getHelper().getId() != id_reviewer) {

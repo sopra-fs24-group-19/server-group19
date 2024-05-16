@@ -30,7 +30,7 @@ public class UserController {
     return DTOMapper.INSTANCE.convertEntityToUserGetDTO(createdUser);
   }
 
-  @PutMapping("/users") // QUESTION the path should be /login
+  @PutMapping("/users")
   @ResponseStatus(HttpStatus.OK)
   @ResponseBody
   public UserGetDTO loginUser(@RequestBody UserPutDTO userPutDTO, HttpServletResponse response) {
@@ -41,14 +41,7 @@ public class UserController {
     return userSentToClient;
   }
 
-  @PutMapping("/logout")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  @ResponseBody
-  public void logout(@RequestHeader("Authorization") String token) {
-    this.userService.logOut(token);
-  }
-
-  @PutMapping("/users/{id}") // QUESTION This logically conflicts with PUT login, even though it would work
+  @PutMapping("/users/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void editProfile(@PathVariable Long id, @RequestBody UserEditDTO userEditDTO,
       @RequestHeader("Authorization") String token) {

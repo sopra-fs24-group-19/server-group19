@@ -1,9 +1,8 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
-import static org.hamcrest.Matchers.equalTo;
-
-import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UserEditDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPostDTO;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPutDTO;
 import ch.uzh.ifi.hase.soprafs24.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,18 +23,13 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.doNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/**
- * UserControllerTest
- * This is a WebMvcTest which allows to test the UserController i.e. GET/POST
- * request without actually sending them over the network.
- * This tests if the UserController works.
- */
 @WebMvcTest(UserController.class)
 public class UserControllerTest {
 
@@ -93,7 +87,7 @@ public class UserControllerTest {
     userPostDTO.setName("Test User");
     userPostDTO.setUsername("testUsername");
 
-    given(userService.createUser(Mockito.any())).willReturn(user);
+    given(userService.createUser(any())).willReturn(user);
 
     // when/then -> do the request + validate the result
     MockHttpServletRequestBuilder postRequest = post("/users")
@@ -149,14 +143,70 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$", hasSize(0)));
     }
 
-  /**
-   * Helper Method to convert userPostDTO into a JSON string such that the input
-   * can be processed
-   * Input will look like this: {"name": "Test User", "username": "testUsername"}
-   * 
-   * @param object
-   * @return string
-   */
+    @Test
+    public void tokenValidity_validToken_returnsTrue() throws Exception {
+        String token = "Bearer valid-token";
+        long userId = 1L;
+
+        Mockito.when(userService.tokenValidity(token, userId)).thenReturn(true);
+
+        mockMvc.perform(get("/auth/{userId}", userId)
+                        .header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(content().string("true"));
+    }
+
+    @Test
+    public void tokenValidity_invalidToken_returnsFalse() throws Exception {
+        String token = "Bearer invalid-token";
+        long userId = 1L;
+
+        Mockito.when(userService.tokenValidity(token, userId)).thenReturn(false);
+
+        mockMvc.perform(get("/auth/{userId}", userId)
+                        .header("Authorization", token))
+                .andExpect(status().isOk())
+                .andExpect(content().string("false"));
+    }
+
+    @Test
+    public void editProfile_validRequest_noContentReturned() throws Exception {
+        Long userId = 1L;
+        String token = "Bearer valid-token";
+        UserEditDTO userEditDTO = new UserEditDTO();
+        userEditDTO.setName("Updated Name");
+
+        doNothing().when(userService).editProfile(any(User.class), eq(token), eq(userId));
+
+        mockMvc.perform(put("/users/{id}", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", token)
+                        .content(asJsonString(userEditDTO)))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void loginUser_validCredentials_userLoggedIn() throws Exception {
+        UserPutDTO userPutDTO = new UserPutDTO();
+        userPutDTO.setUsername("testUser");
+        userPutDTO.setPassword("testPassword");
+
+        User user = new User();
+        user.setUsername("testUser");
+        user.setToken("Bearer generated-token");
+
+        Mockito.when(userService.login(any(User.class))).thenReturn(user);
+
+        mockMvc.perform(put("/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(userPutDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username", is(user.getUsername())))
+                .andExpect(header().string("Authorization", user.getToken()));
+    }
+
+
+
   private String asJsonString(final Object object) {
     try {
       return new ObjectMapper().writeValueAsString(object);

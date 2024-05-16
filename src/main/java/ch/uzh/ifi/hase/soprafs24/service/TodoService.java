@@ -6,8 +6,6 @@ import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -21,7 +19,6 @@ import org.springframework.http.HttpStatus;
 @Service
 @Transactional
 public class TodoService {
-    private final Logger log = LoggerFactory.getLogger(TodoService.class);
     private final TaskService taskService;
     private final UserService userService;
     private final TodoRepository todoRepository;
@@ -36,7 +33,7 @@ public class TodoService {
     }
 
     public void createTodo(Todo todo, long taskId, String token) {
-        // from here
+
         Task task = taskService.getTaskById(taskId);
         User taskCreator = task.getCreator();
         User taskHelper = task.getHelper();
@@ -54,10 +51,7 @@ public class TodoService {
         todoRepository.flush();
     }
 
-
-    //QUESTION: Only the creator of a task and the helper are able to see all todos?
     public List<TodoGetDTO> getTodosFromTask( String token, long taskId){
-        //Tokenvalidation
 
         List<Todo> todoEntityList = todoRepository.findByTaskId(taskId);
         List<TodoGetDTO> todoGetDtoList = new ArrayList<>();
@@ -78,21 +72,8 @@ public class TodoService {
 
         todoRepository.delete(todoRetrieved);
     }
-    // Function to be inserted in Dana's createTodo
-    private boolean tokenValidation(Todo todo, String token) {
-        Task task = todo.getTask();
-        User taskCreator = task.getCreator();
-        User taskHelper = task.getHelper();
-        long authenticatedUser = userService.getUserIdByToken(token);
 
-        if (authenticatedUser != taskCreator.getId() && authenticatedUser != taskHelper.getId()) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "Only the creator or helper of this task are authorized to edit the todo list.");
-        }
-        return true;
-    }
-    //Checks the author of a todo and the user who wants to delete it matches
-    private boolean tokenValidationTodo(Todo todo, String token) {
+    public boolean tokenValidationTodo(Todo todo, String token) {
         Task task = todo.getTask();
         User todoAuthor = todo.getAuthor();
         User authenticatedUser = this.userService.getUserByToken(token);

@@ -1,6 +1,4 @@
 package ch.uzh.ifi.hase.soprafs24.service;
-
-import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,15 +7,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 
 public class UserServiceTest {
 
@@ -124,6 +119,94 @@ public class UserServiceTest {
 
         assertTrue(rankedUsers.isEmpty());
         Mockito.verify(userRepository).findUsersWithMostTasksAsHelper();
+    }
+
+    @Test
+    public void login_success() {
+        User user = new User();
+        user.setUsername("testUser");
+        user.setPassword("correctPassword");
+        Mockito.when(userRepository.findByUsername("testUser")).thenReturn(user);
+
+        User result = userService.login(user);
+
+        assertNotNull(result);
+        assertEquals("testUser", result.getUsername());
+        Mockito.verify(userRepository, Mockito.times(1)).saveAndFlush(user);
+    }
+
+    @Test
+    public void login_failure_usernameNotFound() {
+        User user = new User();
+        user.setUsername("nonExistentUser");
+        user.setPassword("anyPassword");
+        Mockito.when(userRepository.findByUsername("nonExistentUser")).thenReturn(null);
+
+        assertThrows(ResponseStatusException.class, () -> userService.login(user),
+                "The username you provided was not found in the database.");
+    }
+
+    @Test
+    public void login_failure_incorrectPassword() {
+        User user = new User();
+        user.setUsername("testUser");
+        user.setPassword("wrongPassword");
+        User storedUser = new User();
+        storedUser.setUsername("testUser");
+        storedUser.setPassword("correctPassword");
+        Mockito.when(userRepository.findByUsername("testUser")).thenReturn(storedUser);
+
+        assertThrows(ResponseStatusException.class, () -> userService.login(user),
+                "The password was not correct.");
+    }
+
+    @Test
+    public void editProfile_success() {
+        User originalUser = new User();
+        originalUser.setId(1L);
+        originalUser.setToken("validToken");
+        User updatedUser = new User();
+        updatedUser.setName("New Name");
+
+        Mockito.when(userRepository.findUserById(1L)).thenReturn(originalUser);
+        Mockito.when(userRepository.saveAndFlush(Mockito.any(User.class))).thenReturn(updatedUser);
+        Mockito.when(userRepository.findUserByToken("validToken")).thenReturn(updatedUser);
+
+        userService.editProfile(updatedUser, "validToken", 1L);
+
+        Mockito.verify(userRepository).saveAndFlush(originalUser);
+        assertEquals("New Name", originalUser.getName());
+    }
+
+    @Test
+    public void editProfile_invalidToken_throwsException() {
+        User user = new User();
+        user.setId(1L);
+        user.setToken("otherToken");
+        Mockito.when(userRepository.findUserById(1L)).thenReturn(user);
+
+        assertThrows(ResponseStatusException.class, () -> userService.editProfile(new User(), "invalidToken", 1L),
+                "Token is invalid.");
+    }
+
+    @Test
+    public void getUserByToken_success() {
+        User user = new User();
+        user.setId(1L);
+        Mockito.when(userRepository.findByToken("validToken")).thenReturn(user);
+
+        User result = userService.getUserByToken("validToken");
+
+        assertNotNull(result);
+        assertEquals(1L, result.getId());
+    }
+
+    @Test
+    public void getUserWithRatings_noUserFound_throwsException() {
+        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ResponseStatusException.class, () -> userService.getUserWithRatings(1L),
+                "no user exists with id1");
     }
 
 }

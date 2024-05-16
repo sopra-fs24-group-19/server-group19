@@ -43,7 +43,6 @@ public class TodoController {
     public void updateTodo(@RequestBody TodoPutDTO todoPutDTO, @RequestHeader("Authorization") String token,
             @PathVariable("id") long id) {
         Todo todoInput = DTOMapper.INSTANCE.convertTodoPutDTOToEntity(todoPutDTO);
-        // long taskId = todoPostDTO.getTaskId();
         todoService.updateTodo(todoInput, token, id);
     }
 

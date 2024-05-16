@@ -33,7 +33,6 @@ public class TaskServiceTest {
     private Task testTask;
     private User testCreator;
     private User testCandidate;
-
     private User testHelper;
 
     @BeforeEach
@@ -74,7 +73,7 @@ public class TaskServiceTest {
 
     @Test
     public void createTask_validInputs_success() {
-        //doNothing().when(todoService).createDefaultTodo(anyLong(), anyString(), anyString());
+
         Task createdTask = taskService.createTask(testTask, testCreator.getId());
 
         Mockito.verify(taskRepository, Mockito.times(1)).save(Mockito.any());
@@ -345,7 +344,7 @@ public class TaskServiceTest {
         long taskId = 1L;
         String creatorToken = "creatorToken";
         Task testTask = new Task();
-        testTask.setStatus(TaskStatus.CONFIRMED_BY_CREATOR); // Creator has already confirmed
+        testTask.setStatus(TaskStatus.CONFIRMED_BY_CREATOR);
         testTask.setCreator(testCreator);
         testTask.setHelper(testHelper);
 
@@ -528,4 +527,31 @@ public class TaskServiceTest {
         assertFalse(task.getCandidates().contains(helper2));
 
     }
+
+    @Test
+    public void deleteTaskWithId_removesTaskFromCandidatesApplicationsAndSavesUpdatedCandidate() {
+
+        long taskId = 1L;
+        String token = "validToken";
+
+        List<User> candidates = new ArrayList<>();
+        candidates.add(testCandidate);
+        testTask.setCandidates(candidates);
+
+        List<Task> applications = new ArrayList<>();
+        applications.add(testTask);
+        testCandidate.setApplications(applications);
+
+        Mockito.when(taskRepository.findById(taskId)).thenReturn(Optional.of(testTask));
+        Mockito.when(userService.getUserIdByToken(token)).thenReturn(testCreator.getId());
+
+        taskService.deleteTaskWithId(taskId, token);
+
+        assertFalse(testCandidate.getApplications().contains(testTask), "The task should be removed from the candidate's applications");
+
+        Mockito.verify(userService).saveUser(testCandidate);
+
+        Mockito.verify(taskRepository).delete(testTask);
+    }
+
 }

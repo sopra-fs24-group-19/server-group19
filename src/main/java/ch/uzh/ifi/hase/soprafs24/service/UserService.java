@@ -56,15 +56,6 @@ public class UserService {
     return userRetrieved;
   }
 
-  public void logOut(String token) {
-    tokenExistance(token);
-    User userRetrieved = this.userRepository.findUserByToken(token);
-    if (userRetrieved == null) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't find the user.");
-    }
-    this.userRepository.saveAndFlush(userRetrieved);
-  }
-
   public void editProfile(User userWithPendingChanges, String tokenProvidedbyClient, Long id) {
     tokenExistance(tokenProvidedbyClient);
     User userToEdit = this.userRepository.findUserById(id);
@@ -143,7 +134,7 @@ public class UserService {
     userRepository.save(user);
   }
 
-  private void tokenExistance(String token) {
+  public void tokenExistance(String token) {
     if (this.userRepository.findUserByToken(token) == null) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You don't have a valid token.");
     }

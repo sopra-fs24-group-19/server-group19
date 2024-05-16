@@ -1,11 +1,8 @@
 package ch.uzh.ifi.hase.soprafs24.service;
-
 import ch.uzh.ifi.hase.soprafs24.entity.Rating;
 import ch.uzh.ifi.hase.soprafs24.entity.Task;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.RatingRepository;
-import ch.uzh.ifi.hase.soprafs24.repository.TaskRepository;
-import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.RatingPostDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,31 +20,36 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
+
 public class RatingServiceTest {
 
     @Mock
     private RatingRepository ratingRepository;
     @Mock
     private UserService userService;
-    @Mock
-    private TaskRepository taskRepository;
 
     @Mock
-    private UserRepository userRepository;
+    private TaskService taskService;
 
     @InjectMocks
     private RatingService ratingService;
 
-    private User testUser;
+    private User testUser, testHelper;
     private Rating testRating;
+
+    private Task testTask;
 
     @BeforeEach
     public void setup() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
 
         testUser = new User();
         testUser.setId(1L);
         testUser.setToken("validToken");
+
+        testHelper = new User();
+        testHelper.setId(2L);
+        testHelper.setToken("validToken2");
 
         testRating = new Rating();
         testRating.setId(1L);
@@ -56,10 +58,15 @@ public class RatingServiceTest {
         testRating.setRating(5);
         testRating.setReview("Great job!");
         testRating.setCreationDate(LocalDateTime.now());
+
+        testTask = new Task();
+        testTask.setCreator(testUser);
+        testTask.setHelper(testHelper);
     }
-    
+
     @Test
     public void deleteReview_validInputs_deletesReview() {
+
         when(userService.getUserIdByToken(anyString())).thenReturn(testUser.getId());
         when(ratingRepository.findRatingById(anyLong())).thenReturn(testRating);
 
@@ -67,6 +74,7 @@ public class RatingServiceTest {
 
         verify(ratingRepository, times(1)).deleteRatingById(testRating.getId());
     }
+
 
 
     @Test
@@ -84,49 +92,61 @@ public class RatingServiceTest {
         assertThrows(ResponseStatusException.class, () -> ratingService.getRatingsOfAnUser(testUser.getId(), ""));
     }
 
-    /*
     @Test
-    public void findReviews_validInputs_returnsReviewCount() {
-        User reviewed = new User();
-        reviewed.setId(2L);
-        reviewed.setRatings(Arrays.asList(testRating));
+    public void deleteReview_invalidToken_throwsForbidden() {
+        when(userService.getUserIdByToken("invalidToken")).thenReturn(2L);
+        when(ratingRepository.findRatingById(anyLong())).thenReturn(testRating);
 
-        int reviewsCount = ratingService.findReviews(testUser, reviewed);
-
-        assertEquals(1, reviewsCount);
+        assertThrows(ResponseStatusException.class, () -> ratingService.deleteReview(testRating.getId(), "invalidToken"));
     }
 
     @Test
-    public void findCreatedJobs_validInputs_returnsJobCount() {
-        User creator = new User();
-        creator.setId(2L);
+    public void findRatingsByReviewedId_validInputs_returnsRatings() {
+        when(ratingRepository.findRatingsByReviewedId(1L)).thenReturn(Arrays.asList(testRating));
 
-        Task task = new Task();
-        task.setId(1L);
-        task.setCreator(creator);
+        List<Rating> ratings = ratingService.findRatingsByReviewedId(1L);
 
-        when(taskRepository.findByCreatorId(anyLong())).thenReturn(Arrays.asList(task));
-
-        int createdJobsCount = ratingService.findCreatedJobs(testUser, creator);
-
-        assertEquals(1, createdJobsCount);
+        assertNotNull(ratings);
+        assertFalse(ratings.isEmpty());
+        assertEquals(1, ratings.size());
+        assertEquals(testRating, ratings.get(0));
     }
 
     @Test
-    public void findHelpedJobs_validInputs_returnsJobCount() {
-        User helper = new User();
-        helper.setId(2L);
+    public void createReview_validInputs_createsAndSavesReview() {
+        when(userService.getUserIdByToken("validToken")).thenReturn(1L);
+        when(userService.getUserWithRatings(anyLong())).thenReturn(testUser);
+        when(taskService.getTaskById(anyLong())).thenReturn(testTask);
+        when(ratingRepository.saveAndFlush(any(Rating.class))).thenReturn(testRating);
 
-        Task task = new Task();
-        task.setId(1L);
-        task.setHelper(helper);
+        RatingPostDTO dto = new RatingPostDTO();
+        dto.setReviewerId(1L);
+        dto.setStars(5);
+        dto.setComment("Great job!");
+        dto.setTaskId(1L);
 
-        when(taskRepository.findByHelperId(anyLong())).thenReturn(Arrays.asList(task));
+        Rating result = ratingService.createReview(2L, dto, "validToken");
 
-        int helpedJobsCount = ratingService.findHelpedJobs(testUser, helper);
-
-        assertEquals(1, helpedJobsCount);
+        assertNotNull(result);
+        assertEquals(5, result.getRating());
+        verify(ratingRepository, times(1)).saveAndFlush(any(Rating.class));
     }
-    */
+
+    @Test
+    public void isReviewAuthorized_validInputs_returnsTrue() {
+
+        when(taskService.getTaskById(anyLong())).thenReturn(testTask);
+        when(ratingRepository.existsByTaskAndReviewerId(any(Task.class), anyLong())).thenReturn(false);
+
+        assertTrue(ratingService.isReviewAuthorized(1L, 2L, 1L));
+    }
+
+    @Test
+    public void checkIfReviewed_alreadyReviewed_returnsTrue() {
+        when(taskService.getTaskById(anyLong())).thenReturn(testTask);
+        when(ratingRepository.existsByTaskAndReviewerId(any(Task.class), anyLong())).thenReturn(true);
+
+        assertTrue(ratingService.checkIfReviewed(1L, 1L, "validToken"));
+    }
 
 }
