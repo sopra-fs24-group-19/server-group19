@@ -126,4 +126,22 @@ public class UserServiceTest {
         Mockito.verify(userRepository).findUsersWithMostTasksAsHelper();
     }
 
+    @Test
+    public void tokenValidity_returnsTrue_whenTokenIsValid() {
+        boolean result = userService.tokenValidity("validToken", 1L);
+        assertTrue(result);
+    }
+
+    @Test
+    public void tokenValidity_returnsFalse_whenTokenIsInvalid() {
+        boolean result = userService.tokenValidity("invalidToken", 1L);
+        assertFalse(result);
+    }
+
+    @Test
+    public void tokenValidity_returnsFalse_whenUserIdDoesNotMatch() {
+        boolean result = userService.tokenValidity("validToken", 2L);
+        assertFalse(result);
+    }
+
 }
