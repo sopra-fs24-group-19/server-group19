@@ -1,87 +1,27 @@
-# SoPra RESTful Service Template FS24
+# Helping Hands - Reinventing Community Solidarity
 
-## Getting started with Spring Boot
--   Documentation: https://docs.spring.io/spring-boot/docs/current/reference/html/index.html
--   Guides: http://spring.io/guides
-    -   Building a RESTful Web Service: http://spring.io/guides/gs/rest-service/
-    -   Building REST services with Spring: https://spring.io/guides/tutorials/rest/
+In an age where technology dominates our lives, the sense of community in our neighborhoods has sadly diminished. It’s not uncommon today for people to not know the names of their neighbors, with greetings reduced to mere formalities. The Helping Hands project is born out of the necessity to revive that lost sense of community, reminiscent of the times of our parents and grandparents.
 
-## Setup this Template with your IDE of choice
-Download your IDE of choice (e.g., [IntelliJ](https://www.jetbrains.com/idea/download/), [Visual Studio Code](https://code.visualstudio.com/), or [Eclipse](http://www.eclipse.org/downloads/)). Make sure Java 17 is installed on your system (for Windows, please make sure your `JAVA_HOME` environment variable is set to the correct version of Java).
+## Introduction
 
-### IntelliJ
-If you consider to use IntelliJ as your IDE of choice, you can make use of your free educational license [here](https://www.jetbrains.com/community/education/#students).
-1. File -> Open... -> SoPra server template
-2. Accept to import the project as a `gradle project`
-3. To build right click the `build.gradle` file and choose `Run Build`
+Helping Hands aims to recreate the cohesive and supportive neighborhood environment that once existed. A friendly neighbor can significantly simplify daily life, and that is precisely the objective of Helping Hands.
 
-### VS Code
-The following extensions can help you get started more easily:
--   `vmware.vscode-spring-boot`
--   `vscjava.vscode-spring-initializr`
--   `vscjava.vscode-spring-boot-dashboard`
--   `vscjava.vscode-java-pack`
+## About the App
 
-**Note:** You'll need to build the project first with Gradle, just click on the `build` command in the _Gradle Tasks_ extension. Then check the _Spring Boot Dashboard_ extension if it already shows `soprafs24` and hit the play button to start the server. If it doesn't show up, restart VS Code and check again.
+Helping Hands is a web application designed to foster neighborly assistance and collaboration. Here’s how it works:
 
-## Building with Gradle
-You can use the local Gradle Wrapper to build the application.
--   macOS: `./gradlew`
--   Linux: `./gradlew`
--   Windows: `./gradlew.bat`
+1. **Registration**: Users can sign up and create a profile.
+2. **Posting Tasks**: Users can post requests for help with specific tasks, such as grocery shopping, pet sitting, or any other daily activities.
+3. **Finding Tasks**: By entering their home address, users can view tasks nearby. This ensures that help is always close at hand.
+4. **Choosing Tasks**: Users can select tasks that match their skills and preferences.
+5. **Earning Coins**: Upon completing tasks, users earn symbolic coins. These coins incentivize helping others and can be used to post their own tasks.
+6. **Community Feedback**: A review system ensures that the individuals offering help are trustworthy and competent.
+7. **Leaderboard**: There is a leaderboard where you can see the most helpful people in the community, fostering a spirit of friendly competition and recognition.
 
-More Information about [Gradle Wrapper](https://docs.gradle.org/current/userguide/gradle_wrapper.html) and [Gradle](https://gradle.org/docs/).
+## Vision
 
-### Build
+Our vision is to restore the neighborly spirit of mutual assistance and goodwill. In a world increasingly disconnected by technology, Helping Hands aims to bring people together, fostering a community where everyone looks out for one another.
 
-```bash
-./gradlew build
-```
+## Conclusion
 
-### Run
-
-```bash
-./gradlew bootRun
-```
-
-You can verify that the server is running by visiting `localhost:8080` in your browser.
-
-### Test
-
-```bash
-./gradlew test
-```
-
-### Development Mode
-You can start the backend in development mode, this will automatically trigger a new build and reload the application
-once the content of a file has been changed.
-
-Start two terminal windows and run:
-
-`./gradlew build --continuous`
-
-and in the other one:
-
-`./gradlew bootRun`
-
-If you want to avoid running all tests with every change, use the following command instead:
-
-`./gradlew build --continuous -xtest`
-
-## API Endpoint Testing with Postman
-We recommend using [Postman](https://www.getpostman.com) to test your API Endpoints.
-
-## Debugging
-If something is not working and/or you don't know what is going on. We recommend using a debugger and step-through the process step-by-step.
-
-To configure a debugger for SpringBoot's Tomcat servlet (i.e. the process you start with `./gradlew bootRun` command), do the following:
-
-1. Open Tab: **Run**/Edit Configurations
-2. Add a new Remote Configuration and name it properly
-3. Start the Server in Debug mode: `./gradlew bootRun --debug-jvm`
-4. Press `Shift + F9` or the use **Run**/Debug "Name of your task"
-5. Set breakpoints in the application where you need it
-6. Step through the process one step at a time
-
-## Testing
-Have a look here: https://www.baeldung.com/spring-boot-testing
+Helping Hands is more than just an app; it’s a movement to rekindle the sense of community and solidarity that seems to have faded in our modern world. Join us in making neighborhoods friendlier and more supportive places to live. Together, we can make a difference, one helping hand at a time.
