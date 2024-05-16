@@ -1,14 +1,10 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
-
-//import ch.uzh.ifi.hase.soprafs24.constant.UserStatus;
 import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
 import ch.uzh.ifi.hase.soprafs24.entity.Task;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
 import ch.uzh.ifi.hase.soprafs24.repository.TaskRepository;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.TaskPostDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.TaskGetDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.dto.UserPutDTO;
-import ch.uzh.ifi.hase.soprafs24.rest.mapper.DTOMapper;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.TaskPutDTO;
 import ch.uzh.ifi.hase.soprafs24.service.TaskService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,11 +20,6 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
-import java.util.Optional;
-
-import java.text.SimpleDateFormat;
-
-import static org.hamcrest.Matchers.equalTo;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -286,7 +277,6 @@ public class TaskControllerTest {
         task.setStatus(TaskStatus.CONFIRMED_BY_HELPER);
 
         Mockito.when(taskService.confirmTask(taskId, token)).thenReturn(task);
-        //Mockito.when(DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task)).thenReturn(new TaskGetDTO());
 
         mockMvc.perform(put("/tasks/{taskId}/confirm", taskId)
                         .header("Authorization", token))
@@ -327,4 +317,57 @@ public class TaskControllerTest {
                     String.format("The request body could not be created.%s", e.toString()));
         }
     }
+
+    @Test
+    public void getTaskById_validTaskId_taskReturned() throws Exception {
+        long taskId = 1L;
+        Task task = new Task();
+        task.setId(taskId);
+        task.setTitle("Task Example");
+        task.setDescription("Description here");
+
+        Mockito.when(taskService.getTaskById(taskId)).thenReturn(task);
+
+        mockMvc.perform(get("/tasks/{taskId}", taskId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title", is(task.getTitle())))
+                .andExpect(jsonPath("$.description", is(task.getDescription())));
+    }
+
+    @Test
+    public void selectCandidate_validRequest_statusNoContent() throws Exception {
+        long taskId = 1L;
+        String token = "Bearer valid-token";
+        TaskPutDTO taskPutDTO = new TaskPutDTO();
+        taskPutDTO.setTaskId(taskId);
+        taskPutDTO.setUserId(100L);
+
+        doNothing().when(taskService).selectCandidate(any(TaskPutDTO.class), anyString());
+
+        mockMvc.perform(put("/tasks/{taskId}", taskId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", token)
+                        .content(asJsonString(taskPutDTO)))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void apply_validRequest_statusOk() throws Exception {
+        long taskId = 1L;
+        String token = "Bearer valid-token";
+        TaskPutDTO taskPutDTO = new TaskPutDTO();
+        taskPutDTO.setTaskId(taskId);
+        taskPutDTO.setUserId(100L);
+
+        doNothing().when(taskService).apply(any(TaskPutDTO.class), anyString());
+
+        mockMvc.perform(put("/apply")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", token)
+                        .content(asJsonString(taskPutDTO)))
+                .andExpect(status().isOk());
+    }
+
+
+
 }

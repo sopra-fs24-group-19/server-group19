@@ -1,26 +1,26 @@
 package ch.uzh.ifi.hase.soprafs24.controller;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
-
 import ch.uzh.ifi.hase.soprafs24.entity.Todo;
+import ch.uzh.ifi.hase.soprafs24.rest.dto.TodoGetDTO;
 import ch.uzh.ifi.hase.soprafs24.rest.dto.TodoPostDTO;
 import ch.uzh.ifi.hase.soprafs24.service.TodoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.boot.test.mock.mockito.MockBean;
+
+import java.util.Arrays;
+import java.util.List;
+
 @WebMvcTest(TodoController.class)
 public class TodoControllerTest {
 
@@ -30,7 +30,7 @@ public class TodoControllerTest {
     @MockBean
     private TodoService todoService;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     public void createTodo_success() throws Exception {
@@ -108,4 +108,49 @@ public class TodoControllerTest {
 
         verify(todoService, times(1)).areAllTodosDone(taskId);
     }
+
+    @Test
+    public void getTodosFromTask_validRequest_todoListReturned() throws Exception {
+        long taskId = 1L;
+        String token = "Bearer valid-token";
+        List<TodoGetDTO> todoGetDTOs = Arrays.asList(new TodoGetDTO(), new TodoGetDTO());
+
+        when(todoService.getTodosFromTask(token, taskId)).thenReturn(todoGetDTOs);
+
+        mockMvc.perform(get("/todo/{id}", taskId)
+                        .header("Authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
+
+    }
+
+    @Test
+    public void deleteTodo_validRequest_todoDeleted() throws Exception {
+        long todoId = 1L;
+        String token = "Bearer valid-token";
+
+        doNothing().when(todoService).deleteTodo(todoId, token);
+
+        mockMvc.perform(delete("/todo/{id}", todoId)
+                        .header("Authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void deleteTodo_unauthorizedRequest_unauthorizedStatus() throws Exception {
+        long todoId = 1L;
+        String token = "Bearer invalid-token";
+
+        doThrow(new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized"))
+                .when(todoService).deleteTodo(todoId, token);
+
+        mockMvc.perform(delete("/todo/{id}", todoId)
+                        .header("Authorization", token)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+
 }

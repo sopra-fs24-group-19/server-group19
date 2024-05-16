@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
 import java.util.List;
 
-//TODO: add missing columns and figure out good way of joining tables
 
 @Entity
 @Table(name = "USER")

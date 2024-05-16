@@ -25,4 +25,6 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
     void deleteRatingById(@Param("reviewId") long reviewId);
 
     boolean existsByTaskAndReviewerId(Task task, Long reviewerId);
+
+
 }

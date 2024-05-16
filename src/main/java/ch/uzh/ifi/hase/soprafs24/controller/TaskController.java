@@ -74,13 +74,6 @@ public class TaskController {
         return DTOMapper.INSTANCE.convertEntityToTaskGetDTO(task);
     }
 
-    @PutMapping("/tasks/{taskId}/refuse")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ResponseBody
-    public void refuseTask(@RequestBody TaskPutDTO taskPutDTO) {
-        //TODO: implement
-    }
-
     @GetMapping("tasks/{taskId}")
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody

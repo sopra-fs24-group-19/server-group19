@@ -1,9 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.entity;
 
 import javax.persistence.*;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "TODO")
