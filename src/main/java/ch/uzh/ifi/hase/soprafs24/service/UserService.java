@@ -63,7 +63,7 @@ public class UserService {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND,
           String.format("The user with userId: %d was not found.", id));
     }
-    tokenValidation(userToEdit, tokenProvidedbyClient, "Token is invalid.");
+    tokenValidity(tokenProvidedbyClient, userToEdit.getId());
     userToEdit.setName(userWithPendingChanges.getName());
     userToEdit.setAddress(userWithPendingChanges.getAddress());
     userToEdit.setLatitude(userWithPendingChanges.getLatitude());
@@ -138,13 +138,6 @@ public class UserService {
     if (this.userRepository.findUserByToken(token) == null) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You don't have a valid token.");
     }
-  }
-
-  private Boolean tokenValidation(User user, String tokenProvidedbyClient, String errorMessage) {
-    if (!tokenProvidedbyClient.equals(user.getToken())) {
-      throw new ResponseStatusException(HttpStatus.FORBIDDEN, errorMessage);
-    }
-    return true;
   }
 
   public void saveUser(User user) {
