@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -37,7 +38,8 @@ public class TaskService {
     }
 
     public List<Task> getTasks() {
-        return this.taskRepository.findAll();
+        Date today = new Date();
+        return taskRepository.findAllWithDateAfterOrEqual(today);
     }
 
     public Task getTaskById(long id) {

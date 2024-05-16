@@ -172,7 +172,8 @@ public class TaskServiceTest {
     @Test
     public void getTasks_returnsListOfTasks() {
         List<Task> expected = Collections.singletonList(testTask);
-        Mockito.when(taskRepository.findAll()).thenReturn(expected);
+        Date today = new Date();
+        Mockito.when(taskRepository.findAllWithDateAfterOrEqual(today)).thenReturn(expected);
 
         List<Task> actual = taskService.getTasks();
 
@@ -183,7 +184,28 @@ public class TaskServiceTest {
         assertEquals(expected.get(0).getTitle(), actual.get(0).getTitle());
         assertEquals(expected.get(0).getCreator(), actual.get(0).getCreator());
 
-        verify(taskRepository).findAll();
+        verify(taskRepository).findAllWithDateAfterOrEqual(today);
+    }
+
+    @Test
+    public void getTasks_excludesHistoricalTasks() {
+
+        Task historicalTask = new Task();
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
+        historicalTask.setDate(cal.getTime());
+
+        List<Task> expected = Collections.singletonList(testTask);
+        Date today = new Date();
+        Mockito.when(taskRepository.findAllWithDateAfterOrEqual(today)).thenReturn(expected);
+
+        List<Task> actual = taskService.getTasks();
+
+        assertEquals(1, actual.size());
+        assertFalse(actual.contains(historicalTask), "Historical tasks should not be returned.");
+        assertTrue(actual.contains(testTask), "Expected task is not returned.");
+
+        verify(taskRepository).findAllWithDateAfterOrEqual(today);
     }
 
     @Test
