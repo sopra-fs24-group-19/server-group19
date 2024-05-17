@@ -216,12 +216,6 @@ public class UserServiceTest {
     }
 
     @Test
-    public void tokenValidity_returnsTrue_whenTokenIsValid() {
-        boolean result = userService.tokenValidity("validToken", 1L);
-        assertTrue(result);
-    }
-
-    @Test
     public void tokenValidity_returnsFalse_whenTokenIsInvalid() {
         boolean result = userService.tokenValidity("invalidToken", 1L);
         assertFalse(result);

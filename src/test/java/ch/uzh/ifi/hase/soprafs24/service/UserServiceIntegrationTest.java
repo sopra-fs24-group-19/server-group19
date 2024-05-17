@@ -1,5 +1,7 @@
 package ch.uzh.ifi.hase.soprafs24.service;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import ch.uzh.ifi.hase.soprafs24.repository.TaskRepository;
+import ch.uzh.ifi.hase.soprafs24.repository.TodoRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,10 +24,19 @@ public class UserServiceIntegrationTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
+    private TodoRepository todoRepository;
+
+
     private User user;
 
     @BeforeEach
     public void setup() {
+        todoRepository.deleteAll();
+        taskRepository.deleteAll();
         userRepository.deleteAll();
         user = new User();
         user.setUsername("testUser");
