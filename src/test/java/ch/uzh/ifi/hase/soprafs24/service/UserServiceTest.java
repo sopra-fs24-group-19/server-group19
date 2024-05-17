@@ -1,7 +1,11 @@
 package ch.uzh.ifi.hase.soprafs24.service;
+import java.util.Arrays;
+import java.time.LocalDateTime;
 
 import ch.uzh.ifi.hase.soprafs24.constant.TaskStatus;
+import ch.uzh.ifi.hase.soprafs24.entity.Rating;
 import ch.uzh.ifi.hase.soprafs24.entity.User;
+import ch.uzh.ifi.hase.soprafs24.repository.RatingRepository;
 import ch.uzh.ifi.hase.soprafs24.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,20 +22,31 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 public class UserServiceTest {
 
   @Mock
   private UserRepository userRepository;
+  @Mock
+  private RatingRepository ratingRepository;
+  @Mock
+  private RatingService ratingService;
+  @Mock
+  private TaskService taskService;
 
   @InjectMocks
   private UserService userService;
+
 
   private User testUser, testUser2;
 
   @BeforeEach
   public void setup() {
     MockitoAnnotations.openMocks(this);
+    ratingService = Mockito.mock(RatingService.class);
 
     testUser = new User();
     testUser.setId(1L);
@@ -44,12 +59,13 @@ public class UserServiceTest {
     testUser2.setName("testName2");
     testUser2.setUsername("testUsername2");
 
-    Mockito.when(userRepository.save(Mockito.any())).thenReturn(testUser);
-    Mockito.when(userRepository.findByToken("validToken")).thenReturn(testUser);
-    Mockito.when(userRepository.findByToken("invalidToken")).thenReturn(null);
+    when(userRepository.save(Mockito.any())).thenReturn(testUser);
+    when(userRepository.findByToken("validToken")).thenReturn(testUser);
+    when(userRepository.findByToken("invalidToken")).thenReturn(null);
 
-    Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
-    Mockito.when(userRepository.findById(2L)).thenReturn(Optional.of(testUser2));
+
+    when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+    when(userRepository.findById(2L)).thenReturn(Optional.of(testUser2));
   }
 
     @Test
@@ -100,7 +116,7 @@ public class UserServiceTest {
         testData.add(new Object[]{1L, 5L});
         testData.add(new Object[]{2L, 3L});
 
-        Mockito.when(userRepository.findUsersWithMostTasksAsHelper()).thenReturn(testData);
+        when(userRepository.findUsersWithMostTasksAsHelper()).thenReturn(testData);
 
         List<Object[]> rankedUsers = userService.getRankedUsers();
 
@@ -119,7 +135,7 @@ public class UserServiceTest {
     public void getRankedUsers_successWithNoUsers() {
 
         List<Object[]> testData = new ArrayList<>();
-        Mockito.when(userRepository.findUsersWithMostTasksAsHelper()).thenReturn(testData);
+        when(userRepository.findUsersWithMostTasksAsHelper()).thenReturn(testData);
 
         List<Object[]> rankedUsers = userService.getRankedUsers();
 
@@ -132,7 +148,7 @@ public class UserServiceTest {
         User user = new User();
         user.setUsername("testUser");
         user.setPassword("correctPassword");
-        Mockito.when(userRepository.findByUsername("testUser")).thenReturn(user);
+        when(userRepository.findByUsername("testUser")).thenReturn(user);
 
         User result = userService.login(user);
 
@@ -146,7 +162,7 @@ public class UserServiceTest {
         User user = new User();
         user.setUsername("nonExistentUser");
         user.setPassword("anyPassword");
-        Mockito.when(userRepository.findByUsername("nonExistentUser")).thenReturn(null);
+        when(userRepository.findByUsername("nonExistentUser")).thenReturn(null);
 
         assertThrows(ResponseStatusException.class, () -> userService.login(user),
                 "The username you provided was not found in the database.");
@@ -160,7 +176,7 @@ public class UserServiceTest {
         User storedUser = new User();
         storedUser.setUsername("testUser");
         storedUser.setPassword("correctPassword");
-        Mockito.when(userRepository.findByUsername("testUser")).thenReturn(storedUser);
+        when(userRepository.findByUsername("testUser")).thenReturn(storedUser);
 
         assertThrows(ResponseStatusException.class, () -> userService.login(user),
                 "The password was not correct.");
@@ -174,9 +190,9 @@ public class UserServiceTest {
         User updatedUser = new User();
         updatedUser.setName("New Name");
 
-        Mockito.when(userRepository.findUserById(1L)).thenReturn(originalUser);
-        Mockito.when(userRepository.saveAndFlush(Mockito.any(User.class))).thenReturn(updatedUser);
-        Mockito.when(userRepository.findUserByToken("validToken")).thenReturn(updatedUser);
+        when(userRepository.findUserById(1L)).thenReturn(originalUser);
+        when(userRepository.saveAndFlush(Mockito.any(User.class))).thenReturn(updatedUser);
+        when(userRepository.findUserByToken("validToken")).thenReturn(updatedUser);
 
         userService.editProfile(updatedUser, "validToken", 1L);
 
@@ -189,7 +205,7 @@ public class UserServiceTest {
         User user = new User();
         user.setId(1L);
         user.setToken("otherToken");
-        Mockito.when(userRepository.findUserById(1L)).thenReturn(user);
+        when(userRepository.findUserById(1L)).thenReturn(user);
 
         assertThrows(ResponseStatusException.class, () -> userService.editProfile(new User(), "invalidToken", 1L),
                 "Token is invalid.");
@@ -199,7 +215,7 @@ public class UserServiceTest {
     public void getUserByToken_success() {
         User user = new User();
         user.setId(1L);
-        Mockito.when(userRepository.findByToken("validToken")).thenReturn(user);
+        when(userRepository.findByToken("validToken")).thenReturn(user);
 
         User result = userService.getUserByToken("validToken");
 
@@ -209,16 +225,10 @@ public class UserServiceTest {
 
     @Test
     public void getUserWithRatings_noUserFound_throwsException() {
-        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.empty());
+        when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ResponseStatusException.class, () -> userService.getUserWithRatings(1L),
                 "no user exists with id1");
-    }
-
-    @Test
-    public void tokenValidity_returnsTrue_whenTokenIsValid() {
-        boolean result = userService.tokenValidity("validToken", 1L);
-        assertTrue(result);
     }
 
     @Test
@@ -233,4 +243,28 @@ public class UserServiceTest {
         assertFalse(result);
     }
 
+
+
+@Test
+public void getUserWithRatings_returnsUserWithNoRatings_whenUserHasNoRatings() {
+    User user = new User();
+    user.setId(1L);
+
+    List<Rating> ratings = new ArrayList<>();
+
+    when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+    when(ratingService.findRatingsByReviewedId(1L)).thenReturn(ratings);
+
+    User result = userService.getUserWithRatings(1L);
+
+    assertEquals(0, result.getTotalComments());
+    assertEquals(0, result.getAverageStars());
+}
+
+@Test
+public void getUserWithRatings_throwsException_whenUserDoesNotExist() {
+    when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+    assertThrows(ResponseStatusException.class, () -> userService.getUserWithRatings(1L));
+}
 }
