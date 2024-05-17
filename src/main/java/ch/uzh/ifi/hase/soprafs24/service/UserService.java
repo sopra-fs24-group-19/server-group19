@@ -169,7 +169,7 @@ public class UserService {
   }
 
   public boolean tokenValidity(String token, long userId){
-    User userRetrieved = this.userRepository.findUserByToken(token);
+    User userRetrieved = this.userRepository.findUserById(userId);
     if (userRetrieved == null) {
       return false;
     }
