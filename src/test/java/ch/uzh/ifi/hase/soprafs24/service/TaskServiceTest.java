@@ -12,7 +12,12 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.*;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -56,13 +61,17 @@ public class TaskServiceTest {
         testHelper.setName("helperName");
         testHelper.setUsername("helperUsername");
 
+        LocalDate localDate = LocalDate.of(2025, 5, 25);  // Year, Month, Day
+        LocalDateTime localDateTime = localDate.atTime(LocalTime.of(14, 30)); // Hour, Minute
+        Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+
         testTask = new Task();
         testTask.setId(1L);
         testTask.setTitle("testTitle");
         testTask.setDescription("testDescription");
         testTask.setAddress("testAddress");
         testTask.setCreator(testCreator);
-        testTask.setDate(new Date());
+        testTask.setDate(date);
         testTask.setDuration(30);
         testTask.setPrice(20);
 
