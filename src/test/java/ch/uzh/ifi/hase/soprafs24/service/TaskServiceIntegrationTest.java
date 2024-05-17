@@ -13,18 +13,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
+import javax.persistence.EntityNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Test class for the UserResource REST resource.
- *
- * @see UserService
- */
 @WebAppConfiguration
 @SpringBootTest
 public class TaskServiceIntegrationTest {
@@ -92,18 +87,15 @@ public class TaskServiceIntegrationTest {
 
     @Test
     public void createTask_validInputs_success() {
-        // given
+
         User testCreator = new User();
         testCreator.setCoinBalance(50);
         testCreator.setName("testName");
         testCreator.setUsername("testUsername");
         testCreator.setPassword("testPassword");
-        //comment out after having made sure the id is correctly set!
-        //testCreator.setId(1L);
         User createdUser = userService.createUser(testCreator);
 
         Task testTask = new Task();
-        //testTask.setId(1L);
         testTask.setTitle("testTitle");
         testTask.setDescription("testDescription");
         testTask.setAddress("testAddress");
@@ -112,11 +104,8 @@ public class TaskServiceIntegrationTest {
         testTask.setDuration(30);
         testTask.setPrice(20);
 
-        // when
-        //User createdUser = userService.createUser(testCreator);
         Task createdTask = taskService.createTask(testTask, testCreator.getId());
 
-        // then
         assertEquals(testTask.getId(), createdTask.getId());
         assertEquals(testCreator.getId(), createdUser.getId());
         assertEquals(testTask.getDescription(), createdTask.getDescription());
@@ -131,7 +120,6 @@ public class TaskServiceIntegrationTest {
     public void createTask_lowCoinBalance_throwsException() {
 
         User testCreator = new User();
-        //testCreator.setCoinBalance(20);
         testCreator.setId(1L);
         testCreator.setName("testName");
         testCreator.setUsername("testUsername");
@@ -147,7 +135,6 @@ public class TaskServiceIntegrationTest {
         testTask.setDate(new Date());
         testTask.setDuration(30);
         testTask.setPrice(60);
-        //Task createdTask = taskService.createTask(testTask, createdUser.getId());
 
         assertThrows(ResponseStatusException.class, () -> taskService.createTask(testTask, createdUser.getId()));
     }
@@ -211,5 +198,50 @@ public class TaskServiceIntegrationTest {
 
         assertThrows(NoSuchElementException.class, () -> taskService.deleteTaskWithId(nonExistentTaskId, token));
     }
+
+    @Test
+    public void getTasks_ReturnsTasksOnOrAfterToday() {
+
+        Date now = new Date();
+        List<Task> tasks = taskService.getTasks();
+
+        assertTrue(tasks.stream().allMatch(task -> !task.getDate().before(now)));
+    }
+
+    @Test
+    public void getTaskById_ValidId_ReturnsTask() {
+
+        Task foundTask = taskService.getTaskById(task.getId());
+
+        assertEquals(task.getId(), foundTask.getId());
+    }
+
+    @Test
+    public void getTaskById_InvalidId_ThrowsEntityNotFoundException() {
+
+        long invalidTaskId = -1;
+
+        assertThrows(EntityNotFoundException.class, () -> taskService.getTaskById(invalidTaskId));
+    }
+
+    @Test
+    public void getTasksByCreator_ValidUserId_ReturnsTasks() {
+
+        List<Task> tasks = taskService.getTasksByCreator(creator.getId());
+
+        assertTrue(tasks.stream().allMatch(task -> task.getCreator().getId().equals(creator.getId())));
+    }
+
+    @Test
+    public void getCandidatesForTaskWithId_ValidTaskId_ReturnsCandidates() {
+
+        List<User> candidates = taskService.getCandidatesForTaskWithId(task.getId());
+
+        assertEquals(candidates.size(), task.getCandidates().size());
+    }
+
+
+
+
 
 }
