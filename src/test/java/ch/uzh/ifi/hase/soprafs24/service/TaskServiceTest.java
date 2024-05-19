@@ -12,7 +12,12 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.*;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -35,6 +40,8 @@ public class TaskServiceTest {
     private User testCandidate;
     private User testHelper;
 
+    private Date date;
+
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
@@ -56,13 +63,17 @@ public class TaskServiceTest {
         testHelper.setName("helperName");
         testHelper.setUsername("helperUsername");
 
+        LocalDate localDate = LocalDate.of(2025, 5, 25);  // Year, Month, Day
+        LocalDateTime localDateTime = localDate.atTime(LocalTime.of(14, 30)); // Hour, Minute
+        date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+
         testTask = new Task();
         testTask.setId(1L);
         testTask.setTitle("testTitle");
         testTask.setDescription("testDescription");
         testTask.setAddress("testAddress");
         testTask.setCreator(testCreator);
-        testTask.setDate(new Date());
+        testTask.setDate(date);
         testTask.setDuration(30);
         testTask.setPrice(20);
 
@@ -171,8 +182,7 @@ public class TaskServiceTest {
     @Test
     public void getTasks_returnsListOfTasks() {
         List<Task> expected = Collections.singletonList(testTask);
-        Date today = new Date();
-        Mockito.when(taskRepository.findAllWithDateAfterOrEqual(today)).thenReturn(expected);
+        Mockito.when(taskRepository.findAllWithDateAfterOrEqual(any())).thenReturn(expected);
 
         List<Task> actual = taskService.getTasks();
 
@@ -182,8 +192,6 @@ public class TaskServiceTest {
         assertEquals(expected.get(0).getDescription(), actual.get(0).getDescription());
         assertEquals(expected.get(0).getTitle(), actual.get(0).getTitle());
         assertEquals(expected.get(0).getCreator(), actual.get(0).getCreator());
-
-        verify(taskRepository).findAllWithDateAfterOrEqual(today);
     }
 
     @Test

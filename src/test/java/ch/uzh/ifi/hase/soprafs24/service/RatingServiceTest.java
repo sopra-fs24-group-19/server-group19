@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -38,6 +39,8 @@ public class RatingServiceTest {
     private Rating testRating;
 
     private Task testTask;
+    private RatingPostDTO ratingPostDTO;
+
 
     @BeforeEach
     public void setup() {
@@ -60,8 +63,15 @@ public class RatingServiceTest {
         testRating.setCreationDate(LocalDateTime.now());
 
         testTask = new Task();
+        testTask.setId(1L);
         testTask.setCreator(testUser);
         testTask.setHelper(testHelper);
+
+        ratingPostDTO = new RatingPostDTO();
+        ratingPostDTO.setReviewerId(1L);
+        ratingPostDTO.setStars(5);
+        ratingPostDTO.setComment("Great job!");
+        ratingPostDTO.setTaskId(1L);
     }
 
     @Test
@@ -147,6 +157,61 @@ public class RatingServiceTest {
         when(ratingRepository.existsByTaskAndReviewerId(any(Task.class), anyLong())).thenReturn(true);
 
         assertTrue(ratingService.checkIfReviewed(1L, 1L, "validToken"));
+    }
+
+    @Test
+    public void checkIfReviewed_notReviewed_returnsFalse() {
+        when(taskService.getTaskById(anyLong())).thenReturn(testTask);
+        when(ratingRepository.existsByTaskAndReviewerId(any(Task.class), anyLong())).thenReturn(false);
+
+        assertFalse(ratingService.checkIfReviewed(1L, 1L, "validToken"));
+    }
+
+    @Test
+    public void isReviewAuthorized_taskIsNull_throwsForbidden() {
+        when(taskService.getTaskById(anyLong())).thenReturn(null);
+
+        assertThrows(ResponseStatusException.class, () -> ratingService.isReviewAuthorized(3L, testUser.getId(), testTask.getId()));
+    }
+
+    @Test
+    public void isReviewAuthorized_reviewerIsSameAsReviewed_throwsForbidden() {
+        when(taskService.getTaskById(anyLong())).thenReturn(testTask);
+
+        assertThrows(ResponseStatusException.class, () -> ratingService.isReviewAuthorized(testUser.getId(), testUser.getId(), testTask.getId()));
+    }
+
+    @Test
+    public void isReviewAuthorized_alreadyReviewed_throwsForbidden() {
+        when(taskService.getTaskById(anyLong())).thenReturn(testTask);
+        when(ratingRepository.existsByTaskAndReviewerId(any(Task.class), anyLong())).thenReturn(true);
+
+        assertThrows(ResponseStatusException.class, () -> ratingService.isReviewAuthorized(testUser.getId(), testHelper.getId(), testTask.getId()));
+    }
+
+
+    @Test
+    public void createReview_invalidToken_throwsForbidden() {
+        when(userService.getUserIdByToken(anyString())).thenReturn(2L);
+
+        assertThrows(ResponseStatusException.class, () -> ratingService.createReview(1L, ratingPostDTO, "invalidToken"));
+    }
+
+    @Test
+    public void createReview_invalidTaskId_throwsNotFound() {
+        when(userService.getUserIdByToken(anyString())).thenReturn(1L);
+        when(taskService.getTaskById(anyLong())).thenReturn(null);
+
+        assertThrows(ResponseStatusException.class, () -> ratingService.createReview(1L, ratingPostDTO, "validToken"));
+    }
+
+    @Test
+    public void createReview_reviewNotAuthorized_throwsForbidden() {
+        when(userService.getUserIdByToken(anyString())).thenReturn(1L);
+        when(taskService.getTaskById(anyLong())).thenReturn(testTask);
+        when(ratingRepository.existsByTaskAndReviewerId(any(Task.class), anyLong())).thenReturn(true);
+
+        assertThrows(ResponseStatusException.class, () -> ratingService.createReview(1L, ratingPostDTO, "validToken"));
     }
 
 }
