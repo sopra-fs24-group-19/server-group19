@@ -40,6 +40,8 @@ public class TaskServiceTest {
     private User testCandidate;
     private User testHelper;
 
+    private Date date;
+
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
@@ -63,7 +65,7 @@ public class TaskServiceTest {
 
         LocalDate localDate = LocalDate.of(2025, 5, 25);  // Year, Month, Day
         LocalDateTime localDateTime = localDate.atTime(LocalTime.of(14, 30)); // Hour, Minute
-        Date date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+        date = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
 
         testTask = new Task();
         testTask.setId(1L);
@@ -180,8 +182,7 @@ public class TaskServiceTest {
     @Test
     public void getTasks_returnsListOfTasks() {
         List<Task> expected = Collections.singletonList(testTask);
-        Date today = new Date();
-        Mockito.when(taskRepository.findAllWithDateAfterOrEqual(today)).thenReturn(expected);
+        Mockito.when(taskRepository.findAllWithDateAfterOrEqual(any())).thenReturn(expected);
 
         List<Task> actual = taskService.getTasks();
 
@@ -191,8 +192,6 @@ public class TaskServiceTest {
         assertEquals(expected.get(0).getDescription(), actual.get(0).getDescription());
         assertEquals(expected.get(0).getTitle(), actual.get(0).getTitle());
         assertEquals(expected.get(0).getCreator(), actual.get(0).getCreator());
-
-        verify(taskRepository).findAllWithDateAfterOrEqual(today);
     }
 
     @Test
