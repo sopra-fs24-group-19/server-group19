@@ -53,6 +53,17 @@ Fixed minor functionalities such as deleting all applications when a user is sel
         * Attempted to fix the logo by changing the image path; it is not yet working in the deployed version, suspecting that the build file has not been correctly switched on Google Cloud.
         * Fixed the favicon, which was not being displayed correctly.
 
+#### Week 7 (15.05 - 21.05)
+* GitHub issues worked on: #42 (frontend), #43 (frontend), #90 (backend)
+    * https://github.com/sopra-fs24-group-19/client-group19/issues/42
+    * https://github.com/sopra-fs24-group-19/client-group19/issues/43
+    * https://github.com/sopra-fs24-group-19/server-group19/issues/90
+* Additional details:
+    * Bug fix: when a user closed the session improperly (without logging out first), the token remained in local storage. This led to numerous errors when the user reconnected to the web app.
+    * Reformatted all fields where a date was displayed with dayJS.
+    * Backend: implemented endpoint for frontend to validate token and associate with user id.
+
+
 ### Dana Rapp
 #### Week 1 (26.03 - 09.04)
 
