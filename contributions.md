@@ -175,7 +175,8 @@ Fixed minor functionalities such as deleting all applications when a user is sel
     * ToDo - Task Done - Status update: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?groupedBy%5BcolumnId%5D=Assignees&sortedBy%5Bdirection%5D=asc&sortedBy%5BcolumnId%5D=84598672&pane=issue&itemId=62630852
     * ToDo - user friendly message: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?groupedBy%5BcolumnId%5D=Assignees&sortedBy%5Bdirection%5D=asc&sortedBy%5BcolumnId%5D=84598672&pane=issue&itemId=62631059
     * Leaving review - adjustment: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?groupedBy%5BcolumnId%5D=Assignees&sortedBy%5Bdirection%5D=asc&sortedBy%5BcolumnId%5D=84598672&pane=issue&itemId=62630966
-  
+* Week 7 - Github issues worked on: #39
+    * Guards: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=63138970 
    
        
 
