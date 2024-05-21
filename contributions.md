@@ -159,7 +159,8 @@ Fixed minor functionalities such as deleting all applications when a user is sel
 * Week 3 - Github issues worked on:
     * FE US4 (API): https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=60169210
     * Task API setup for frontend - searching which one is more suitable for our project: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=60169481
-    * Further work: connection of front and backend, changing some minor visual details in HomeFeed.tsx, UserProfile.tsx
+    * FE User Profile adjustments: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?visibleFields=%5B%22Title%22%2C%22Assignees%22%2C%22Status%22%2C84598672%5D&pane=issue&itemId=63792913
+    * Further work: connection of front and backend, changing some minor visual details in HomeFeed.tsx
 * Week 4 - Github issues worked on:
    * FE US4 (API, adjusting filtering, styling): https://github.com/sopra-fs24-group-19/client-group19/issues/13
    * FE US5: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61231454
