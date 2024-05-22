@@ -184,3 +184,15 @@ Fixed minor functionalities such as deleting all applications when a user is sel
     * TODO List - design: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61801048
     * Show users information in the header: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61801252
     * Note: The commit noted in the issues contains a lot more bug fixes, design fixes and extension, for more details, please visit the commit
+* Week 6 - Github issues worked on:
+  * Adding automatic page refreshes throughout the website: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask++week%3A%22Week+6%22++assignee%3A%40me&pane=issue&itemId=62603939
+  * Make the website more user-friendly: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask++week%3A%22Week+6%22++assignee%3A%40me&pane=issue&itemId=62603833
+  * Add Pop-up windows for usability: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask++week%3A%22Week+6%22++assignee%3A%40me&pane=issue&itemId=62603847
+  * Add the option to filter tasks in MyTasks and MyApplication: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask++week%3A%22Week+6%22++assignee%3A%40me&pane=issue&itemId=62604036
+* Week 7 - Github issues worked on:
+  * Enable review at a later point in time: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask++week%3A%22Week+7%22++assignee%3A%40me&pane=issue&itemId=63665063
+  * Disable ability to add new ToDo's after one party has closed the task: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask++week%3A%22Week+7%22++assignee%3A%40me&pane=issue&itemId=63911327
+  * Experiment how to get logo and default profile picture on the deployed version: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask++week%3A%22Week+7%22++assignee%3A%40me&pane=issue&itemId=63915009
+  * Disable users from creating tasks for a past hour: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask++week%3A%22Week+7%22++assignee%3A%40me&pane=issue&itemId=63915009
+  * Make website accessible from the phone: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask++week%3A%22Week+7%22++assignee%3A%40me&pane=issue&itemId=63914654
+  * Further work: Fixed the loading of the header, fixed filter option in MyApplications, further fixes mentioned in the commits to finalize the web page
