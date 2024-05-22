@@ -209,4 +209,3 @@ Fixed minor functionalities such as deleting all applications when a user is sel
   * Disable users from creating tasks for a past hour: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask++week%3A%22Week+7%22++assignee%3A%40me&pane=issue&itemId=63915009
   * Make website accessible from the phone: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?filterQuery=repo%3A%22sopra-fs24-group-19%2Fclient-group19%22+type-of-issue%3ATask++week%3A%22Week+7%22++assignee%3A%40me&pane=issue&itemId=63914654
   * Further work: Fixed the loading of the header, fixed filter option in MyApplications, further fixes mentioned in the commits to finalize the web page
-  
