@@ -53,6 +53,17 @@ Fixed minor functionalities such as deleting all applications when a user is sel
         * Attempted to fix the logo by changing the image path; it is not yet working in the deployed version, suspecting that the build file has not been correctly switched on Google Cloud.
         * Fixed the favicon, which was not being displayed correctly.
 
+#### Week 7 (15.05 - 21.05)
+* GitHub issues worked on: #42 (frontend), #43 (frontend), #90 (backend)
+    * https://github.com/sopra-fs24-group-19/client-group19/issues/42
+    * https://github.com/sopra-fs24-group-19/client-group19/issues/43
+    * https://github.com/sopra-fs24-group-19/server-group19/issues/90
+* Additional details:
+    * Bug fix: when a user closed the session improperly (without logging out first), the token remained in local storage. This led to numerous errors when the user reconnected to the web app.
+    * Reformatted all fields where a date was displayed with dayJS.
+    * Backend: implemented endpoint for frontend to validate token and associate with user id.
+
+
 ### Dana Rapp
 #### Week 1 (26.03 - 09.04)
 
@@ -148,7 +159,8 @@ Fixed minor functionalities such as deleting all applications when a user is sel
 * Week 3 - Github issues worked on:
     * FE US4 (API): https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=60169210
     * Task API setup for frontend - searching which one is more suitable for our project: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=60169481
-    * Further work: connection of front and backend, changing some minor visual details in HomeFeed.tsx, UserProfile.tsx
+    * FE User Profile adjustments: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?visibleFields=%5B%22Title%22%2C%22Assignees%22%2C%22Status%22%2C84598672%5D&pane=issue&itemId=63792913
+    * Further work: connection of front and backend, changing some minor visual details in HomeFeed.tsx
 * Week 4 - Github issues worked on:
    * FE US4 (API, adjusting filtering, styling): https://github.com/sopra-fs24-group-19/client-group19/issues/13
    * FE US5: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=61231454
@@ -164,7 +176,8 @@ Fixed minor functionalities such as deleting all applications when a user is sel
     * ToDo - Task Done - Status update: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?groupedBy%5BcolumnId%5D=Assignees&sortedBy%5Bdirection%5D=asc&sortedBy%5BcolumnId%5D=84598672&pane=issue&itemId=62630852
     * ToDo - user friendly message: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?groupedBy%5BcolumnId%5D=Assignees&sortedBy%5Bdirection%5D=asc&sortedBy%5BcolumnId%5D=84598672&pane=issue&itemId=62631059
     * Leaving review - adjustment: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?groupedBy%5BcolumnId%5D=Assignees&sortedBy%5Bdirection%5D=asc&sortedBy%5BcolumnId%5D=84598672&pane=issue&itemId=62630966
-  
+* Week 7 - Github issues worked on: #39
+    * Guards: https://github.com/orgs/sopra-fs24-group-19/projects/1/views/3?pane=issue&itemId=63138970 
    
        
 
