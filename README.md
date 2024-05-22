@@ -26,6 +26,86 @@ Our vision is to restore the neighborly spirit of mutual assistance and goodwill
 
 Helping Hands is more than just an app; it’s a movement to rekindle the sense of community and solidarity that seems to have faded in our modern world. Join us in making neighborhoods friendlier and more supportive places to live. Together, we can make a difference, one helping hand at a time.
 
+## Technologies Used
+
+**Backend**:
+
+- [Gradle](https://gradle.org/)
+- [Java](https://www.java.com/)
+- [Spring Boot](https://spring.io/projects/spring-boot)
+- [H2 Database](https://www.h2database.com/)
+- [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
+- [Spring Web MVC](https://spring.io/guides/gs/serving-web-content/)
+- [Spring REST Controller](https://spring.io/guides/gs/rest-service/)
+- [REST API](https://restfulapi.net/)
+
+**Frontend**:
+
+- [React](https://reactjs.org/)
+- [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)/[TypeScript](https://www.typescriptlang.org/)
+- [Axios](https://axios-http.com/)
+- [Bootstrap](https://getbootstrap.com/)
+- [CRACO](https://github.com/gsoft-inc/craco)
+- [React Icons](https://react-icons.github.io/react-icons/)
+- [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)
+- [Geoapify](https://www.geoapify.com/)
+
+## High-level Components
+### Backend
+The primary components of the backend are the service and controller classes created for each entity (Rating, Task, User, Todo).
+
+Using the REST Controller framework, we manage all requests according to the HTTPS standard (GET, POST, PUT, DELETE), passing all necessary parameters, including tokens and path parameters to identify the IDs of the instances in question.
+```sh
+@RestController
+public class TodoController {
+
+    private final TodoService todoService;
+
+    TodoController(TodoService todoService) {
+        this.todoService = todoService;
+    }
+
+    @PostMapping("/todo")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
+    public void createTodo(@RequestBody TodoPostDTO todoPostDTO, @RequestHeader("Authorization") String token) {
+        Todo todoInput = DTOMapper.INSTANCE.convertTodoPostDTOToEntity(todoPostDTO);
+        long taskId = todoPostDTO.getTaskId();
+
+        todoService.createTodo(todoInput, taskId, token);
+    }
+```
+
+Subsequently, changes within the server are handled by service classes which interface with various repositories, such as
+```sh
+@Service
+@Transactional
+public class RatingService {
+    private final RatingRepository ratingRepository;
+    private final UserService userService;
+
+    private final TaskService taskService;
+
+    @Autowired
+    public RatingService(@Qualifier("ratingRepository") RatingRepository ratingRepository, UserService userService, TaskService taskService) {
+        this.ratingRepository = ratingRepository;
+        this.userService = userService;
+        this.taskService = taskService;
+    }
+```
+
+We paid particular attention to managing dependencies within the various classes. For example, we minimized calls to external repositories from within a service (e.g., calling TaskRepository from UserService) to avoid creating low-quality, hard-to-test, and low-cohesion code. Therefore, within the services, functions are available to call their respective repositories directly.
+
+```sh
+  public User getUserById(long id) {
+    Optional<User> user = this.userRepository.findById(id);
+    if (user.isEmpty()) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no user exists with id" + id);
+    }
+    return user.get();
+  }
+```
+
 
 ## Launch & Development
 
@@ -109,3 +189,32 @@ Users can also view their profiles and respective reviews by clicking on "My Pro
 
 ### Leaderboard
 The spirit of Helping Hands is to create a supportive community where everyone helps as much as they can. Therefore, we have included a page called "Leaderboard," accessible by clicking on the trophy icon next to "Create New Task." This page allows users to view all members and identify the most virtuous ones who have helped others with the most tasks.
+
+## Authors
+
+- **Dana Rapp**  
+  - Matriculation Number: 23731995  
+  - Email: [dana.rapp@uzh.ch](mailto:dana.rapp@uzh.ch)  
+  - GitHub: [dana-jpg](https://github.com/dana-jpg)
+
+- **Francesco Manzionna**  
+  - Matriculation Number: 23745979  
+  - Email: [francesco.manzionna@uzh.ch](mailto:francesco.manzionna@uzh.ch)  
+  - GitHub: [Holwy](https://github.com/Holwy)
+
+- **Nina Rubesa**  
+  - Matriculation Number: 23744667  
+  - Email: [nina.rubesa@uzh.ch](mailto:nina.rubesa@uzh.ch)  
+  - GitHub: [nina22221111](https://github.com/nina22221111)
+ 
+- **Sina Klerings**  
+  - Matriculation Number: 23729627  
+  - Email: [sinacaecilia.klerings@uzh.ch](mailto:sinacaecilia.klerings@uzh.ch)  
+  - GitHub: [sinakle](https://github.com/sinakle)
+
+
+## License
+
+This project is licensed under the GNU General Public License v3.0, see the [LICENSE](LICENSE) file for details.
+
+We chose the GPL v3.0 to ensure that our project remains free and open, allowing users to use, modify, and distribute the software while ensuring that all modifications remain open and accessible to the community.
