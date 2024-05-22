@@ -26,6 +26,27 @@ Our vision is to restore the neighborly spirit of mutual assistance and goodwill
 
 Helping Hands is more than just an app; it’s a movement to rekindle the sense of community and solidarity that seems to have faded in our modern world. Join us in making neighborhoods friendlier and more supportive places to live. Together, we can make a difference, one helping hand at a time.
 
+## Technologies Used
+
+**Backend:**
+- Gradle
+- Java
+- Spring Boot
+- H2 Database
+- Spring Data JPA
+- Spring Web MVC
+- Spring REST Controller
+- REST API
+
+**Frontend:**
+- React
+- JavaScript/TypeScript
+- Axios
+- Bootstrap
+- CRACO
+- React Icons
+- CSS
+- Geoapify
 
 ## Launch & Development
 
