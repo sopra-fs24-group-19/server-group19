@@ -28,25 +28,30 @@ Helping Hands is more than just an app; it’s a movement to rekindle the sense 
 
 ## Technologies Used
 
-**Backend:**
-- Gradle
-- Java
-- Spring Boot
-- H2 Database
-- Spring Data JPA
-- Spring Web MVC
-- Spring REST Controller
-- REST API
+## Technologies Used
 
-**Frontend:**
-- React
-- JavaScript/TypeScript
-- Axios
-- Bootstrap
-- CRACO
-- React Icons
-- CSS
-- Geoapify
+**Backend**:
+
+- [Gradle](https://gradle.org/)
+- [Java](https://www.java.com/)
+- [Spring Boot](https://spring.io/projects/spring-boot)
+- [H2 Database](https://www.h2database.com/)
+- [Spring Data JPA](https://spring.io/projects/spring-data-jpa)
+- [Spring Web MVC](https://spring.io/guides/gs/serving-web-content/)
+- [Spring REST Controller](https://spring.io/guides/gs/rest-service/)
+- [REST API](https://restfulapi.net/)
+
+**Frontend**:
+
+- [React](https://reactjs.org/)
+- [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)/[TypeScript](https://www.typescriptlang.org/)
+- [Axios](https://axios-http.com/)
+- [Bootstrap](https://getbootstrap.com/)
+- [CRACO](https://github.com/gsoft-inc/craco)
+- [React Icons](https://react-icons.github.io/react-icons/)
+- [CSS](https://developer.mozilla.org/en-US/docs/Web/CSS)
+- [Geoapify](https://www.geoapify.com/)
+
 ## High-level Components
 ### Backend
 The primary components of the backend are the service and controller classes created for each entity (Rating, Task, User, Todo).
