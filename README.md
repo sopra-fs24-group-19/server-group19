@@ -28,8 +28,6 @@ Helping Hands is more than just an app; it’s a movement to rekindle the sense 
 
 ## Technologies Used
 
-## Technologies Used
-
 **Backend**:
 
 - [Gradle](https://gradle.org/)
