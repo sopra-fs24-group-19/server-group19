@@ -26,7 +26,7 @@ Our vision is to restore the neighborly spirit of mutual assistance and goodwill
 
 Helping Hands is more than just an app; it’s a movement to rekindle the sense of community and solidarity that seems to have faded in our modern world. Join us in making neighborhoods friendlier and more supportive places to live. Together, we can make a difference, one helping hand at a time.
 
-## Technologies Used
+## Technologies
 
 **Backend**:
 
@@ -54,57 +54,124 @@ Helping Hands is more than just an app; it’s a movement to rekindle the sense 
 ### Backend
 The primary components of the backend are the service and controller classes created for each entity (Rating, Task, User, Todo).
 
+#### Controllers
 Using the REST Controller framework, we manage all requests according to the HTTPS standard (GET, POST, PUT, DELETE), passing all necessary parameters, including tokens and path parameters to identify the IDs of the instances in question.
 ```sh
-@RestController
-public class TodoController {
-
-    private final TodoService todoService;
-
-    TodoController(TodoService todoService) {
-        this.todoService = todoService;
-    }
-
-    @PostMapping("/todo")
+    @PostMapping("/tasks")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public void createTodo(@RequestBody TodoPostDTO todoPostDTO, @RequestHeader("Authorization") String token) {
-        Todo todoInput = DTOMapper.INSTANCE.convertTodoPostDTOToEntity(todoPostDTO);
-        long taskId = todoPostDTO.getTaskId();
-
-        todoService.createTodo(todoInput, taskId, token);
+    public void createTask(@RequestBody TaskPostDTO taskPostDTO) {
+        Task taskInput = DTOMapper.INSTANCE.convertTaskPostDTOToEntity(taskPostDTO);
+        long creatorId = taskPostDTO.getCreatorId();
+        Task createdTask = taskService.createTask(taskInput,creatorId);
     }
 ```
+#### Services
 
-Subsequently, changes within the server are handled by service classes which interface with various repositories, such as
+Subsequently, changes within the server are handled by service classes, which interface with various repositories. Here’s an example of a service function:
+
 ```sh
-@Service
-@Transactional
-public class RatingService {
-    private final RatingRepository ratingRepository;
-    private final UserService userService;
-
-    private final TaskService taskService;
-
-    @Autowired
-    public RatingService(@Qualifier("ratingRepository") RatingRepository ratingRepository, UserService userService, TaskService taskService) {
-        this.ratingRepository = ratingRepository;
-        this.userService = userService;
-        this.taskService = taskService;
+    public Task createTask(Task newTask, long userId) {
+        User creator = userService.getUserById(userId);
+        boolean valid = checkIfCreatorHasEnoughTokens(creator, newTask);
+        if (!valid) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "creator does not have enough credits");
+        }
+        newTask.setCreator(creator);
+        newTask.setStatus(TaskStatus.CREATED);
+        userService.subtractCoins(creator, newTask.getPrice());
+        newTask = taskRepository.save(newTask);
+        taskRepository.flush();
+        return newTask;
     }
 ```
 
 We paid particular attention to managing dependencies within the various classes. For example, we minimized calls to external repositories from within a service (e.g., calling TaskRepository from UserService) to avoid creating low-quality, hard-to-test, and low-cohesion code. Therefore, within the services, functions are available to call their respective repositories directly.
 
 ```sh
-  public User getUserById(long id) {
-    Optional<User> user = this.userRepository.findById(id);
-    if (user.isEmpty()) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "no user exists with id" + id);
+public List<Task> getTasks() {
+        Date today = new Date();
+        return taskRepository.findAllWithDateAfterOrEqual(today);
     }
-    return user.get();
-  }
 ```
+#### Repositories
+
+Repositories are interfaces that manage the retrieval, storage, and search behavior which emulates a collection of objects. For instance:
+
+```sh
+@Repository("todoRepository")
+public interface TodoRepository extends JpaRepository<Todo, Long> {
+
+    Todo findTodoById(Long id);
+
+    List<Todo> findByTaskId(Long taskId);
+
+    List<Todo> findAllByTaskId(Long taskId);
+}
+```
+
+#### Entities
+
+Entities represent the core data structure that maps to database tables. For instance, a Task entity might look like this:
+
+```sh
+@Entity
+@Table(name = "TASK")
+public class Task implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false)
+    private String description;
+
+    @Column(nullable = false)
+    private int price;
+
+    @Column(nullable = false)
+    private String address;
+
+    @Column(nullable = false)
+    private Date date;
+
+    @Column(nullable = false)
+    private int duration;
+
+    @Column(nullable = true)
+    private String latitude;
+
+    @Column(nullable = true)
+    private String longitude;
+
+    @Enumerated
+    @Column(nullable=false)
+    private TaskStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "creatorId", referencedColumnName = "id")
+    private User creator;
+
+    @ManyToOne
+    @JoinColumn(name = "helperId", referencedColumnName = "id")
+    private User helper;
+
+    @ManyToMany(mappedBy = "applications")
+    private List<User> candidates = new ArrayList<>();
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Todo> todos;
+
+    @OneToMany(mappedBy = "task")
+    private List<Rating> ratings;
+```
+
+By structuring the backend with clear separation of concerns and managing dependencies effectively, we ensure that our codebase remains clean, maintainable, and testable.
 
 
 ## Launch & Development
@@ -154,7 +221,8 @@ To run the application:
 npm run start
 ```
 
-## How to Use the Application
+
+## Illustrations
 ### Registration and Login
 To begin using the application, users must first register by providing the following information: name, username, and password. After registration, users will be redirected to the HomeFeed page. To view all tasks, navigate to the "My Profile" page located at the top left corner and complete the remaining profile details, including address and the maximum radius for viewing tasks from the provided address. Optionally, users can also add their phone number. 
 
@@ -190,7 +258,19 @@ Users can also view their profiles and respective reviews by clicking on "My Pro
 ### Leaderboard
 The spirit of Helping Hands is to create a supportive community where everyone helps as much as they can. Therefore, we have included a page called "Leaderboard," accessible by clicking on the trophy icon next to "Create New Task." This page allows users to view all members and identify the most virtuous ones who have helped others with the most tasks.
 
-## Authors
+
+## Roadmap
+
+Envisioning continued development on the proposed application, it would be interesting to implement the following functionalities both on the frontend and the supporting backend services:
+
+- **Notification System**: Implement a notification system that can communicate with users via various platforms such as email, SMS, or a dedicated application released on Android and iOS. This system would notify users about service updates, such as being selected for a task, the completion of a to-do, or receiving a review.
+
+- **Real-time Interaction**: Utilize WebSockets to ensure real-time interaction between users. This would allow immediate updates and communication without the need for frequent page refreshes.
+
+- **Enhanced Task Filtering**: Incorporate additional filtering systems to improve task search capabilities. As the number of tasks grows with the increase in users, effective filtering becomes essential. Implementing a search bar that allows filtering by keywords could fulfill this requirement, making it easier for users to find relevant tasks.
+
+
+## Authors and Acknowledgement
 
 - **Dana Rapp**  
   - Matriculation Number: 23731995  
