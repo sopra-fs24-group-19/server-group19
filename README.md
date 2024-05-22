@@ -272,6 +272,8 @@ Envisioning continued development on the proposed application, it would be inter
 
 ## Authors and Acknowledgement
 
+### Authors
+
 - **Dana Rapp**  
   - Matriculation Number: 23731995  
   - Email: [dana.rapp@uzh.ch](mailto:dana.rapp@uzh.ch)  
@@ -281,17 +283,6 @@ Envisioning continued development on the proposed application, it would be inter
   - Matriculation Number: 23745979  
   - Email: [francesco.manzionna@uzh.ch](mailto:francesco.manzionna@uzh.ch)  
   - GitHub: [Holwy](https://github.com/Holwy)
-
-- **Nina Rubesa**  
-  - Matriculation Number: 23744667  
-  - Email: [nina.rubesa@uzh.ch](mailto:nina.rubesa@uzh.ch)  
-  - GitHub: [nina22221111](https://github.com/nina22221111)
- 
-- **Sina Klerings**  
-  - Matriculation Number: 23729627  
-  - Email: [sinacaecilia.klerings@uzh.ch](mailto:sinacaecilia.klerings@uzh.ch)  
-  - GitHub: [sinakle](https://github.com/sinakle)
-
 
 ## License
 
