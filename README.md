@@ -214,7 +214,7 @@ npm install
 ```
 To run the application:
 ```sh
-npm run start
+npm start
 ```
 
 ## Roadmap
@@ -223,7 +223,7 @@ Envisioning continued development on the proposed application, it would be inter
 
 - **Notification System**: Implement a notification system that can communicate with users via various platforms such as email, SMS, or a dedicated application released on Android and iOS. This system would notify users about service updates, such as being selected for a task, the completion of a to-do, or receiving a review.
 
-- **Real-time Interaction**: Utilize WebSockets to ensure real-time interaction between users. This would allow immediate updates and communication without the need for frequent page refreshes.
+- **Real-time Interaction**: Implementing websockets for better handling of real time interaction.
 
 - **Enhanced Task Filtering**: Incorporate additional filtering systems to improve task search capabilities. As the number of tasks grows with the increase in users, effective filtering becomes essential. Implementing a search bar that allows filtering by keywords could fulfill this requirement, making it easier for users to find relevant tasks.
 
