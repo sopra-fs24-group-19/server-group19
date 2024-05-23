@@ -199,7 +199,7 @@ public class TaskServiceTest {
 
         Task historicalTask = new Task();
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -1);
+        cal.add(Calendar.DATE, -5);
         historicalTask.setDate(cal.getTime());
 
         List<Task> expected = Collections.singletonList(testTask);
